@@ -78,6 +78,14 @@ export class Player {
     this.initMobileControls();
   }
 
+  get rotation() {
+    return {
+      x: this.pitch,
+      y: this.yaw,
+      z: 0
+    };
+  }
+
   setRole(role, name) {
     this.userRole = role;
     this.userName = name;
@@ -186,6 +194,19 @@ export class Player {
     document.addEventListener('pointerlockchange', () => {
       this.isPointerLocked = document.pointerLockElement === this.domElement;
       this.edgeTurnRate = 0;
+      this.hasMouseMoved = false;
+    });
+
+    // Reset when leaving window or blur
+    window.addEventListener('mouseleave', () => {
+      this.edgeTurnRate = 0;
+      this.hasMouseMoved = false;
+    });
+
+    window.addEventListener('blur', () => {
+      this.edgeTurnRate = 0;
+      this.hasMouseMoved = false;
+      for (const k in this.keys) this.keys[k] = false;
     });
 
     // Click canvas to engage Pointer Lock
@@ -207,33 +228,17 @@ export class Player {
 
       if (this.isPointerLocked) {
         // Full 360° Infinite Mouse Look (Pointer Lock)
-        const mx = e.movementX || 0;
-        const my = e.movementY || 0;
+        const mx = Number.isFinite(e.movementX) ? e.movementX : 0;
+        const my = Number.isFinite(e.movementY) ? e.movementY : 0;
         this.yaw -= mx * 0.0026;
         this.pitch -= my * 0.0026;
         this.edgeTurnRate = 0;
       } else {
-        // Free Cursor Mode (When not pointer locked)
-        // 1. If cursor reaches the edges of the screen, CONTINUOUSLY ROTATE so it NEVER freezes!
-        const edgeMargin = Math.max(60, window.innerWidth * 0.08);
-        if (e.clientX < edgeMargin) {
-          // Cursor is near left edge -> rotate left continuously!
-          const factor = (edgeMargin - e.clientX) / edgeMargin;
-          this.edgeTurnRate = factor * 2.5; // Turn left
-        } else if (e.clientX > window.innerWidth - edgeMargin) {
-          // Cursor is near right edge -> rotate right continuously!
-          const factor = (e.clientX - (window.innerWidth - edgeMargin)) / edgeMargin;
-          this.edgeTurnRate = -factor * 2.5; // Turn right
-        } else {
-          this.edgeTurnRate = 0;
-        }
-
-        // 2. Direct mouse motion delta
-        if (this.hasMouseMoved) {
+        // Direct mouse motion delta
+        if (this.hasMouseMoved && Number.isFinite(this.lastMouseX) && Number.isFinite(this.lastMouseY)) {
           const dx = e.clientX - this.lastMouseX;
           const dy = e.clientY - this.lastMouseY;
-          // Apply gentle look delta
-          if (Math.abs(dx) < 250) { // Reject teleport jumps
+          if (Math.abs(dx) < 200 && Math.abs(dy) < 200) {
             this.yaw -= dx * 0.0032;
             this.pitch -= dy * 0.0032;
           }
@@ -244,18 +249,20 @@ export class Player {
       }
 
       this.pitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.pitch));
+      if (!Number.isFinite(this.yaw)) this.yaw = Math.PI;
+      if (!Number.isFinite(this.pitch)) this.pitch = 0;
     });
   }
 
   initMobileControls() {
-    // 1. Mobile Touch Look Swipe (Anywhere not on a button)
+    // 1. Mobile Touch Look Swipe (Silky smooth 360° swipe rotation)
     window.addEventListener('touchstart', (e) => {
       const modal = document.getElementById('entry-modal');
       if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') return;
 
       const target = e.target;
-      // If clicking button, let button handle it
-      if (target.tagName === 'BUTTON' || target.closest('button') || target.tagName === 'INPUT') {
+      // If tapping directly on interactive UI element, don't hijack as look touch
+      if (target.tagName === 'BUTTON' || target.closest('button') || target.tagName === 'INPUT' || target.closest('#chat-widget')) {
         return;
       }
 
@@ -274,27 +281,28 @@ export class Player {
       const modal = document.getElementById('entry-modal');
       if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') return;
 
-      const target = e.target;
-      if (target.tagName === 'BUTTON' || target.closest('button') || target.tagName === 'INPUT') {
-        return;
-      }
-
       for (let i = 0; i < e.changedTouches.length; i++) {
         const t = e.changedTouches[i];
         if (t.identifier === this.lookTouch.touchId) {
+          if (e.cancelable) e.preventDefault();
+
           const dx = t.clientX - this.lookTouch.lastX;
           const dy = t.clientY - this.lookTouch.lastY;
 
-          // Smooth direct 360° rotation
-          this.yaw -= dx * 0.0065;
-          this.pitch -= dy * 0.0065;
-          this.pitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.pitch));
+          if (Math.abs(dx) < 150 && Math.abs(dy) < 150) {
+            this.yaw -= dx * 0.0055;
+            this.pitch -= dy * 0.0055;
+            this.pitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.pitch));
+
+            if (!Number.isFinite(this.yaw)) this.yaw = Math.PI;
+            if (!Number.isFinite(this.pitch)) this.pitch = 0;
+          }
 
           this.lookTouch.lastX = t.clientX;
           this.lookTouch.lastY = t.clientY;
         }
       }
-    }, { passive: true });
+    }, { passive: false });
 
     const endTouch = (e) => {
       for (let i = 0; i < e.changedTouches.length; i++) {

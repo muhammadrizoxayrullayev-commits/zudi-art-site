@@ -373,19 +373,27 @@ class App {
 
     const delta = Math.min(this.clock.getDelta(), 0.08);
 
-    // Update Physical Player & Museum
-    this.player.update(delta);
-    this.museum.update(delta);
+    try {
+      // Update Physical Player & Museum
+      this.player.update(delta);
+      this.museum.update(delta);
 
-    // Sync Multiplayer
-    this.multiplayer.emitLocalMovement(this.player);
-    this.multiplayer.update(delta, this.player.position);
+      // Sync Multiplayer
+      this.multiplayer.emitLocalMovement(this.player);
+      this.multiplayer.update(delta, this.player.position);
 
-    // Raycast interaction
-    this.checkRaycastInteractions();
+      // Raycast interaction
+      this.checkRaycastInteractions();
+    } catch (err) {
+      console.warn('Loop update warning:', err);
+    }
 
-    // Render Scene
-    this.renderer.render(this.scene, this.camera);
+    // Always render scene - never freeze viewport
+    try {
+      this.renderer.render(this.scene, this.camera);
+    } catch (renderErr) {
+      console.error('Render error:', renderErr);
+    }
   }
 }
 
