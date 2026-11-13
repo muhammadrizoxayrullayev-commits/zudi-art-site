@@ -1,0 +1,16 @@
+{
+  "name": "zudi-art-site-museum",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "JJMM Grand Romantic 3D Museum — Root runner",
+  "scripts": {
+    "start": "node jjmmmuseum/server.js",
+    "build": "cd jjmmmuseum && npm install"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1",
+    "dotenv": "^16.4.7"
+  }
+}
+
