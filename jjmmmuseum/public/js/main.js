@@ -7,7 +7,7 @@ import { Museum } from './museum.js';
 import { Player } from './player.js';
 import { MultiplayerManager } from './multiplayer.js';
 import { AudioManager } from './audio.js';
-import { createArtworkCanvas } from './paintings.js';
+import { createArtworkCanvas, createStatueCanvas } from './paintings.js';
 
 class App {
   constructor() {
@@ -297,6 +297,10 @@ class App {
       imgEl.src = saved;
     } else if (paintingData.canvas) {
       imgEl.src = paintingData.canvas.toDataURL();
+    } else if (paintingData.type === 'statue') {
+      const c = createStatueCanvas(paintingData);
+      paintingData.canvas = c;
+      imgEl.src = c.toDataURL();
     }
 
     modal.classList.remove('hidden');
