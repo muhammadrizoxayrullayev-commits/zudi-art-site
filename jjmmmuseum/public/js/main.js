@@ -124,7 +124,11 @@ class App {
       // Initialize player avatar role
       this.player.setRole(this.localUserData.role, this.localUserData.name);
 
-      document.getElementById('entry-modal').classList.add('hidden');
+      const entryModal = document.getElementById('entry-modal');
+      entryModal.classList.add('hidden');
+      entryModal.style.display = 'none';
+
+      window.focus();
 
       // Connect to multiplayer
       this.multiplayer.connect(this.localUserData, () => {
