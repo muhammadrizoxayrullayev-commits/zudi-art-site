@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>JJ & MM | Grand Romantic 3D Museum</title>
+  <meta name="description" content="Ikki oshiq uchun romantik 3D san'at muzeyi. Birgalikda sayr qiling, xotiralarni tomosha qiling.">
+  <meta name="theme-color" content="#1a0c0e">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
+
+  <!-- Google Fonts: Playfair Display for classic museum elegance & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Three.js (r128) & Orbit/PointerLock via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Socket.io client -->
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+  <!-- WebGL Canvas Container -->
+  <div id="canvas-container"></div>
+
+  <!-- UI Overlay -->
+  <div id="ui-layer">
+
+    <!-- Top Navigation Bar -->
+    <header id="top-bar">
+      <div class="brand">
+        <span class="brand-crest">🏛️</span>
+        <div class="brand-info">
+          <h1>MUSEUM OF LOVE</h1>
+          <span class="sub">Muhammadrizo & Sevgilim</span>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <!-- Room share button -->
+        <button id="btn-share" class="glass-btn" title="Sevgilingizga havola yuboring">
+          <span>🔗</span> <span class="btn-text">Ulashish</span>
+        </button>
+        <!-- Audio toggle button -->
+        <button id="btn-audio" class="glass-btn" title="Musiqani yoqish/o'chirish">
+          <span id="audio-icon">🎵</span> <span class="btn-text">Musiqa</span>
+        </button>
+        <!-- Camera perspective switch (1st / 3rd person) -->
+        <button id="btn-camera" class="glass-btn" title="Kamera rejimini almashtirish">
+          <span id="camera-icon">👁️</span> <span class="btn-text">Kamera</span>
+        </button>
+        <!-- Fullscreen button -->
+        <button id="btn-fullscreen" class="glass-btn icon-only" title="To'liq ekran">
+          <span>⛶</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Desktop Crosshair & Interaction Prompt -->
+    <div id="crosshair"></div>
+    <div id="inspect-prompt" class="hidden">
+      <span class="key-hint">E</span> yoki bosing: <b id="prompt-text">Rasmni ko'rish</b>
+    </div>
+
+    <!-- Proximity Alert (When both lovers are close together) -->
+    <div id="proximity-banner" class="hidden">
+      <span class="heart-pulse">❤️</span> Sizlar birgasizlar!
+    </div>
+
+    <!-- Mobile Virtual Controls (Shown on Touch Devices) -->
+    <div id="mobile-controls">
+      <!-- Virtual Joystick Zone on Left -->
+      <div id="joystick-zone">
+        <div id="joystick-base">
+          <div id="joystick-stick"></div>
+        </div>
+      </div>
+
+      <!-- Touch Swipe Look Area (Covers right side of screen) -->
+      <div id="touch-look-zone"></div>
+
+      <!-- Mobile Action Buttons on Right -->
+      <div id="mobile-action-buttons">
+        <button id="m-btn-heart" class="m-action-btn heart-btn" title="Yurak yuborish">
+          <span>❤️</span>
+          <small>Yurak</small>
+        </button>
+        <button id="m-btn-inspect" class="m-action-btn hidden" title="Rasmni ko'rish">
+          <span>🔍</span>
+          <small>Ko'rish</small>
+        </button>
+        <button id="m-btn-chat" class="m-action-btn" title="Xabar yozish">
+          <span>💬</span>
+          <small>Chat</small>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live In-Game Chat Box -->
+    <div id="chat-widget" class="collapsed">
+      <div class="chat-header">
+        <span>💬 Romantik Chat</span>
+        <button id="btn-close-chat" class="close-x">✕</button>
+      </div>
+      <div id="chat-messages"></div>
+      <form id="chat-form">
+        <input type="text" id="chat-input" placeholder="Sevgi izhori yoki xabar yozing..." maxlength="120" autocomplete="off">
+        <button type="submit" id="chat-send">❤️</button>
+      </form>
+    </div>
+
+    <!-- Online Lovers Status Pill -->
+    <div id="players-pill">
+      <span class="online-dot"></span>
+      <span id="players-count-text">Muzeyda: 1 kishi</span>
+    </div>
+
+  </div>
+
+  <!-- Welcome / Login Modal -->
+  <div id="entry-modal" class="modal-backdrop">
+    <div class="modal-card luxury-frame">
+      <div class="modal-crest">✨ 🏛️ ✨</div>
+      <h2 class="cinzel-title">JJ & MM GRAND MUSEUM</h2>
+      <p class="modal-desc">
+        Parij va Yevropaning eng go'zal mumtoz san'at saroylaridan ilhomlangan virtual muzeyga xush kelibsiz. 
+        Bu yerda siz va sevgan insoningiz birgalikda sayr qilib, go'zal xotiralarni tomosha qilishingiz mumkin.
+      </p>
+
+      <div class="input-group">
+        <label for="player-name-input">Ismingizni kiriting:</label>
+        <input type="text" id="player-name-input" value="Muhammadrizo" placeholder="Ismingiz...">
+      </div>
+
+      <div class="role-selector">
+        <label>Obrazingizni tanlang:</label>
+        <div class="roles-grid">
+          <label class="role-card selected">
+            <input type="radio" name="player-role" value="boy" checked>
+            <div class="role-content">
+              <span class="role-emoji">🤵🏻</span>
+              <span class="role-label">Kavaler</span>
+              <span class="role-sub">Klassik Kostyum</span>
+            </div>
+          </label>
+          <label class="role-card">
+            <input type="radio" name="player-role" value="girl">
+            <div class="role-content">
+              <span class="role-emoji">💃🏻</span>
+              <span class="role-label">Xonim</span>
+              <span class="role-sub">Nafis Libos</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="controls-guide">
+        <div class="guide-item">
+          <b>💻 Kompyuter:</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> — Harakat | Sichqoncha — Qarash | <kbd>H</kbd> — Yurak ❤️ | <kbd>E</kbd> — Rasm
+        </div>
+        <div class="guide-item">
+          <b>📱 Telefon:</b> Chap barmoq — Joystik | O'ng barmoq — Qarash | Tugmalar — Yurak va Ko'rish
+        </div>
+      </div>
+
+      <button id="btn-enter-museum" class="gold-cta-btn">
+        <span>Muzeyga kirish 🗝️</span>
+      </button>
+
+      <div class="modal-note">
+        💡 <i>Kirgach, "Ulashish" tugmasi orqali sevgilingizga havola yuborishingiz mumkin!</i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Painting Lightbox Modal (For viewing & uploading photos) -->
+  <div id="artwork-modal" class="modal-backdrop hidden">
+    <div class="artwork-card gold-border">
+      <button id="btn-close-artwork" class="close-art-btn">✕</button>
+      
+      <div class="artwork-viewport">
+        <img id="artwork-img" src="" alt="San'at asari">
+        <div class="frame-glare"></div>
+      </div>
+
+      <div class="artwork-details">
+        <div class="museum-plaque">
+          <span class="plaque-number" id="art-number">ZAL I — XOTIRA #01</span>
+          <h3 id="art-title" class="plaque-title">Bizning Ilk Uchrashuvimiz</h3>
+          <p id="art-desc" class="plaque-desc">Ushbu rasm ramkasi sizning birgalikdagi unutilmas xotirangiz uchun tayyorlandi.</p>
+          <span id="art-date" class="plaque-date">JJ & MM Romantik To'plami</span>
+        </div>
+
+        <div class="artwork-uploader-box">
+          <label for="photo-file-input" class="upload-btn">
+            <span>📷 O'z rasmingizni joylashtirish</span>
+          </label>
+          <input type="file" id="photo-file-input" accept="image/*" style="display:none;">
+          <small class="upload-hint">Yuborgan rasmingiz ushbu ramkaga darhol joylashadi.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Room Toast -->
+  <div id="toast" class="toast hidden">Havola nusxalandi! Sevgilingizga yuboring ❤️</div>
+
+  <!-- Audio elements -->
+  <audio id="bg-music" loop preload="auto">
+    <!-- Source handled procedurally or loaded via audio.js -->
+  </audio>
+
+  <!-- Application Scripts -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
+
