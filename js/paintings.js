@@ -244,3 +244,108 @@ export function createArtworkCanvas(painting, customDataUrl = null) {
   return canvas;
 }
 
+// ==========================================================================
+// CLASSICAL MARBLE SCULPTURES & BUSTS REGISTRY
+// ==========================================================================
+export const DEFAULT_STATUES = [
+  {
+    id: 'statue_angel',
+    title: 'Abadiy Muhabbat Farishtasi (Cupid & Psyche)',
+    subtitle: 'MARKAZIY ROTUNDA — SHOH ASAR',
+    description: 'Qadimgi mumtoz san\'atdagi eng mashhur sevgi timsoli — Eros va Psixeyaning o\'zaro samimiy muhabbati. Oq Karrara marmaridan ishlangan ushbu qanotli haykal muhabbat har qanday masofa va to\'siqni yengib o\'tishining ramzidir.',
+    date: 'Mumtoz Marmar San\'ati',
+    aspect: 0.8,
+    type: 'statue',
+    emoji: '🕊️'
+  },
+  {
+    id: 'statue_aphrodite',
+    title: 'Afrodita (Venera) Byusti',
+    subtitle: 'I-ZAL — GO\'ZALLIK MA\'BUDASI',
+    description: 'Nafosat, go\'zallik va abadiy yoshlik timsoli bo\'lgan yunon ma\'budasi Afroditaning marmar siymosi.',
+    date: 'Ellin Davri',
+    aspect: 0.8,
+    type: 'statue',
+    emoji: '👑'
+  },
+  {
+    id: 'statue_apollo',
+    title: 'Apollon Byusti',
+    subtitle: 'I-ZAL — ILHOM VA NUR HOMIYSI',
+    description: 'She\'riyat, san\'at, quyosh nuri va ilhom ramzi bo\'lgan olijanob Apollon siymosi.',
+    date: 'Klassik Davr',
+    aspect: 0.8,
+    type: 'statue',
+    emoji: '☀️'
+  },
+  {
+    id: 'statue_psyche',
+    title: 'Psixeya Byusti',
+    subtitle: 'II-ZAL — POKIZA QALB TIMSOLI',
+    description: 'Inson qalbining go\'zalligi, pok niyati va samimiy sevgisining nozik ifodasi.',
+    date: 'Rim San\'ati',
+    aspect: 0.8,
+    type: 'statue',
+    emoji: '💖'
+  },
+  {
+    id: 'statue_eros',
+    title: 'Eros (Kupid) Byusti',
+    subtitle: 'II-ZAL — YURAKLARNI BIRLASHTIRUVCHI',
+    description: 'Yuraklarni bir-biriga bog\'lovchi, mehr va muhabbat chaqnatuvchi ilohiy tuyg\'ular posboni.',
+    date: 'Rim San\'ati',
+    aspect: 0.8,
+    type: 'statue',
+    emoji: '🏹'
+  }
+];
+
+export function createStatueCanvas(statue) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 800;
+  canvas.height = 1000;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+
+  // Dark obsidian marble background gradient
+  const grad = ctx.createRadialGradient(w * 0.5, h * 0.45, 50, w * 0.5, h * 0.5, w * 0.65);
+  grad.addColorStop(0, '#2b1c20');
+  grad.addColorStop(0.5, '#15080b');
+  grad.addColorStop(1, '#080204');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Gilded decorative baroque border
+  ctx.strokeStyle = 'rgba(212, 175, 55, 0.7)';
+  ctx.lineWidth = 12;
+  ctx.strokeRect(25, 25, w - 50, h - 50);
+
+  ctx.strokeStyle = 'rgba(250, 225, 125, 0.35)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(38, 38, w - 76, h - 76);
+
+  // Statue Icon / Glow
+  ctx.font = '96px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(statue.emoji || '🏛️', w * 0.5, h * 0.38);
+
+  // Typography
+  ctx.font = 'bold 32px "Cinzel", serif';
+  ctx.fillStyle = '#fae17d';
+  ctx.shadowColor = 'rgba(0,0,0,0.9)';
+  ctx.shadowBlur = 12;
+  ctx.fillText(statue.title.toUpperCase(), w * 0.5, h * 0.58);
+
+  ctx.font = 'italic 22px "Playfair Display", serif';
+  ctx.fillStyle = '#e8d2b0';
+  ctx.fillText(`“ ${statue.date} ”`, w * 0.5, h * 0.66);
+
+  ctx.font = '18px "Plus Jakarta Sans", sans-serif';
+  ctx.fillStyle = 'rgba(212, 175, 55, 0.8)';
+  ctx.fillText('🏛️ Oq Karrara marmaridan ishlangan asl san\'at durdonasi', w * 0.5, h * 0.78);
+
+  return canvas;
+}
+
