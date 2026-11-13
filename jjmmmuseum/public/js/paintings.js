@@ -53,109 +53,117 @@ export const DEFAULT_PAINTINGS = [
   },
 
   // ========================================================================
-  // ROOM II: GALERIE ROYALE (Central Grand Hall)
+  // ROOM II: GALERIE ROYALE (Central Grand Hall — 4 New High-Res Portraits)
   // ========================================================================
   {
     id: 3,
     side: 'left',
     bayIndex: 3, // z = 6
-    title: 'Arno Daryosi & Yulduzli Tun',
-    subtitle: 'ZAL II — SHOH ASAR #01',
-    description: 'Qadimiy Florensiya uzra moviy yulduzlar charog\'onligi va sokin oqayotgan daryo siri.',
-    date: 'Tungi shahar chiroqlari',
-    aspect: 1.33,
-    placeholderTheme: 'night'
+    title: 'Moviy Havza & Shamol Tegirmonlari',
+    subtitle: 'ZAL II — XAS PORTRET #05',
+    description: 'Yozning quyoshli kunida musaffo moviy suvlar va yam-yashil tog\'lar uzra esgan iliq shaboda.',
+    date: 'Moviy ufqlar aro',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/artwork_pool_lagoon.jpg'
   },
   {
     id: 9,
     side: 'right',
     bayIndex: 3, // z = 6
-    title: 'Oy Nuri & Moviy Ko\'l',
-    subtitle: 'ZAL II — SHOH ASAR #02',
-    description: 'Alp tog\'larining moviy ko\'zgusida aks etgan kumushrang to\'lin oy va sokin qarag\'aylar.',
-    date: 'Kumush tunda sukunat',
-    aspect: 1.33,
-    placeholderTheme: 'moonlight'
+    title: 'Oq Libos & Palma Soyalari',
+    subtitle: 'ZAL II — XAS PORTRET #06',
+    description: 'Palma daraxtlari aks etgan ko\'zguda oppoq nafis libosdagi maftunkor va jozibador siymo.',
+    date: 'Quyoshli damlar',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/artwork_white_dress.jpg'
   },
   {
     id: 4,
     side: 'left',
     bayIndex: 2, // z = -6
-    title: 'Venetsiya Gondolasi & Qizil Ufq',
-    subtitle: 'ZAL II — SHOH ASAR #03',
-    description: 'Qizil shafaq nurlari ostida suzib borayotgan gondola va qadimiy saroylar aks etgan suv sathi.',
-    date: 'Orzular kanali',
-    aspect: 1.33,
-    placeholderTheme: 'sunset'
+    title: 'Yashil Vodiylar & Moviy Ko\'rfaz',
+    subtitle: 'ZAL II — XAS PORTRET #07',
+    description: 'Qarag\'ayzor tog\'lar cho\'qqisidagi ko\'rkam manzaralar, quyosh ko\'zoynagi va betakror erkinlik hissi.',
+    date: 'Tog\'lar bag\'rida',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/artwork_mountain_overlook.jpg'
   },
   {
     id: 10,
     side: 'right',
     bayIndex: 2, // z = -6
-    title: 'Provans Lavanda Dalalari',
-    subtitle: 'ZAL II — SHOH ASAR #04',
-    description: 'Ufqqa qadar cho\'zilgan binafsharang lavanda dalalari va botayotgan quyoshning iliq nurlari.',
-    date: 'Fransuz yozining nafasi',
-    aspect: 1.25,
-    placeholderTheme: 'lavender'
+    title: 'Sokin Maskanda Beg\'ubor Tabassum',
+    subtitle: 'ZAL II — XAS PORTRET #08',
+    description: 'Sokin va shinam maskanda oq libosdagi zamonaviy, latofatli va beg\'ubor tabassum.',
+    date: 'Yo\'l xotiralari',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/artwork_lounge_portrait.jpg'
   },
 
   // ========================================================================
-  // ROOM III: LE TEMPLE ÉTERNEL (Far End Sanctuary)
+  // ROOM III: LE TEMPLE ÉTERNEL (Sanctuary Hall — 4 Final Masterpiece Portraits)
   // ========================================================================
   {
     id: 5,
     side: 'left',
     bayIndex: 1, // z = -18
-    title: 'Qirollik Atirgullari Bog\'i',
-    subtitle: 'ZAL III — SHOH ASAR #05',
-    description: 'Marmar favvoralar atrofidagi qizil va oq atirgullar muattar hidi, bahorning mangu tarovati.',
-    date: 'Bahoriy nafosat',
-    aspect: 1.0,
-    placeholderTheme: 'flower'
+    title: 'Marmar Darvoza & Bosfor To\'lqinlari',
+    subtitle: 'ZAL III — XAS PORTRET #09',
+    description: 'Qadimiy o\'ymakor marmar saroy darvozasi yonida, dengiz to\'lqinlari va mayin shamol jilvasi.',
+    date: 'Tarixiy dengiz bo\'yi',
+    aspect: 0.91,
+    imageSrc: '/images/artworks/artwork_bosphorus_gate.jpg'
   },
   {
     id: 11,
     side: 'right',
     bayIndex: 1, // z = -18
-    title: 'Sham Yorig\'idagi Sokin Vals',
-    subtitle: 'ZAL III — SHOH ASAR #06',
-    description: 'Zarhallangan qandillar nuri ostida yangragan mayin skripka kuylari va shohona saroy kechasi.',
-    date: 'Klassik ohanglar',
-    aspect: 1.0,
-    placeholderTheme: 'opera'
+    title: 'Kema Bandargohi & Mayin Tabassum',
+    subtitle: 'ZAL III — XAS PORTRET #10',
+    description: 'Oq yelkanli kemalar fonida porlagan eng samimiy, jozibador va beg\'ubor tabassum.',
+    date: 'Dengiz sohili',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/artwork_seaside_yachts.jpg'
   },
   {
     id: 6,
     side: 'left',
     bayIndex: 0, // z = -30
-    title: 'Kuzgi Xiyobon & Oltin Barglar',
-    subtitle: 'ZAL III — SHOH ASAR #07',
-    description: 'Yomg\'irdan so\'nggi yaltiroq tosh yo\'laklar va oltin chinor yaproqlari shiviri.',
-    date: 'Oltin fasl xotirasi',
+    title: 'Oltin Shafaq & Sokin Ko\'rfaz',
+    subtitle: 'ZAL III — XAS PORTRET #11',
+    description: 'Ufqda botayotgan oltin quyosh nurlari, sokin ko\'rfaz va dengizdagi oppoq yaxtalar.',
+    date: 'Oltin oqshom siri',
     aspect: 1.33,
-    placeholderTheme: 'autumn'
+    imageSrc: '/images/artworks/artwork_golden_sunset_bay.jpg'
   },
   {
     id: 12,
     side: 'right',
     bayIndex: 0, // z = -30
-    title: 'Abadiy Muhabbat Saroyi',
-    subtitle: 'ZAL III — SHOH ASAR #08',
-    description: 'Oldinda bizni kutayotgan baxtli yillar, unutilmas to\'y va shirin oilaviy hayot orzulari.',
-    date: 'Abadiy muhabbat ❤️',
-    aspect: 1.33,
-    placeholderTheme: 'palace'
+    title: 'Kuch, Nafislik & Qat\'iyat',
+    subtitle: 'ZAL III — XAS PORTRET #12',
+    description: 'Sportcha shijoat, kuchli iroda va qat\'iyat bilan birga mujassam bo\'lgan tengsiz go\'zallik.',
+    date: 'G\'alaba va shijoat ❤️',
+    aspect: 0.80,
+    imageSrc: '/images/artworks/artwork_kimono_strength.jpg'
   }
 ];
 
 // Helper to generate artistic canvas textures as placeholders
 export function createArtworkCanvas(painting, customDataUrl = null) {
   const canvas = document.createElement('canvas');
-  // High-resolution 2K canvas for crisp display
+  // High-resolution 2K/4K canvas for ultra-crisp display
   const baseSize = 2048;
-  canvas.width = baseSize;
-  canvas.height = Math.round(baseSize / painting.aspect);
+  let canvasW, canvasH;
+  if (painting.aspect >= 1.0) {
+    canvasW = baseSize;
+    canvasH = Math.round(baseSize / painting.aspect);
+  } else {
+    canvasH = baseSize;
+    canvasW = Math.round(baseSize * painting.aspect);
+  }
+  canvas.width = canvasW;
+  canvas.height = canvasH;
   const ctx = canvas.getContext('2d');
 
   const imgSrc = customDataUrl || painting.imageSrc;

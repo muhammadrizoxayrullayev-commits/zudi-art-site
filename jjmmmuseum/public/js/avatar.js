@@ -499,3 +499,4 @@ export function createAvatarModel(role = 'boy') {
 
   return { group, limbs };
 }
+
