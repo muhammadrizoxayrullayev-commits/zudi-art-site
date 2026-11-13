@@ -47,14 +47,8 @@ export class AudioManager {
   }
 
   startMusic() {
-    if (this.isPlaying) return;
-    this.isPlaying = true;
-
-    // Play initial chord and start interval
-    this.playNextArpeggio();
-    this.musicInterval = setInterval(() => {
-      this.playNextArpeggio();
-    }, 4500);
+    // Background music disabled per user request - gallery remains serenely silent
+    this.isPlaying = false;
   }
 
   stopMusic() {
@@ -66,15 +60,8 @@ export class AudioManager {
   }
 
   playNextArpeggio() {
-    if (!this.isPlaying || !this.ctx) return;
-    const notes = this.chords[this.currentChord];
-    this.currentChord = (this.currentChord + 1) % this.chords.length;
-
-    // Arpeggiate notes with warm piano/rhodes synth tone
-    notes.forEach((freq, idx) => {
-      const delay = idx * 0.45;
-      this.playPianoNote(freq, delay, 3.5);
-    });
+    // Music disabled per user request
+    return;
   }
 
   playPianoNote(freq, delay = 0, duration = 2.5) {
