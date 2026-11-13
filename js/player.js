@@ -12,11 +12,11 @@ export class Player {
     this.onFootstep = onFootstep;
 
     // Physical Position & Rotation
-    this.position = new THREE.Vector3(0, 1.65, 24); // Start in gallery
+    this.position = new THREE.Vector3(0, 1.65, 30); // Start at grand gallery entrance
     this.velocity = new THREE.Vector3(0, 0, 0);
 
     // Rotation angles
-    this.yaw = Math.PI; // Face down the grand hall
+    this.yaw = 0; // Face down the grand hall towards the distance
     this.pitch = 0;
     this.turnVelocity = 0;
 
@@ -249,7 +249,7 @@ export class Player {
       }
 
       this.pitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.pitch));
-      if (!Number.isFinite(this.yaw)) this.yaw = Math.PI;
+      if (!Number.isFinite(this.yaw)) this.yaw = 0;
       if (!Number.isFinite(this.pitch)) this.pitch = 0;
     });
   }
@@ -294,7 +294,7 @@ export class Player {
             this.pitch -= dy * 0.0055;
             this.pitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.pitch));
 
-            if (!Number.isFinite(this.yaw)) this.yaw = Math.PI;
+            if (!Number.isFinite(this.yaw)) this.yaw = 0;
             if (!Number.isFinite(this.pitch)) this.pitch = 0;
           }
 

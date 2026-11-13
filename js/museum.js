@@ -1,6 +1,7 @@
 // ==========================================================================
-// 3D GRAND ROMANTIC ART MUSEUM ARCHITECTURE (OPTIMIZED FOR 60FPS & MOBILE)
-// Faithfully matches European grand palace galleries (Pinterest aesthetic)
+// 3D GRAND ROMANTIC ART MUSEUM ARCHITECTURE (AUTHENTIC NEOCLASSICAL PALACE)
+// Inspired by Louvre & Hermitage Grand Galleries (Pinterest aesthetic)
+// Pure vertical walls, coffered ceiling, chiaroscuro darkness & gold Baroque frames
 // ==========================================================================
 
 import { DEFAULT_PAINTINGS, createArtworkCanvas } from './paintings.js';
@@ -13,11 +14,11 @@ export class Museum {
     this.flames = [];
     this.particles = null;
 
-    // Dimensions
-    this.hallLength = 72; // Length of gallery
+    // Gallery Dimensions
+    this.hallLength = 72; // Length of the grand hall (meters)
     this.hallWidth = 14;  // Width
-    this.hallHeight = 9.5; // Vault height
-    this.bayCount = 6;    // 6 bays on each side (12 bays total)
+    this.hallHeight = 8.8; // Classical palace ceiling height
+    this.bayCount = 6;    // 6 bays on each side (12 classical bays total)
     this.bayLength = this.hallLength / this.bayCount;
 
     this.initTextures();
@@ -30,14 +31,14 @@ export class Museum {
   }
 
   initTextures() {
-    // 1. Procedural Polished Parquet / Herringbone Floor Texture
+    // 1. Procedural Polished Parquet / Chevron Oak Floor Texture
     const floorCanvas = document.createElement('canvas');
     floorCanvas.width = 512;
     floorCanvas.height = 512;
     const fCtx = floorCanvas.getContext('2d');
 
     // Rich dark oak parquet tones
-    fCtx.fillStyle = '#26150f';
+    fCtx.fillStyle = '#1c0f0a';
     fCtx.fillRect(0, 0, 512, 512);
 
     const plankW = 64;
@@ -46,11 +47,11 @@ export class Museum {
       for (let x = 0; x < 512; x += plankW) {
         const offset = (Math.floor(y / plankH) % 2) * (plankW / 2);
         const px = (x + offset) % 512;
-        const shade = Math.floor(Math.random() * 24) - 12;
-        fCtx.fillStyle = `rgb(${42 + shade}, ${24 + Math.floor(shade * 0.6)}, ${16 + Math.floor(shade * 0.4)})`;
+        const shade = Math.floor(Math.random() * 20) - 10;
+        fCtx.fillStyle = `rgb(${38 + shade}, ${22 + Math.floor(shade * 0.5)}, ${14 + Math.floor(shade * 0.3)})`;
         fCtx.fillRect(px, y, plankW - 2, plankH - 2);
 
-        fCtx.strokeStyle = 'rgba(0,0,0,0.3)';
+        fCtx.strokeStyle = 'rgba(0,0,0,0.4)';
         fCtx.lineWidth = 1;
         fCtx.beginPath();
         fCtx.moveTo(px, y + plankH / 2);
@@ -63,22 +64,22 @@ export class Museum {
     this.floorTexture.wrapT = THREE.RepeatWrapping;
     this.floorTexture.repeat.set(8, 36);
 
-    // 2. Deep Burgundy Damask Wall Texture (Vibrant Crimson)
+    // 2. Deep Royal Burgundy Damask Velvet Wall Texture
     const wallCanvas = document.createElement('canvas');
     wallCanvas.width = 512;
     wallCanvas.height = 512;
     const wCtx = wallCanvas.getContext('2d');
-    wCtx.fillStyle = '#42121b'; // Vibrant deep crimson/burgundy
+    wCtx.fillStyle = '#22080d'; // Deep wine / dark crimson velvet
     wCtx.fillRect(0, 0, 512, 512);
 
-    wCtx.fillStyle = 'rgba(105, 25, 40, 0.55)';
+    wCtx.fillStyle = 'rgba(56, 14, 22, 0.65)';
     for (let y = 0; y < 512; y += 64) {
       for (let x = 0; x < 512; x += 64) {
         wCtx.beginPath();
-        wCtx.arc(x + 32, y + 32, 20, 0, Math.PI * 2);
+        wCtx.arc(x + 32, y + 32, 22, 0, Math.PI * 2);
         wCtx.fill();
         wCtx.beginPath();
-        wCtx.arc(x, y, 12, 0, Math.PI * 2);
+        wCtx.arc(x, y, 14, 0, Math.PI * 2);
         wCtx.fill();
       }
     }
@@ -87,14 +88,14 @@ export class Museum {
     this.wallTexture.wrapT = THREE.RepeatWrapping;
     this.wallTexture.repeat.set(12, 4);
 
-    // 3. Dark Marble Column Texture
+    // 3. Dark Imperial Emerald Marble Column Texture
     const marbleCanvas = document.createElement('canvas');
     marbleCanvas.width = 256;
     marbleCanvas.height = 256;
     const mCtx = marbleCanvas.getContext('2d');
-    mCtx.fillStyle = '#0f1f1a'; // Dark green-black marble
+    mCtx.fillStyle = '#08140f'; // Dark green-black marble
     mCtx.fillRect(0, 0, 256, 256);
-    mCtx.strokeStyle = 'rgba(80, 180, 130, 0.3)';
+    mCtx.strokeStyle = 'rgba(60, 160, 110, 0.25)';
     mCtx.lineWidth = 2;
     for (let i = 0; i < 10; i++) {
       mCtx.beginPath();
@@ -106,13 +107,27 @@ export class Museum {
     this.marbleTexture.wrapS = THREE.RepeatWrapping;
     this.marbleTexture.wrapT = THREE.RepeatWrapping;
 
-    // 4. Gold Leaf Material
+    // 4. Antique Baroque Gold Leaf Material
     this.goldMaterial = new THREE.MeshStandardMaterial({
-      color: 0xdeb841,
-      metalness: 0.85,
-      roughness: 0.28,
-      emissive: 0x5a420e,
-      emissiveIntensity: 0.22
+      color: 0xd4af37,
+      metalness: 0.88,
+      roughness: 0.26,
+      emissive: 0x3d2b08,
+      emissiveIntensity: 0.2
+    });
+
+    // 5. Dark Polished Mahogany Wood (Wainscoting & Beams)
+    this.woodMaterial = new THREE.MeshStandardMaterial({
+      color: 0x160a0c,
+      roughness: 0.42,
+      metalness: 0.22
+    });
+
+    // 6. Upper Velvet Damask Wall Material
+    this.upperWallMaterial = new THREE.MeshStandardMaterial({
+      map: this.wallTexture,
+      roughness: 0.72,
+      metalness: 0.1
     });
   }
 
@@ -120,12 +135,12 @@ export class Museum {
     const halfW = this.hallWidth / 2;
     const halfL = this.hallLength / 2;
 
-    // Polished Floor
+    // 1. Polished Parquet Floor
     const floorGeo = new THREE.PlaneGeometry(this.hallWidth, this.hallLength);
     const floorMat = new THREE.MeshStandardMaterial({
       map: this.floorTexture,
-      roughness: 0.28,
-      metalness: 0.3
+      roughness: 0.25,
+      metalness: 0.35
     });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
@@ -133,157 +148,212 @@ export class Museum {
     floor.receiveShadow = true;
     this.scene.add(floor);
 
-    // Lower Wainscoting (Dark Mahogany Wood Baseboard)
-    const wainscotMat = new THREE.MeshStandardMaterial({
-      color: 0x1d0f11,
-      roughness: 0.45,
-      metalness: 0.25
-    });
-
-    // Upper Damask Wall Material
-    const upperWallMat = new THREE.MeshStandardMaterial({
-      map: this.wallTexture,
-      roughness: 0.7,
-      metalness: 0.12
-    });
-
-    // Build Left and Right Walls
+    // 2. Pure Vertical Left & Right Gallery Walls (No obstructions!)
     [-halfW, halfW].forEach(xPos => {
-      // Lower Wainscot
-      const wainscotGeo = new THREE.BoxGeometry(0.4, 2.2, this.hallLength);
-      const wainscot = new THREE.Mesh(wainscotGeo, wainscotMat);
-      wainscot.position.set(xPos, 1.1, 0);
+      // Lower Wainscoting (Dark Mahogany Wood Paneling)
+      const wainscotGeo = new THREE.BoxGeometry(0.35, 2.3, this.hallLength);
+      const wainscot = new THREE.Mesh(wainscotGeo, this.woodMaterial);
+      wainscot.position.set(xPos, 1.15, 0);
       this.scene.add(wainscot);
 
       // Gold Dado Rail Molding on top of wainscot
-      const dadoGeo = new THREE.BoxGeometry(0.5, 0.12, this.hallLength);
+      const dadoGeo = new THREE.BoxGeometry(0.45, 0.14, this.hallLength);
       const dado = new THREE.Mesh(dadoGeo, this.goldMaterial);
-      dado.position.set(xPos, 2.25, 0);
+      dado.position.set(xPos, 2.37, 0);
       this.scene.add(dado);
 
-      // Upper Damask Wall
-      const wallGeo = new THREE.BoxGeometry(0.3, this.hallHeight - 2.3, this.hallLength);
-      const wall = new THREE.Mesh(wallGeo, upperWallMat);
-      wall.position.set(xPos, (this.hallHeight + 2.3) / 2, 0);
+      // Upper Damask Wall (Flat, tall, vertical)
+      const wallHeight = this.hallHeight - 2.44;
+      const wallGeo = new THREE.BoxGeometry(0.25, wallHeight, this.hallLength);
+      const wall = new THREE.Mesh(wallGeo, this.upperWallMaterial);
+      wall.position.set(xPos, 2.44 + wallHeight / 2, 0);
       this.scene.add(wall);
+
+      // Classical Gold Crown Cornice & Entablature along the top of each wall
+      const corniceGeo = new THREE.BoxGeometry(0.65, 0.35, this.hallLength);
+      const cornice = new THREE.Mesh(corniceGeo, this.goldMaterial);
+      cornice.position.set(xPos, this.hallHeight - 0.18, 0);
+      this.scene.add(cornice);
     });
 
-    // End Walls (Entrance and Far End Portals)
+    // 3. End Walls (Grand Entrance & Far End Portal)
     [-halfL, halfL].forEach((zPos, idx) => {
-      const endWainscotGeo = new THREE.BoxGeometry(this.hallWidth, 2.2, 0.4);
-      const endW = new THREE.Mesh(endWainscotGeo, wainscotMat);
-      endW.position.set(0, 1.1, zPos);
+      const endWainscotGeo = new THREE.BoxGeometry(this.hallWidth, 2.3, 0.35);
+      const endW = new THREE.Mesh(endWainscotGeo, this.woodMaterial);
+      endW.position.set(0, 1.15, zPos);
       this.scene.add(endW);
 
-      const endWallGeo = new THREE.BoxGeometry(this.hallWidth, this.hallHeight - 2.2, 0.3);
-      const endWall = new THREE.Mesh(endWallGeo, upperWallMat);
-      endWall.position.set(0, (this.hallHeight + 2.2) / 2, zPos);
+      const endWallGeo = new THREE.BoxGeometry(this.hallWidth, this.hallHeight - 2.3, 0.25);
+      const endWall = new THREE.Mesh(endWallGeo, this.upperWallMaterial);
+      endWall.position.set(0, (this.hallHeight + 2.3) / 2, zPos);
       this.scene.add(endWall);
 
+      const endCorniceGeo = new THREE.BoxGeometry(this.hallWidth, 0.35, 0.65);
+      const endCornice = new THREE.Mesh(endCorniceGeo, this.goldMaterial);
+      endCornice.position.set(0, this.hallHeight - 0.18, zPos);
+      this.scene.add(endCornice);
+
+      // Classical Arch Portal
       const archPortal = this.createArchPortal();
       archPortal.position.set(0, 0, zPos + (idx === 0 ? 0.3 : -0.3));
       if (idx === 0) archPortal.rotation.y = Math.PI;
       this.scene.add(archPortal);
     });
 
-    // Vaulted Ceiling
-    this.buildVaultedCeiling();
+    // 4. Stately Classical Coffered Ceiling (Flat, High, Elegant — No Blocking Meshes!)
+    this.buildCofferedCeiling();
   }
 
   createArchPortal() {
     const group = new THREE.Group();
-    [-2.2, 2.2].forEach(px => {
+    [-2.4, 2.4].forEach(px => {
       const p = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.35, 0.38, 5.5, 16),
+        new THREE.CylinderGeometry(0.35, 0.38, 5.8, 16),
         new THREE.MeshStandardMaterial({ map: this.marbleTexture, roughness: 0.3 })
       );
-      p.position.set(px, 2.75, 0);
+      p.position.set(px, 2.9, 0);
       group.add(p);
 
-      const base = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.4, 0.9), this.goldMaterial);
-      base.position.set(px, 0.2, 0);
+      const base = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.45, 0.9), this.goldMaterial);
+      base.position.set(px, 0.22, 0);
       group.add(base);
 
-      const cap = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.4, 0.9), this.goldMaterial);
-      cap.position.set(px, 5.5, 0);
+      const cap = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.45, 0.95), this.goldMaterial);
+      cap.position.set(px, 5.8, 0);
       group.add(cap);
     });
 
-    const archTop = new THREE.Mesh(new THREE.BoxGeometry(5.6, 0.8, 0.8), this.goldMaterial);
-    archTop.position.set(0, 5.9, 0);
+    // Arch header & pediment
+    const archTop = new THREE.Mesh(new THREE.BoxGeometry(6.0, 0.65, 0.7), this.goldMaterial);
+    archTop.position.set(0, 6.15, 0);
     group.add(archTop);
+
+    // Deep crimson velvet drapery inside arch
+    const drapeGeo = new THREE.PlaneGeometry(4.2, 5.2);
+    const drapeMat = new THREE.MeshStandardMaterial({
+      color: 0x3d0b14,
+      roughness: 0.85,
+      side: THREE.DoubleSide
+    });
+    const drape = new THREE.Mesh(drapeGeo, drapeMat);
+    drape.position.set(0, 3.2, -0.05);
+    group.add(drape);
 
     return group;
   }
 
-  buildVaultedCeiling() {
+  buildCofferedCeiling() {
     const halfL = this.hallLength / 2;
-    const radius = this.hallWidth / 2;
 
-    const vaultGeo = new THREE.CylinderGeometry(
-      radius, radius, this.hallLength, 32, 1, true, -Math.PI / 2, Math.PI
-    );
-    const vaultMat = new THREE.MeshStandardMaterial({
-      color: 0x2b0d14,
-      roughness: 0.8,
-      side: THREE.BackSide
+    // 1. High Ceiling Base Plane
+    const ceilingGeo = new THREE.PlaneGeometry(this.hallWidth, this.hallLength);
+    const ceilingMat = new THREE.MeshStandardMaterial({
+      color: 0x14080a, // Rich deep dark mahogany ceiling
+      roughness: 0.65,
+      metalness: 0.15
     });
-    const vault = new THREE.Mesh(vaultGeo, vaultMat);
-    vault.rotation.z = Math.PI / 2;
-    vault.rotation.y = Math.PI / 2;
-    vault.position.set(0, this.hallHeight - 1, 0);
-    this.scene.add(vault);
+    const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
+    ceiling.rotation.x = Math.PI / 2;
+    ceiling.position.set(0, this.hallHeight, 0);
+    this.scene.add(ceiling);
 
-    // Golden Rib Arches
+    // 2. Transverse Beams (Dividing each bay across the hall)
     for (let i = 0; i <= this.bayCount; i++) {
       const z = -halfL + i * this.bayLength;
-      const ribGeo = new THREE.TorusGeometry(radius - 0.05, 0.25, 8, 32, Math.PI);
-      const rib = new THREE.Mesh(ribGeo, this.goldMaterial);
-      rib.position.set(0, this.hallHeight - 1, z);
-      rib.rotation.y = Math.PI / 2;
-      this.scene.add(rib);
+
+      // Dark wood main beam
+      const beamGeo = new THREE.BoxGeometry(this.hallWidth, 0.45, 0.6);
+      const beam = new THREE.Mesh(beamGeo, this.woodMaterial);
+      beam.position.set(0, this.hallHeight - 0.22, z);
+      this.scene.add(beam);
+
+      // Gold bottom trim
+      const goldTrimGeo = new THREE.BoxGeometry(this.hallWidth, 0.08, 0.65);
+      const goldTrim = new THREE.Mesh(goldTrimGeo, this.goldMaterial);
+      goldTrim.position.set(0, this.hallHeight - 0.46, z);
+      this.scene.add(goldTrim);
     }
 
-    // Central Glass Skylight
-    const skylightGeo = new THREE.PlaneGeometry(3.2, this.hallLength);
+    // 3. Longitudinal Beams (Running along the length of the hall)
+    [-3.8, 3.8].forEach(x => {
+      const longBeamGeo = new THREE.BoxGeometry(0.5, 0.35, this.hallLength);
+      const longBeam = new THREE.Mesh(longBeamGeo, this.woodMaterial);
+      longBeam.position.set(x, this.hallHeight - 0.18, 0);
+      this.scene.add(longBeam);
+
+      const longTrimGeo = new THREE.BoxGeometry(0.55, 0.06, this.hallLength);
+      const longTrim = new THREE.Mesh(longTrimGeo, this.goldMaterial);
+      longTrim.position.set(x, this.hallHeight - 0.36, 0);
+      this.scene.add(longTrim);
+    });
+
+    // 4. Central Arched Night Skylight (Moonlit night sky high above)
+    const skylightGeo = new THREE.PlaneGeometry(3.6, this.hallLength - 4);
     const skylightMat = new THREE.MeshStandardMaterial({
-      color: 0x0e2038,
-      roughness: 0.1,
-      metalness: 0.8,
-      emissive: 0x142b4d,
-      emissiveIntensity: 0.7,
-      side: THREE.DoubleSide
+      color: 0x07111e,
+      roughness: 0.15,
+      metalness: 0.7,
+      emissive: 0x091728,
+      emissiveIntensity: 0.55
     });
     const skylight = new THREE.Mesh(skylightGeo, skylightMat);
     skylight.rotation.x = Math.PI / 2;
-    skylight.position.set(0, this.hallHeight + 0.5, 0);
+    skylight.position.set(0, this.hallHeight + 0.05, 0);
     this.scene.add(skylight);
+
+    // Gold Skylight Framing Ribs
+    for (let i = 0; i <= this.bayCount; i++) {
+      const z = -halfL + i * this.bayLength;
+      const ribGeo = new THREE.BoxGeometry(3.8, 0.12, 0.25);
+      const rib = new THREE.Mesh(ribGeo, this.goldMaterial);
+      rib.position.set(0, this.hallHeight - 0.05, z);
+      this.scene.add(rib);
+    }
+
+    // 5. Ornate Gold Rosettes inside coffered cassettes
+    for (let i = 0; i < this.bayCount; i++) {
+      const z = -halfL + (i + 0.5) * this.bayLength;
+      [-5.4, 5.4].forEach(x => {
+        const rosetteGeo = new THREE.CylinderGeometry(0.4, 0.45, 0.1, 16);
+        const rosette = new THREE.Mesh(rosetteGeo, this.goldMaterial);
+        rosette.position.set(x, this.hallHeight - 0.05, z);
+        this.scene.add(rosette);
+      });
+    }
   }
 
   buildColumns() {
-    const halfW = this.hallWidth / 2 - 0.7;
+    // Columns are placed flush against the walls at each bay line
+    const halfW = this.hallWidth / 2 - 0.45;
     const halfL = this.hallLength / 2;
-    const colHeight = 6.8;
+    const colHeight = 7.6;
 
     [-halfW, halfW].forEach(x => {
       for (let i = 0; i <= this.bayCount; i++) {
         const z = -halfL + i * this.bayLength;
         const colGroup = new THREE.Group();
 
-        const shaftGeo = new THREE.CylinderGeometry(0.38, 0.42, colHeight, 16);
+        // Dark Imperial Emerald Marble Shaft
+        const shaftGeo = new THREE.CylinderGeometry(0.32, 0.36, colHeight, 16);
         const shaft = new THREE.Mesh(
           shaftGeo,
-          new THREE.MeshStandardMaterial({ map: this.marbleTexture, roughness: 0.35, metalness: 0.2 })
+          new THREE.MeshStandardMaterial({
+            map: this.marbleTexture,
+            roughness: 0.3,
+            metalness: 0.2
+          })
         );
         shaft.position.y = colHeight / 2 + 0.4;
         colGroup.add(shaft);
 
-        const base = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.5, 1.0), this.goldMaterial);
-        base.position.y = 0.25;
+        // Gold Classical Base Plinth
+        const base = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.45, 0.85), this.goldMaterial);
+        base.position.y = 0.22;
         colGroup.add(base);
 
-        const cap = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.6, 1.1), this.goldMaterial);
-        cap.position.y = colHeight + 0.5;
+        // Gold Corinthian Capital
+        const cap = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.55, 0.95), this.goldMaterial);
+        cap.position.y = colHeight + 0.45;
         colGroup.add(cap);
 
         colGroup.position.set(x, 0, z);
@@ -293,13 +363,14 @@ export class Museum {
   }
 
   buildPaintings() {
-    const halfW = this.hallWidth / 2 - 0.15;
+    // Pure wall positions: left wall at -halfW, right wall at +halfW
+    const halfW = this.hallWidth / 2 - 0.16;
     const halfL = this.hallLength / 2;
 
     DEFAULT_PAINTINGS.forEach(p => {
       const z = -halfL + (p.bayIndex + 0.5) * this.bayLength;
       const x = p.side === 'left' ? -halfW : halfW;
-      const y = 3.6;
+      const y = 4.3; // Stately gallery viewing height
 
       const frameGroup = new THREE.Group();
 
@@ -309,47 +380,49 @@ export class Museum {
       p.texture = texture;
       p.canvas = canvas;
 
-      const frameHeight = 2.4;
+      const frameHeight = 2.6;
       const frameWidth = frameHeight * p.aspect;
 
-      // Baroque Gold Frame
-      const frameBorderGeo = new THREE.BoxGeometry(frameWidth + 0.4, frameHeight + 0.4, 0.18);
+      // 1. Ornate Baroque Gold Frame (Carved outer border)
+      const frameBorderGeo = new THREE.BoxGeometry(frameWidth + 0.45, frameHeight + 0.45, 0.18);
       const frameBorder = new THREE.Mesh(frameBorderGeo, this.goldMaterial);
       frameGroup.add(frameBorder);
 
-      const linerGeo = new THREE.BoxGeometry(frameWidth + 0.1, frameHeight + 0.1, 0.2);
+      // 2. Dark Velvet Inner Matting / Liner
+      const linerGeo = new THREE.BoxGeometry(frameWidth + 0.12, frameHeight + 0.12, 0.2);
       const liner = new THREE.Mesh(
         linerGeo,
-        new THREE.MeshStandardMaterial({ color: 0x1a0d0a, roughness: 0.6 })
+        new THREE.MeshStandardMaterial({ color: 0x18080a, roughness: 0.75 })
       );
       frameGroup.add(liner);
 
-      // Canvas
+      // 3. Classical Artwork Canvas
       const canvasGeo = new THREE.PlaneGeometry(frameWidth, frameHeight);
       const canvasMat = new THREE.MeshStandardMaterial({
         map: texture,
-        roughness: 0.35,
-        metalness: 0.08
+        roughness: 0.32,
+        metalness: 0.06
       });
       const canvasMesh = new THREE.Mesh(canvasGeo, canvasMat);
       canvasMesh.position.z = 0.11;
       frameGroup.add(canvasMesh);
 
-      // Brass Plaque
+      // 4. Polished Brass Museum Plaque (Below frame)
       const plaqueGroup = new THREE.Group();
-      const plaqueGeo = new THREE.BoxGeometry(1.6, 0.45, 0.06);
+      const plaqueGeo = new THREE.BoxGeometry(1.8, 0.48, 0.06);
       const plaque = new THREE.Mesh(plaqueGeo, this.goldMaterial);
       plaqueGroup.add(plaque);
-      plaqueGroup.position.set(0, -frameHeight / 2 - 0.4, 0.06);
+      plaqueGroup.position.set(0, -frameHeight / 2 - 0.42, 0.06);
       frameGroup.add(plaqueGroup);
 
-      // Double Brass Candle Wall Sconces
-      [-frameWidth / 2 - 0.8, frameWidth / 2 + 0.8].forEach(sx => {
+      // 5. Double Brass Candle Sconces flanking the painting
+      [-frameWidth / 2 - 0.75, frameWidth / 2 + 0.75].forEach(sx => {
         const sconce = this.createWallSconce();
         sconce.position.set(sx, 0, 0.1);
         frameGroup.add(sconce);
       });
 
+      // Align cleanly flush against wall, facing into the gallery center
       if (p.side === 'left') {
         frameGroup.rotation.y = Math.PI / 2;
         frameGroup.position.set(x, y, z);
@@ -361,7 +434,7 @@ export class Museum {
       frameGroup.userData = {
         type: 'painting',
         data: p,
-        worldPos: new THREE.Vector3(x + (p.side === 'left' ? 2 : -2), 1.6, z)
+        worldPos: new THREE.Vector3(x + (p.side === 'left' ? 2 : -2), 1.65, z)
       };
 
       this.scene.add(frameGroup);
@@ -372,24 +445,36 @@ export class Museum {
 
   createWallSconce() {
     const group = new THREE.Group();
+
+    // Wall mounting plate
     const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.04, 12), this.goldMaterial);
     plate.rotation.x = Math.PI / 2;
     group.add(plate);
 
-    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.4, 8), this.goldMaterial);
+    // Curved brass arm
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.4, 8), this.goldMaterial);
     arm.rotation.z = Math.PI / 3;
     arm.position.set(0, 0.1, 0.12);
     group.add(arm);
 
+    // Candle cup
     const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.05, 0.1, 10), this.goldMaterial);
     cup.position.set(0, 0.28, 0.2);
     group.add(cup);
 
-    // Glowing candle flame (Shader-friendly MeshBasicMaterial)
+    // White tapered wax candle
+    const wax = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.04, 0.04, 0.3, 10),
+      new THREE.MeshStandardMaterial({ color: 0xfffaea, roughness: 0.3 })
+    );
+    wax.position.set(0, 0.43, 0.2);
+    group.add(wax);
+
+    // Glowing candle flame
     const flameGeo = new THREE.SphereGeometry(0.065, 8, 8);
-    const flameMat = new THREE.MeshBasicMaterial({ color: 0xffe082 });
+    const flameMat = new THREE.MeshBasicMaterial({ color: 0xffd97d });
     const flame = new THREE.Mesh(flameGeo, flameMat);
-    flame.position.set(0, 0.38, 0.2);
+    flame.position.set(0, 0.62, 0.2);
     group.add(flame);
 
     this.flames.push(flame);
@@ -397,42 +482,41 @@ export class Museum {
   }
 
   buildFurniture() {
-    const benchCount = 4;
-    const spacing = this.hallLength / (benchCount + 1);
-    const startZ = -this.hallLength / 2 + spacing;
-
-    for (let i = 0; i < benchCount; i++) {
-      const z = startZ + i * spacing;
+    // Elegant Velvet Tufted Benches placed gracefully along center aisle (leaving entrance clear)
+    const benchZPositions = [10, -2, -14, -26];
+    benchZPositions.forEach(z => {
       const bench = this.createVelvetBench();
       bench.position.set(0, 0, z);
       this.scene.add(bench);
-    }
+    });
   }
 
   createVelvetBench() {
     const group = new THREE.Group();
-    const woodMat = new THREE.MeshStandardMaterial({ color: 0x1a0d10, roughness: 0.4 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x14070a, roughness: 0.4 });
     const legGeo = new THREE.CylinderGeometry(0.08, 0.06, 0.5, 10);
     [
-      [-1.1, -0.4], [1.1, -0.4],
-      [-1.1, 0.4], [1.1, 0.4]
+      [-1.15, -0.42], [1.15, -0.42],
+      [-1.15, 0.42], [1.15, 0.42]
     ].forEach(([lx, lz]) => {
       const leg = new THREE.Mesh(legGeo, woodMat);
       leg.position.set(lx, 0.25, lz);
       group.add(leg);
     });
 
-    const cushionGeo = new THREE.BoxGeometry(2.6, 0.35, 1.1);
+    // Deep burgundy tufted velvet cushion
+    const cushionGeo = new THREE.BoxGeometry(2.7, 0.36, 1.15);
     const velvetMat = new THREE.MeshStandardMaterial({
-      color: 0x54121e, // Deep burgundy velvet
+      color: 0x480d17,
       roughness: 0.85,
-      metalness: 0.1
+      metalness: 0.08
     });
     const cushion = new THREE.Mesh(cushionGeo, velvetMat);
-    cushion.position.y = 0.65;
+    cushion.position.y = 0.66;
     group.add(cushion);
 
-    const trimGeo = new THREE.BoxGeometry(2.65, 0.08, 1.15);
+    // Carved gold base trim
+    const trimGeo = new THREE.BoxGeometry(2.76, 0.08, 1.2);
     const trim = new THREE.Mesh(trimGeo, this.goldMaterial);
     trim.position.y = 0.48;
     group.add(trim);
@@ -441,27 +525,28 @@ export class Museum {
   }
 
   buildLighting() {
-    // 1. Warm Rich Ambient Light (Prevents black shadows, renders vibrant velvet & gold)
-    const ambient = new THREE.AmbientLight(0x4a2027, 0.95);
+    // 1. Romantic Chiaroscuro Ambient Light (Warm, subtle, dark wine atmosphere)
+    const ambient = new THREE.AmbientLight(0x1a080c, 0.42);
     this.scene.add(ambient);
 
-    // 2. Soft Ceiling Moonlight / Floor Bounce
-    const hemisphere = new THREE.HemisphereLight(0xfff0db, 0x2e1218, 0.75);
+    // 2. Gentle Moonlight / Skylight Hemispheric Bounce
+    const hemisphere = new THREE.HemisphereLight(0xffeed6, 0x120306, 0.32);
     this.scene.add(hemisphere);
 
-    // 3. Strategic Warm Point Lights (Safe 6-light budget for 60fps on all mobile GPUs)
-    const spotCount = 5;
+    // 3. Strategic Warm Gallery Spotlights along the central hall
+    // Creates dramatic chiaroscuro pools of light on parquet & highlights gold frames
+    const spotCount = 6;
     const spacing = this.hallLength / spotCount;
     for (let i = 0; i < spotCount; i++) {
       const z = -this.hallLength / 2 + (i + 0.5) * spacing;
-      const point = new THREE.PointLight(0xffe2aa, 1.3, 18, 1.5);
-      point.position.set(0, 5.5, z);
+      const point = new THREE.PointLight(0xffdf9e, 1.45, 19, 1.8);
+      point.position.set(0, 6.2, z);
       this.scene.add(point);
     }
   }
 
   buildAmbientDust() {
-    const particleCount = 180;
+    const particleCount = 160;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
 
@@ -474,10 +559,10 @@ export class Museum {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
     const material = new THREE.PointsMaterial({
-      color: 0xfae17d,
-      size: 0.08,
+      color: 0xdfb15b,
+      size: 0.075,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.5,
       blending: THREE.AdditiveBlending
     });
 
@@ -497,7 +582,7 @@ export class Museum {
     if (this.particles) {
       const pos = this.particles.geometry.attributes.position.array;
       for (let i = 1; i < pos.length; i += 3) {
-        pos[i] -= delta * 0.18;
+        pos[i] -= delta * 0.15;
         if (pos[i] < 0.2) pos[i] = this.hallHeight - 1;
       }
       this.particles.geometry.attributes.position.needsUpdate = true;

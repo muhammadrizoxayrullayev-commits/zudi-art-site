@@ -14,10 +14,10 @@ class App {
     this.container = document.getElementById('canvas-container');
     this.clock = new THREE.Clock();
 
-    // Scene & Renderer
+    // Scene & Renderer — Romantic Chiaroscuro Darkness & Beauty
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x0c0406);
-    this.scene.fog = new THREE.FogExp2(0x1e0b10, 0.016); // Soft romantic museum atmospheric haze
+    this.scene.background = new THREE.Color(0x060204);
+    this.scene.fog = new THREE.FogExp2(0x090205, 0.015); // Deep romantic museum atmospheric haze
 
     this.camera = new THREE.PerspectiveCamera(
       65,
@@ -35,7 +35,7 @@ class App {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.2;
+    this.renderer.toneMappingExposure = 1.15;
     this.container.appendChild(this.renderer.domElement);
 
     // Audio & Multiplayer managers
@@ -131,9 +131,7 @@ class App {
       window.focus();
 
       // Connect to multiplayer
-      this.multiplayer.connect(this.localUserData, () => {
-        this.audio.startMusic();
-      });
+      this.multiplayer.connect(this.localUserData);
 
       this.multiplayer.showToast('🏛️ Muzeyga xush kelibsiz! "Ulashish" orqali sevgilingizni taklif qiling.');
     });
