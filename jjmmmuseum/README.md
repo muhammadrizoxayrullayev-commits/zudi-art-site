@@ -73,3 +73,4 @@ Brauzerda oching: `http://localhost:3000`
 3. **Havolani Sevgilingizga Yuborish:**
    - Saytingiz tayyor bo'lgach (masalan: `https://jjmm-museum.onrender.com`), saytga kiring va yuqoridagi **"Ulashish 🔗"** tugmasini bosing.
    - U avtomatik tarzda sevgilingiz uchun xonim obrazini tanlab beruvchi maxsus taklif havolasini nusxalaydi!
+

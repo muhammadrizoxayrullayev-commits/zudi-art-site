@@ -1,6 +1,6 @@
 // ==========================================================================
 // MAIN CONTROLLER & APPLICATION ENTRY POINT
-// Initializes Three.js engine, Museum, Player, Multiplayer, UI & Events
+// Initializes Three.js engine, Museum, Physical Player, Multiplayer, UI & Events
 // ==========================================================================
 
 import { Museum } from './museum.js';
@@ -16,8 +16,8 @@ class App {
 
     // Scene & Renderer
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x0a0405);
-    this.scene.fog = new THREE.FogExp2(0x18090d, 0.018); // Soft warm museum atmospheric fog
+    this.scene.background = new THREE.Color(0x0c0406);
+    this.scene.fog = new THREE.FogExp2(0x1e0b10, 0.016); // Soft romantic museum atmospheric haze
 
     this.camera = new THREE.PerspectiveCamera(
       65,
@@ -35,7 +35,7 @@ class App {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.toneMappingExposure = 1.2;
     this.container.appendChild(this.renderer.domElement);
 
     // Audio & Multiplayer managers
@@ -46,11 +46,12 @@ class App {
       () => this.audio.playHeartChime()
     );
 
-    // Museum & Player
+    // Museum & Physical Player
     this.museum = new Museum(this.scene);
     this.player = new Player(
       this.camera,
       this.renderer.domElement,
+      this.scene,
       () => this.audio.playFootstep()
     );
 
@@ -65,7 +66,7 @@ class App {
 
     // Raycaster for paintings
     this.raycaster = new THREE.Raycaster();
-    this.raycaster.far = 4.8;
+    this.raycaster.far = 5.2;
 
     this.initURLParams();
     this.initUI();
@@ -120,15 +121,16 @@ class App {
       this.localUserData.role = selectedRole?.value || 'boy';
       this.localUserData.roomId = this.activeRoomId;
 
+      // Initialize player avatar role
+      this.player.setRole(this.localUserData.role, this.localUserData.name);
+
       document.getElementById('entry-modal').classList.add('hidden');
 
       // Connect to multiplayer
       this.multiplayer.connect(this.localUserData, () => {
-        // Start background romantic music softly
         this.audio.startMusic();
       });
 
-      // Show toast reminder
       this.multiplayer.showToast('🏛️ Muzeyga xush kelibsiz! "Ulashish" orqali sevgilingizni taklif qiling.');
     });
 
@@ -153,12 +155,25 @@ class App {
       audioIcon.textContent = isPlaying ? '🎵' : '🔇';
     });
 
-    // 5. Camera Perspective Toggle
+    // 5. Camera Perspective Toggle (1st Person vs 3rd Person)
     const cameraBtn = document.getElementById('btn-camera');
     cameraBtn.addEventListener('click', () => {
       const isThird = this.player.toggleCameraPerspective();
-      this.multiplayer.showToast(isThird ? '👁️ 3-shaxs kamerasi' : '👁️ 1-shaxs kamerasi');
+      const textEl = cameraBtn.querySelector('.btn-text');
+      if (textEl) textEl.textContent = isThird ? '3-shaxs' : '1-shaxs';
+
+      const mCamText = document.getElementById('m-cam-text');
+      const mCamIcon = document.getElementById('m-cam-icon');
+      if (mCamText) mCamText.textContent = isThird ? '1-shaxs' : '3-shaxs';
+      if (mCamIcon) mCamIcon.textContent = isThird ? '👁️' : '👤';
+
+      this.multiplayer.showToast(isThird ? '👤 3-shaxs: Odam ko\'rinadi' : '👁️ 1-shaxs: O\'z ko\'zingiz bilan');
     });
+
+    const mCameraBtn = document.getElementById('m-btn-camera');
+    if (mCameraBtn) {
+      mCameraBtn.addEventListener('click', () => cameraBtn.click());
+    }
 
     // 6. Fullscreen Toggle
     const fsBtn = document.getElementById('btn-fullscreen');
@@ -177,6 +192,9 @@ class App {
       }
       if (e.code === 'KeyE' && this.activePainting && !this.isChatActive()) {
         this.openArtworkModal(this.activePainting);
+      }
+      if (e.code === 'KeyV' && !this.isChatActive()) {
+        cameraBtn.click();
       }
     });
 
@@ -272,7 +290,6 @@ class App {
     descEl.textContent = paintingData.description;
     dateEl.textContent = `“ ${paintingData.date} ”`;
 
-    // Render canvas image to modal
     const saved = localStorage.getItem(`museum_artwork_${paintingData.id}`);
     if (saved) {
       imgEl.src = saved;
@@ -290,19 +307,16 @@ class App {
       console.warn('Storage full or unavailable');
     }
 
-    // Redraw 3D canvas
     createArtworkCanvas(paintingData, dataUrl);
     if (paintingData.texture) {
       paintingData.texture.needsUpdate = true;
     }
 
-    // Update modal image
     document.getElementById('artwork-img').src = dataUrl;
     this.multiplayer.showToast('✅ Rasm ramkaga muvaffaqiyatli joylashtirildi!');
   }
 
   checkRaycastInteractions() {
-    // Cast ray from center of screen (or camera position forward)
     this.raycaster.setFromCamera({ x: 0, y: 0 }, this.camera);
     const intersects = this.raycaster.intersectObjects(this.museum.interactiveObjects, true);
 
@@ -318,11 +332,11 @@ class App {
       }
     }
 
-    // Distance check to all paintings if not aiming directly
+    // Distance fallback check
     if (!foundPainting) {
       for (const p of this.museum.paintings) {
         const dist = this.player.position.distanceTo(p.mesh.position);
-        if (dist < 3.8) {
+        if (dist < 4.0) {
           foundPainting = p.data;
           break;
         }
@@ -331,7 +345,6 @@ class App {
 
     this.activePainting = foundPainting;
 
-    // Update UI Prompts
     const promptEl = document.getElementById('inspect-prompt');
     const mInspectBtn = document.getElementById('m-btn-inspect');
 
@@ -354,9 +367,9 @@ class App {
   animate() {
     requestAnimationFrame(() => this.animate());
 
-    const delta = Math.min(this.clock.getDelta(), 0.1);
+    const delta = Math.min(this.clock.getDelta(), 0.08);
 
-    // Update Player & Museum
+    // Update Physical Player & Museum
     this.player.update(delta);
     this.museum.update(delta);
 
@@ -376,4 +389,3 @@ class App {
 window.addEventListener('DOMContentLoaded', () => {
   window.museumApp = new App();
 });
-
