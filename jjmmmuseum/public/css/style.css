@@ -154,7 +154,7 @@ html, body {
 }
 
 #inspect-prompt {
-  pointer-events: auto;
+  pointer-events: none;
   position: absolute;
   top: 60%;
   left: 50%;
@@ -168,7 +168,6 @@ html, body {
   backdrop-filter: blur(12px);
   box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
   animation: pulsePrompt 2s infinite ease-in-out;
-  cursor: pointer;
 }
 
 .key-hint {
@@ -245,9 +244,16 @@ html, body {
   z-index: 40;
 }
 
-.dpad-row {
+.dpad-top-row, .dpad-row {
   display: flex;
   gap: 6px;
+}
+
+.dpad-btn.turn {
+  background: rgba(30, 12, 38, 0.9);
+  border-color: rgba(212, 175, 55, 0.4);
+  color: var(--gold-light);
+  font-size: 18px;
 }
 
 .dpad-btn {

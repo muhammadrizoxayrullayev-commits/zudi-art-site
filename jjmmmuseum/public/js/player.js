@@ -1,6 +1,7 @@
 // ==========================================================================
-// PHYSICAL PLAYER CONTROLLER (SMOOTH MOBILE GAME FEEL + FREE DESKTOP MOUSE)
-// Features: Dual-input (D-Pad + Floating Joystick), Inertia swipe, Free mouse look
+// BULLETPROOF PHYSICAL PLAYER CONTROLLER
+// Supports: Arrow key turning, Edge-scroll mouse, Pointer Lock, Mobile Swipe & Buttons
+// Zero freezing, infinite 360° rotation on both desktop and mobile
 // ==========================================================================
 
 export class Player {
@@ -11,32 +12,32 @@ export class Player {
     this.onFootstep = onFootstep;
 
     // Physical Position & Rotation
-    this.position = new THREE.Vector3(0, 1.65, 24); // Start near entrance
+    this.position = new THREE.Vector3(0, 1.65, 24); // Start in gallery
     this.velocity = new THREE.Vector3(0, 0, 0);
 
-    // Rotation angles (radians)
-    this.yaw = Math.PI; // Face towards negative Z (down the hall)
+    // Rotation angles
+    this.yaw = Math.PI; // Face down the grand hall
     this.pitch = 0;
-    this.targetYaw = this.yaw;
-    this.targetPitch = this.pitch;
+    this.turnVelocity = 0;
 
     // Physical Movement Parameters
     this.walkSpeed = 5.2;
-    this.sprintSpeed = 8.0;
-    this.acceleration = 18.0;
-    this.friction = 12.0;
+    this.sprintSpeed = 8.2;
+    this.acceleration = 20.0;
+    this.friction = 14.0;
+    this.turnSpeed = 2.4; // Keyboard turning speed (rad/s)
     this.isMoving = false;
 
-    // Head-Bobbing (First-Person realism)
+    // Head-Bobbing
     this.bobTimer = 0;
-    this.bobIntensity = 0.045;
+    this.bobIntensity = 0.04;
     this.bobOffset = new THREE.Vector3();
 
-    // Camera Perspective (1st person vs 3rd person)
+    // Camera Perspective (1st vs 3rd person)
     this.isThirdPerson = false;
     this.cameraDistance = 3.2;
 
-    // Bounds in Museum Hall (Collision)
+    // Museum Hall Boundaries
     this.bounds = {
       minX: -5.4,
       maxX: 5.4,
@@ -44,43 +45,30 @@ export class Player {
       maxZ: 33.2
     };
 
-    // Desktop Controls State
+    // Keyboard & Direction States
     this.keys = {
       forward: false,
       backward: false,
-      left: false,
-      right: false,
+      strafeLeft: false,
+      strafeRight: false,
+      turnLeft: false,
+      turnRight: false,
       sprint: false
     };
+
+    // Mouse States
     this.isPointerLocked = false;
-    this.lastMouseX = 0;
-    this.lastMouseY = 0;
-    this.hasMouseMoved = false;
+    this.edgeTurnRate = 0; // Continuous turning when mouse is at screen edge
 
-    // Mobile Virtual Touch Joystick (Dynamic Floating)
-    this.joystick = {
-      touchId: null,
-      startX: 0,
-      startY: 0,
-      deltaX: 0,
-      deltaY: 0,
-      active: false,
-      maxRadius: 48
-    };
-
-    // Mobile Touch Look Swipe
+    // Mobile Look Touch (Full screen swipe)
     this.lookTouch = {
       touchId: null,
       lastX: 0,
       lastY: 0,
-      velX: 0,
-      velY: 0,
       active: false
     };
 
     this.footstepTimer = 0;
-
-    // 3D Avatar for Local Player (visible in 3rd person)
     this.avatarGroup = null;
     this.avatarLimbs = null;
     this.walkCycle = 0;
@@ -158,15 +146,26 @@ export class Player {
   }
 
   initDesktopControls() {
-    // Keyboard listeners (Supports Latin + Cyrillic layout)
+    // Keyboard listeners
+    // WASD = Walking & Strafing
+    // Arrow keys & Q/E = Smooth Turning (Left/Right) & Walking (Up/Down)
     window.addEventListener('keydown', (e) => {
       const code = e.code;
       const key = (e.key || '').toLowerCase();
 
+      // Forward / Backward
       if (code === 'KeyW' || code === 'ArrowUp' || key === 'w' || key === 'ц') this.keys.forward = true;
       if (code === 'KeyS' || code === 'ArrowDown' || key === 's' || key === 'ы') this.keys.backward = true;
-      if (code === 'KeyA' || code === 'ArrowLeft' || key === 'a' || key === 'ф') this.keys.left = true;
-      if (code === 'KeyD' || code === 'ArrowRight' || key === 'd' || key === 'в') this.keys.right = true;
+
+      // Strafe Left / Right
+      if (code === 'KeyA' || key === 'a' || key === 'ф') this.keys.strafeLeft = true;
+      if (code === 'KeyD' || key === 'd' || key === 'в') this.keys.strafeRight = true;
+
+      // Dedicated Turn Keys (Arrow Left/Right & Q/E)
+      if (code === 'ArrowLeft' || code === 'KeyQ' || key === 'q' || key === 'й') this.keys.turnLeft = true;
+      if (code === 'ArrowRight' || key === 'e' && !this.isNearPainting() || key === 'у') this.keys.turnRight = true;
+
+      // Sprint
       if (code === 'ShiftLeft' || code === 'ShiftRight') this.keys.sprint = true;
     });
 
@@ -176,219 +175,181 @@ export class Player {
 
       if (code === 'KeyW' || code === 'ArrowUp' || key === 'w' || key === 'ц') this.keys.forward = false;
       if (code === 'KeyS' || code === 'ArrowDown' || key === 's' || key === 'ы') this.keys.backward = false;
-      if (code === 'KeyA' || code === 'ArrowLeft' || key === 'a' || key === 'ф') this.keys.left = false;
-      if (code === 'KeyD' || code === 'ArrowRight' || key === 'd' || key === 'в') this.keys.right = false;
+      if (code === 'KeyA' || key === 'a' || key === 'ф') this.keys.strafeLeft = false;
+      if (code === 'KeyD' || key === 'd' || key === 'в') this.keys.strafeRight = false;
+      if (code === 'ArrowLeft' || code === 'KeyQ' || key === 'q' || key === 'й') this.keys.turnLeft = false;
+      if (code === 'ArrowRight' || key === 'e' || key === 'у') this.keys.turnRight = false;
       if (code === 'ShiftLeft' || code === 'ShiftRight') this.keys.sprint = false;
     });
 
     // PointerLock state
     document.addEventListener('pointerlockchange', () => {
       this.isPointerLocked = document.pointerLockElement === this.domElement;
+      this.edgeTurnRate = 0;
     });
 
+    // Click canvas to engage Pointer Lock
     this.domElement.addEventListener('click', () => {
       const modal = document.getElementById('entry-modal');
       const artModal = document.getElementById('artwork-modal');
-      const isModalOpen = (modal && !modal.classList.contains('hidden')) || (artModal && !artModal.classList.contains('hidden'));
+      const isModalOpen = (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') ||
+                          (artModal && !artModal.classList.contains('hidden'));
 
       if (!isModalOpen && !this.isPointerLocked && window.innerWidth >= 768) {
         this.domElement.requestPointerLock?.();
       }
     });
 
-    // Free Mouse Look (Tracks mouse position directly across window)
+    // Desktop Mouse Move
     window.addEventListener('mousemove', (e) => {
       const modal = document.getElementById('entry-modal');
-      if (modal && !modal.classList.contains('hidden')) return;
+      if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') return;
 
       if (this.isPointerLocked) {
+        // Full 360° Infinite Mouse Look (Pointer Lock)
         const mx = e.movementX || 0;
         const my = e.movementY || 0;
-        this.targetYaw -= mx * 0.0028;
-        this.targetPitch -= my * 0.0028;
+        this.yaw -= mx * 0.0026;
+        this.pitch -= my * 0.0026;
+        this.edgeTurnRate = 0;
       } else {
-        // Free mouse movement: camera turns wherever the mouse moves!
-        if (!this.hasMouseMoved) {
-          this.lastMouseX = e.clientX;
-          this.lastMouseY = e.clientY;
-          this.hasMouseMoved = true;
-          return;
+        // Free Cursor Mode (When not pointer locked)
+        // 1. If cursor reaches the edges of the screen, CONTINUOUSLY ROTATE so it NEVER freezes!
+        const edgeMargin = Math.max(60, window.innerWidth * 0.08);
+        if (e.clientX < edgeMargin) {
+          // Cursor is near left edge -> rotate left continuously!
+          const factor = (edgeMargin - e.clientX) / edgeMargin;
+          this.edgeTurnRate = factor * 2.5; // Turn left
+        } else if (e.clientX > window.innerWidth - edgeMargin) {
+          // Cursor is near right edge -> rotate right continuously!
+          const factor = (e.clientX - (window.innerWidth - edgeMargin)) / edgeMargin;
+          this.edgeTurnRate = -factor * 2.5; // Turn right
+        } else {
+          this.edgeTurnRate = 0;
         }
 
-        const dx = e.clientX - this.lastMouseX;
-        const dy = e.clientY - this.lastMouseY;
-
-        this.targetYaw -= dx * 0.0035;
-        this.targetPitch -= dy * 0.0035;
-
+        // 2. Direct mouse motion delta
+        if (this.hasMouseMoved) {
+          const dx = e.clientX - this.lastMouseX;
+          const dy = e.clientY - this.lastMouseY;
+          // Apply gentle look delta
+          if (Math.abs(dx) < 250) { // Reject teleport jumps
+            this.yaw -= dx * 0.0032;
+            this.pitch -= dy * 0.0032;
+          }
+        }
         this.lastMouseX = e.clientX;
         this.lastMouseY = e.clientY;
+        this.hasMouseMoved = true;
       }
 
-      this.targetPitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.targetPitch));
+      this.pitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.pitch));
     });
   }
 
   initMobileControls() {
-    const joystickZone = document.getElementById('joystick-zone');
-    const joystickStick = document.getElementById('joystick-stick');
-    const joystickBase = document.getElementById('joystick-base');
-
-    // 1. Dynamic Full-Screen Touch Handler
+    // 1. Mobile Touch Look Swipe (Anywhere not on a button)
     window.addEventListener('touchstart', (e) => {
       const modal = document.getElementById('entry-modal');
-      if (modal && !modal.classList.contains('hidden')) return;
+      if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') return;
 
-      // Allow clicks on buttons/inputs
       const target = e.target;
-      if (target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.closest('button') || target.closest('input')) {
+      // If clicking button, let button handle it
+      if (target.tagName === 'BUTTON' || target.closest('button') || target.tagName === 'INPUT') {
         return;
       }
 
-      // Prevent default page zooming / scrolling
-      if (e.cancelable) e.preventDefault();
-
       for (let i = 0; i < e.changedTouches.length; i++) {
         const t = e.changedTouches[i];
-
-        // Left Half = Walking Joystick
-        if (t.clientX < window.innerWidth * 0.5) {
-          if (this.joystick.touchId === null) {
-            this.joystick.touchId = t.identifier;
-            this.joystick.active = true;
-            this.joystick.startX = t.clientX;
-            this.joystick.startY = t.clientY;
-
-            if (joystickZone && joystickBase) {
-              joystickBase.style.display = 'block';
-              joystickZone.style.left = `${t.clientX - 60}px`;
-              joystickZone.style.top = `${t.clientY - 60}px`;
-              joystickZone.style.bottom = 'auto';
-            }
-
-            this.updateJoystickPosition(t.clientX, t.clientY, joystickStick);
-          }
-        } else {
-          // Right Half = Look Swipe (360° Game Turning)
-          if (this.lookTouch.touchId === null) {
-            this.lookTouch.touchId = t.identifier;
-            this.lookTouch.lastX = t.clientX;
-            this.lookTouch.lastY = t.clientY;
-            this.lookTouch.velX = 0;
-            this.lookTouch.velY = 0;
-            this.lookTouch.active = true;
-          }
+        if (this.lookTouch.touchId === null) {
+          this.lookTouch.touchId = t.identifier;
+          this.lookTouch.lastX = t.clientX;
+          this.lookTouch.lastY = t.clientY;
+          this.lookTouch.active = true;
         }
       }
-    }, { passive: false });
+    }, { passive: true });
 
     window.addEventListener('touchmove', (e) => {
       const modal = document.getElementById('entry-modal');
-      if (modal && !modal.classList.contains('hidden')) return;
+      if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') return;
 
       const target = e.target;
-      if (target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.closest('button')) {
+      if (target.tagName === 'BUTTON' || target.closest('button') || target.tagName === 'INPUT') {
         return;
       }
 
-      if (e.cancelable) e.preventDefault();
-
       for (let i = 0; i < e.changedTouches.length; i++) {
         const t = e.changedTouches[i];
-
-        if (t.identifier === this.joystick.touchId) {
-          this.updateJoystickPosition(t.clientX, t.clientY, joystickStick);
-        } else if (t.identifier === this.lookTouch.touchId) {
+        if (t.identifier === this.lookTouch.touchId) {
           const dx = t.clientX - this.lookTouch.lastX;
           const dy = t.clientY - this.lookTouch.lastY;
 
-          // Game-like rotation sensitivity
-          this.targetYaw -= dx * 0.007;
-          this.targetPitch -= dy * 0.007;
-          this.targetPitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.targetPitch));
-
-          this.lookTouch.velX = dx;
-          this.lookTouch.velY = dy;
+          // Smooth direct 360° rotation
+          this.yaw -= dx * 0.0065;
+          this.pitch -= dy * 0.0065;
+          this.pitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.pitch));
 
           this.lookTouch.lastX = t.clientX;
           this.lookTouch.lastY = t.clientY;
         }
       }
-    }, { passive: false });
+    }, { passive: true });
 
-    const handleTouchEnd = (e) => {
+    const endTouch = (e) => {
       for (let i = 0; i < e.changedTouches.length; i++) {
         const t = e.changedTouches[i];
-        if (t.identifier === this.joystick.touchId) {
-          this.joystick.touchId = null;
-          this.joystick.active = false;
-          this.joystick.deltaX = 0;
-          this.joystick.deltaY = 0;
-          if (joystickStick) joystickStick.style.transform = 'translate(-50%, -50%)';
-          if (joystickZone) {
-            joystickZone.style.left = '20px';
-            joystickZone.style.bottom = 'calc(env(safe-area-inset-bottom, 16px) + 20px)';
-            joystickZone.style.top = 'auto';
-          }
-        } else if (t.identifier === this.lookTouch.touchId) {
+        if (t.identifier === this.lookTouch.touchId) {
           this.lookTouch.touchId = null;
           this.lookTouch.active = false;
         }
       }
     };
 
-    window.addEventListener('touchend', handleTouchEnd, { passive: false });
-    window.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+    window.addEventListener('touchend', endTouch, { passive: true });
+    window.addEventListener('touchcancel', endTouch, { passive: true });
 
-    // 2. On-Screen D-Pad Walk Buttons (100% Reliable Walking for Mobile)
-    this.initDPadControls();
+    // 2. Mobile D-Pad Buttons (Walk & Turn)
+    this.initTouchButtons();
   }
 
-  initDPadControls() {
-    const bindBtn = (id, direction) => {
+  initTouchButtons() {
+    const bindBtn = (id, action) => {
       const btn = document.getElementById(id);
       if (!btn) return;
 
       const start = (e) => {
         if (e.cancelable) e.preventDefault();
-        this.keys[direction] = true;
+        action(true);
       };
       const end = (e) => {
         if (e.cancelable) e.preventDefault();
-        this.keys[direction] = false;
+        action(false);
       };
 
       btn.addEventListener('touchstart', start, { passive: false });
       btn.addEventListener('touchend', end, { passive: false });
       btn.addEventListener('touchcancel', end, { passive: false });
 
-      btn.addEventListener('mousedown', start);
-      btn.addEventListener('mouseup', end);
-      btn.addEventListener('mouseleave', end);
+      btn.addEventListener('mousedown', (e) => { e.preventDefault(); action(true); });
+      btn.addEventListener('mouseup', () => action(false));
+      btn.addEventListener('mouseleave', () => action(false));
     };
 
-    bindBtn('btn-walk-up', 'forward');
-    bindBtn('btn-walk-down', 'backward');
-    bindBtn('btn-walk-left', 'left');
-    bindBtn('btn-walk-right', 'right');
+    // D-Pad Walk buttons
+    bindBtn('btn-walk-up', (active) => { this.keys.forward = active; });
+    bindBtn('btn-walk-down', (active) => { this.keys.backward = active; });
+    bindBtn('btn-walk-left', (active) => { this.keys.strafeLeft = active; });
+    bindBtn('btn-walk-right', (active) => { this.keys.strafeRight = active; });
+
+    // Dedicated Touch Turn Buttons (Left & Right)
+    bindBtn('btn-turn-left', (active) => { this.keys.turnLeft = active; });
+    bindBtn('btn-turn-right', (active) => { this.keys.turnRight = active; });
   }
 
-  updateJoystickPosition(clientX, clientY, stickEl) {
-    const dx = clientX - this.joystick.startX;
-    const dy = clientY - this.joystick.startY;
-    const dist = Math.hypot(dx, dy);
-    const angle = Math.atan2(dy, dx);
-    const clampedDist = Math.min(dist, this.joystick.maxRadius);
-
-    const stickX = Math.cos(angle) * clampedDist;
-    const stickY = Math.sin(angle) * clampedDist;
-
-    if (stickEl) {
-      stickEl.style.transform = `translate(calc(-50% + ${stickX}px), calc(-50% + ${stickY}px))`;
-    }
-
-    this.joystick.deltaX = stickX / this.joystick.maxRadius;
-    this.joystick.deltaY = stickY / this.joystick.maxRadius;
+  isNearPainting() {
+    return document.getElementById('inspect-prompt') &&
+           !document.getElementById('inspect-prompt').classList.contains('hidden');
   }
 
   toggleCameraPerspective() {
@@ -400,49 +361,41 @@ export class Player {
   }
 
   update(delta) {
-    // 1. Smooth Camera Rotation (Interpolation)
-    this.yaw += (this.targetYaw - this.yaw) * 0.28;
-    this.pitch += (this.targetPitch - this.pitch) * 0.28;
+    // 1. Process Turning (Keyboard + Screen Edge Scroll + Touch Turn Buttons)
+    let turnDelta = 0;
+    if (this.keys.turnLeft) turnDelta += this.turnSpeed;
+    if (this.keys.turnRight) turnDelta -= this.turnSpeed;
+    if (this.edgeTurnRate !== 0) turnDelta += this.edgeTurnRate;
 
-    // Apply swipe inertia on mobile
-    if (!this.lookTouch.active && Math.abs(this.lookTouch.velX) > 0.1) {
-      this.targetYaw -= this.lookTouch.velX * 0.004;
-      this.lookTouch.velX *= 0.88;
+    if (turnDelta !== 0) {
+      this.yaw += turnDelta * delta;
     }
 
-    // 2. Physical Input Direction Vector
-    const inputDir = new THREE.Vector3();
-
-    // Keyboard / D-Pad
-    if (this.keys.forward) inputDir.z -= 1;
-    if (this.keys.backward) inputDir.z += 1;
-    if (this.keys.left) inputDir.x -= 1;
-    if (this.keys.right) inputDir.x += 1;
-
-    // Mobile Joystick
-    if (this.joystick.active) {
-      inputDir.x += this.joystick.deltaX;
-      inputDir.z += this.joystick.deltaY;
-    }
+    // 2. Physical Walking Vector (WASD + D-Pad)
+    const moveDir = new THREE.Vector3();
+    if (this.keys.forward) moveDir.z -= 1;
+    if (this.keys.backward) moveDir.z += 1;
+    if (this.keys.strafeLeft) moveDir.x -= 1;
+    if (this.keys.strafeRight) moveDir.x += 1;
 
     const maxSpeed = this.keys.sprint ? this.sprintSpeed : this.walkSpeed;
 
-    if (inputDir.lengthSq() > 0.001) {
-      if (inputDir.lengthSq() > 1) inputDir.normalize();
+    if (moveDir.lengthSq() > 0.001) {
+      moveDir.normalize();
 
-      // Transform direction according to player's current yaw
+      // Transform direction based on player yaw
       const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw);
       const right = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw);
 
-      const desiredVel = new THREE.Vector3()
-        .addScaledVector(forward, -inputDir.z)
-        .addScaledVector(right, inputDir.x)
+      const targetVel = new THREE.Vector3()
+        .addScaledVector(forward, -moveDir.z)
+        .addScaledVector(right, moveDir.x)
         .multiplyScalar(maxSpeed);
 
-      this.velocity.lerp(desiredVel, this.acceleration * delta);
+      this.velocity.lerp(targetVel, this.acceleration * delta);
       this.isMoving = true;
 
-      // Animate walking limbs
+      // Animate 3D avatar limbs
       this.walkCycle += delta * (this.keys.sprint ? 12 : 8.5);
       if (this.avatarLimbs) {
         const swing = Math.sin(this.walkCycle) * 0.45;
@@ -452,14 +405,14 @@ export class Player {
         this.avatarLimbs.rightArm.rotation.x = swing * 0.8;
       }
 
-      // Footstep audio pacing
+      // Footstep audio
       this.footstepTimer += delta;
       if (this.footstepTimer > (this.keys.sprint ? 0.3 : 0.44)) {
         this.footstepTimer = 0;
         if (this.onFootstep) this.onFootstep();
       }
 
-      // First-person head bobbing
+      // Head bobbing
       this.bobTimer += delta * (this.keys.sprint ? 14 : 9);
       this.bobOffset.set(
         Math.cos(this.bobTimer * 0.5) * 0.02,
@@ -477,30 +430,30 @@ export class Player {
         this.avatarLimbs.leftArm.rotation.x *= 0.8;
         this.avatarLimbs.rightArm.rotation.x *= 0.8;
       }
-      this.bobOffset.lerp(new THREE.Vector3(0, 0, 0), 0.1);
+      this.bobOffset.lerp(new THREE.Vector3(0, 0, 0), 0.15);
     }
 
     // 3. Move Position with Velocity
     this.position.addScaledVector(this.velocity, delta);
 
-    // 4. Collision Enforcement (Hall Walls & Boundaries)
+    // 4. Collision Enforcement (Hall Walls)
     this.position.x = Math.max(this.bounds.minX, Math.min(this.bounds.maxX, this.position.x));
     this.position.z = Math.max(this.bounds.minZ, Math.min(this.bounds.maxZ, this.position.z));
     this.position.y = 1.65;
 
-    // 5. Update Local Avatar Position & Rotation
+    // 5. Update Avatar Position & Rotation
     if (this.avatarGroup) {
       this.avatarGroup.position.copy(this.position);
       this.avatarGroup.rotation.y = this.yaw;
     }
 
-    // 6. Camera Placement (1st vs 3rd Person)
+    // 6. Camera Placement
     if (!this.isThirdPerson) {
-      // First Person
+      // First Person (Eye Level + Head Bob)
       this.camera.position.copy(this.position).add(this.bobOffset);
       this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
     } else {
-      // Third Person (Smooth behind-the-back tracking)
+      // Third Person (Behind character)
       const camOffset = new THREE.Vector3(0, 1.4, this.cameraDistance)
         .applyAxisAngle(new THREE.Vector3(1, 0, 0), this.pitch * 0.5)
         .applyAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw);

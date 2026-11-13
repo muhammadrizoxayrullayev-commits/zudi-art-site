@@ -74,20 +74,17 @@
 
     <!-- Mobile Virtual Controls (Shown on Touch Devices) -->
     <div id="mobile-controls">
-      <!-- D-Pad Directional Walk Buttons on Bottom Left -->
+      <!-- D-Pad Directional Walk & Turn Buttons on Bottom Left -->
       <div id="dpad-zone">
-        <button id="btn-walk-up" class="dpad-btn up" title="Oldinga yurish">▲</button>
-        <div class="dpad-row">
-          <button id="btn-walk-left" class="dpad-btn left" title="Chapga">◀</button>
-          <button id="btn-walk-down" class="dpad-btn down" title="Orqaga">▼</button>
-          <button id="btn-walk-right" class="dpad-btn right" title="O'ngga">▶</button>
+        <div class="dpad-top-row">
+          <button id="btn-turn-left" class="dpad-btn turn" title="Chapga burilish">↺</button>
+          <button id="btn-walk-up" class="dpad-btn up" title="Oldinga yurish">▲</button>
+          <button id="btn-turn-right" class="dpad-btn turn" title="O'ngga burilish">↻</button>
         </div>
-      </div>
-
-      <!-- Virtual Joystick Zone on Left (Hidden by default, active on drag) -->
-      <div id="joystick-zone" style="display:none;">
-        <div id="joystick-base">
-          <div id="joystick-stick"></div>
+        <div class="dpad-row">
+          <button id="btn-walk-left" class="dpad-btn left" title="Chapga qadam">◀</button>
+          <button id="btn-walk-down" class="dpad-btn down" title="Orqaga yurish">▼</button>
+          <button id="btn-walk-right" class="dpad-btn right" title="O'ngga qadam">▶</button>
         </div>
       </div>
 
