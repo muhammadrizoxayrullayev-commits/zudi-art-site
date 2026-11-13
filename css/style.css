@@ -269,41 +269,36 @@ html, body {
 }
 
 #touch-look-zone {
-  position: absolute;
-  top: 70px;
-  right: 0;
-  bottom: 0;
-  width: 60%;
-  pointer-events: auto;
-  touch-action: none;
+  display: none;
 }
 
 #mobile-action-buttons {
   position: absolute;
-  bottom: calc(var(--safe-bottom) + 25px);
-  right: 20px;
+  bottom: calc(var(--safe-bottom) + 20px);
+  right: 18px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   pointer-events: auto;
+  z-index: 40;
 }
 
 .m-action-btn {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: rgba(30, 10, 14, 0.75);
-  border: 2px solid rgba(212, 175, 55, 0.5);
+  background: rgba(30, 10, 14, 0.85);
+  border: 2px solid rgba(212, 175, 55, 0.55);
   color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 20px;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-  backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  backdrop-filter: blur(12px);
+  transition: all 0.15s ease;
 }
 
 .m-action-btn small {
