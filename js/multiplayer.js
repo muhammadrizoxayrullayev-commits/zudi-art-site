@@ -228,14 +228,16 @@ export class MultiplayerManager {
   }
 
   emitLocalMovement(player) {
-    if (!this.socket || !this.socket.connected) return;
+    if (!this.socket || !this.socket.connected || !player || !player.position) return;
+
+    const rotY = Number.isFinite(player.yaw) ? player.yaw : (player.rotation?.y ?? 0);
 
     this.socket.emit('player-move', {
-      x: player.position.x,
-      y: player.position.y,
-      z: player.position.z,
-      rotY: player.rotation.y,
-      isMoving: player.isMoving
+      x: player.position.x || 0,
+      y: player.position.y || 1.65,
+      z: player.position.z || 0,
+      rotY: rotY,
+      isMoving: !!player.isMoving
     });
   }
 
