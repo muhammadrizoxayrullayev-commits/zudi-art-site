@@ -3,6 +3,8 @@
 // Synchronizes 3D avatars, name tags, walking animations, hearts & chat
 // ==========================================================================
 
+import { createAvatarModel } from './avatar.js';
+
 export class MultiplayerManager {
   constructor(scene, onProximityChange = null, onHeartSound = null) {
     this.scene = scene;
@@ -90,73 +92,27 @@ export class MultiplayerManager {
   }
 
   createRemotePlayer(data) {
-    const group = new THREE.Group();
     const isGirl = data.role === 'girl';
-
-    // Materials
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0xffd1b3, roughness: 0.6 });
-    const clothesColor = isGirl ? 0xdb2777 : 0x1e3a8a; // Rose pink for girl, royal navy for boy
-    const clothesMat = new THREE.MeshStandardMaterial({ color: clothesColor, roughness: 0.5, metalness: 0.1 });
-    const hairMat = new THREE.MeshStandardMaterial({ color: isGirl ? 0x3d1d11 : 0x1f140e, roughness: 0.8 });
-
-    // 1. Torso / Body
-    const torsoGeo = isGirl
-      ? new THREE.ConeGeometry(0.38, 0.9, 16) // Elegant flowing gown
-      : new THREE.BoxGeometry(0.5, 0.75, 0.28); // Dapper suit jacket
-    const torso = new THREE.Mesh(torsoGeo, clothesMat);
-    torso.position.y = 0.9;
-    torso.castShadow = true;
-    group.add(torso);
-
-    // 2. Head
-    const headGeo = new THREE.SphereGeometry(0.2, 16, 16);
-    const head = new THREE.Mesh(headGeo, skinMat);
-    head.position.y = isGirl ? 1.48 : 1.45;
-    group.add(head);
-
-    // 3. Hair
-    const hairGeo = isGirl
-      ? new THREE.SphereGeometry(0.22, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.7)
-      : new THREE.BoxGeometry(0.38, 0.12, 0.38);
-    const hair = new THREE.Mesh(hairGeo, hairMat);
-    hair.position.y = isGirl ? 1.5 : 1.56;
-    group.add(hair);
-
-    // 4. Limbs (Arms & Legs for walking animation)
-    const limbMat = isGirl ? clothesMat : new THREE.MeshStandardMaterial({ color: 0x111827 });
-    const leftLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.65), limbMat);
-    leftLeg.position.set(-0.16, 0.35, 0);
-    group.add(leftLeg);
-
-    const rightLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.65), limbMat);
-    rightLeg.position.set(0.16, 0.35, 0);
-    group.add(rightLeg);
-
-    const leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.6), clothesMat);
-    leftArm.position.set(-0.35, 0.95, 0);
-    group.add(leftArm);
-
-    const rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.6), clothesMat);
-    rightArm.position.set(0.35, 0.95, 0);
-    group.add(rightArm);
+    const { group, limbs } = createAvatarModel(data.role);
 
     // 5. Floating 3D Canvas Name Tag & Heart
     const nameSprite = this.createNameTagSprite(data.name, isGirl ? '💃🏻' : '🤵🏻');
-    nameSprite.position.set(0, 1.95, 0);
+    nameSprite.position.set(0, 2.1, 0);
     group.add(nameSprite);
 
-    group.position.set(data.x, 0, data.z);
+    group.position.set(data.x || 0, 0, data.z || 0);
+    group.rotation.y = data.rotY || 0;
     this.scene.add(group);
 
     this.remotePlayers.set(data.id, {
       mesh: group,
       data: data,
       nameSprite: nameSprite,
-      targetPosition: new THREE.Vector3(data.x, 0, data.z),
+      targetPosition: new THREE.Vector3(data.x || 0, 0, data.z || 0),
       targetRotY: data.rotY || 0,
       isMoving: false,
       walkCycle: 0,
-      limbs: { leftLeg, rightLeg, leftArm, rightArm }
+      limbs: limbs
     });
   }
 
@@ -234,7 +190,7 @@ export class MultiplayerManager {
 
     this.socket.emit('player-move', {
       x: player.position.x || 0,
-      y: player.position.y || 1.65,
+      y: 0,
       z: player.position.z || 0,
       rotY: rotY,
       isMoving: !!player.isMoving
@@ -310,8 +266,10 @@ export class MultiplayerManager {
     let closestPartnerDist = Infinity;
 
     this.remotePlayers.forEach(p => {
-      // Position lerp
+      // Position lerp (clamp feet to floor level y = 0)
+      p.targetPosition.y = 0;
       p.mesh.position.lerp(p.targetPosition, 0.15);
+      p.mesh.position.y = 0;
 
       // Rotation lerp
       let diffRot = p.targetRotY - p.mesh.rotation.y;

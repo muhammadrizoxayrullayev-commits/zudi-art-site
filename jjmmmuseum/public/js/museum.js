@@ -520,13 +520,17 @@ export class Museum {
     DEFAULT_PAINTINGS.forEach(p => {
       const z = -halfL + (p.bayIndex + 0.5) * this.bayLength;
       const x = p.side === 'left' ? -halfW : halfW;
-      const y = 4.3; // Stately gallery viewing height
+      const y = 3.55; // Optimal gallery eye-level viewing height
 
       const frameGroup = new THREE.Group();
 
       const savedPhoto = localStorage.getItem(`museum_artwork_${p.id}`);
       const canvas = createArtworkCanvas(p, savedPhoto);
       const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
       p.texture = texture;
       p.canvas = canvas;
 
