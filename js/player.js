@@ -4,6 +4,8 @@
 // Zero freezing, infinite 360° rotation on both desktop and mobile
 // ==========================================================================
 
+import { createAvatarModel } from './avatar.js';
+
 export class Player {
   constructor(camera, domElement, scene, onFootstep = null) {
     this.camera = camera;
@@ -97,60 +99,15 @@ export class Player {
       this.scene.remove(this.avatarGroup);
     }
 
-    const group = new THREE.Group();
-    const isGirl = this.userRole === 'girl';
-
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0xffd1b3, roughness: 0.55 });
-    const clothesColor = isGirl ? 0xdb2777 : 0x1e3a8a;
-    const clothesMat = new THREE.MeshStandardMaterial({ color: clothesColor, roughness: 0.5, metalness: 0.15 });
-    const hairMat = new THREE.MeshStandardMaterial({ color: isGirl ? 0x3d1d11 : 0x1f140e, roughness: 0.8 });
-
-    // Torso
-    const torsoGeo = isGirl
-      ? new THREE.ConeGeometry(0.38, 0.95, 16)
-      : new THREE.BoxGeometry(0.5, 0.78, 0.28);
-    const torso = new THREE.Mesh(torsoGeo, clothesMat);
-    torso.position.y = 0.9;
-    group.add(torso);
-
-    // Head
-    const headGeo = new THREE.SphereGeometry(0.2, 16, 16);
-    const head = new THREE.Mesh(headGeo, skinMat);
-    head.position.y = isGirl ? 1.5 : 1.48;
-    group.add(head);
-
-    // Hair
-    const hairGeo = isGirl
-      ? new THREE.SphereGeometry(0.22, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.7)
-      : new THREE.BoxGeometry(0.38, 0.12, 0.38);
-    const hair = new THREE.Mesh(hairGeo, hairMat);
-    hair.position.y = isGirl ? 1.52 : 1.58;
-    group.add(hair);
-
-    // Limbs
-    const limbMat = isGirl ? clothesMat : new THREE.MeshStandardMaterial({ color: 0x111827 });
-    const leftLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.65), limbMat);
-    leftLeg.position.set(-0.16, 0.35, 0);
-    group.add(leftLeg);
-
-    const rightLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.65), limbMat);
-    rightLeg.position.set(0.16, 0.35, 0);
-    group.add(rightLeg);
-
-    const leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.6), clothesMat);
-    leftArm.position.set(-0.35, 0.95, 0);
-    group.add(leftArm);
-
-    const rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.6), clothesMat);
-    rightArm.position.set(0.35, 0.95, 0);
-    group.add(rightArm);
-
-    group.position.copy(this.position);
+    const { group, limbs } = createAvatarModel(this.userRole);
+    // Position avatar with feet on the museum parquet floor
+    group.position.set(this.position.x, 0, this.position.z);
+    group.rotation.y = this.yaw;
     group.visible = this.isThirdPerson;
     this.scene.add(group);
 
     this.avatarGroup = group;
-    this.avatarLimbs = { leftLeg, rightLeg, leftArm, rightArm };
+    this.avatarLimbs = limbs;
   }
 
   initDesktopControls() {
@@ -175,6 +132,13 @@ export class Player {
 
       // Sprint
       if (code === 'ShiftLeft' || code === 'ShiftRight') this.keys.sprint = true;
+
+      // Toggle Camera Perspective (V key)
+      if (code === 'KeyV' || key === 'v' || key === 'м') {
+        const cameraBtn = document.getElementById('btn-camera');
+        if (cameraBtn) cameraBtn.click();
+        else this.toggleCameraPerspective();
+      }
     });
 
     window.addEventListener('keyup', (e) => {
@@ -449,9 +413,9 @@ export class Player {
     this.position.z = Math.max(this.bounds.minZ, Math.min(this.bounds.maxZ, this.position.z));
     this.position.y = 1.65;
 
-    // 5. Update Avatar Position & Rotation
+    // 5. Update Avatar Position & Rotation (Feet on floor at y = 0)
     if (this.avatarGroup) {
-      this.avatarGroup.position.copy(this.position);
+      this.avatarGroup.position.set(this.position.x, 0, this.position.z);
       this.avatarGroup.rotation.y = this.yaw;
     }
 
@@ -461,15 +425,15 @@ export class Player {
       this.camera.position.copy(this.position).add(this.bobOffset);
       this.camera.rotation.set(this.pitch, this.yaw, 0, 'YXZ');
     } else {
-      // Third Person (Behind character)
-      const camOffset = new THREE.Vector3(0, 1.4, this.cameraDistance)
+      // Third Person (Behind character, viewing upper body and gallery)
+      const camOffset = new THREE.Vector3(0, 0.45, this.cameraDistance)
         .applyAxisAngle(new THREE.Vector3(1, 0, 0), this.pitch * 0.5)
         .applyAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw);
 
       const targetCamPos = this.position.clone().add(camOffset);
       this.camera.position.lerp(targetCamPos, 0.28);
 
-      const lookTarget = this.position.clone().add(new THREE.Vector3(0, 0.4, 0));
+      const lookTarget = new THREE.Vector3(this.position.x, 1.35, this.position.z);
       this.camera.lookAt(lookTarget);
     }
   }

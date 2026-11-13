@@ -295,6 +295,8 @@ class App {
     const saved = localStorage.getItem(`museum_artwork_${paintingData.id}`);
     if (saved) {
       imgEl.src = saved;
+    } else if (paintingData.imageSrc) {
+      imgEl.src = paintingData.imageSrc;
     } else if (paintingData.canvas) {
       imgEl.src = paintingData.canvas.toDataURL();
     } else if (paintingData.type === 'statue') {
