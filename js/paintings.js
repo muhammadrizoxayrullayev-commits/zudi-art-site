@@ -1,155 +1,239 @@
 // ==========================================================================
-// PAINTINGS & ARTWORKS REGISTRY
-// Supports persistent photo uploads, placeholder generator & modal details
+// PAINTINGS & ARTWORKS REGISTRY — 7 GRAND THEMATIC CHAMBERS (PALACE LABYRINTH)
+// Each room features exactly 2-3 intimate masterworks with museum spotlights & plaques
 // ==========================================================================
 
 export const DEFAULT_PAINTINGS = [
   // ========================================================================
-  // ROOM I: SALON DE L'AMOUR (Entrance Grand Gallery — The 4 Personal Portraits)
+  // ROOM I: GRAND VESTIBULE (Kirish Rotundasi — z: [30, 42])
   // ========================================================================
   {
     id: 1,
-    side: 'left',
-    bayIndex: 5, // z = 30 (Immediate left upon entry)
+    roomId: 'room_1',
+    roomName: 'I. Kirish Rotundasi (Salon de l\'Amour)',
     title: 'Dengiz Oqshomi & Beg\'ubor Orzu',
     subtitle: 'ZAL I — XAS PORTRET #01',
     description: 'Quyosh botishidagi sokin dengiz sohili, to\'lqinlar shovqini va sochlardagi oq lenta — unutilmas sehrli va romantik nigoh.',
     date: 'Dengiz bo\'yidagi oqshom',
     aspect: 1.0,
-    imageSrc: '/images/artworks/artwork_sunset_balcony.jpg'
+    imageSrc: '/images/artworks/artwork_sunset_balcony.jpg',
+    wall: 'left',
+    position: { x: -5.8, y: 3.5, z: 36 },
+    rotationY: Math.PI / 2
   },
   {
-    id: 7,
-    side: 'right',
-    bayIndex: 5, // z = 30 (Immediate right upon entry)
+    id: 2,
+    roomId: 'room_1',
+    roomName: 'I. Kirish Rotundasi (Salon de l\'Amour)',
     title: 'Nafislik & Betakror Latofat',
     subtitle: 'ZAL I — XAS PORTRET #02',
     description: 'Qora-oq chiziqli nafis libos va beg\'ubor husn. Dunyodagi eng nafis va jozibador tabassum.',
     date: 'Kuzgudagi betakror aks',
     aspect: 1.0,
-    imageSrc: '/images/artworks/artwork_chic_portrait.jpg'
-  },
-  {
-    id: 2,
-    side: 'left',
-    bayIndex: 4, // z = 18
-    title: 'Jilvali Qalbim Oftobi',
-    subtitle: 'ZAL I — XAS PORTRET #03',
-    description: 'Har bir jilvasi va to\'lqin jingalak sochlari qalbimni shodlikka to\'ldiradigan sevimli va samimiy chehra.',
-    date: 'Har lahza quvonch va mehr',
-    aspect: 1.0,
-    imageSrc: '/images/artworks/artwork_curly_selfie.jpg'
-  },
-  {
-    id: 8,
-    side: 'right',
-    bayIndex: 4, // z = 18
-    title: 'Tog\' Cho\'qqisi & Oltin Quyosh',
-    subtitle: 'ZAL I — XAS PORTRET #04',
-    description: 'Yuksak tog\'lar uzra botayotgan moviy dengiz va oltin quyosh jilosi ostida erkinlik nafasi.',
-    date: 'Oltin ufq va erkin parvoz',
-    aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_mountain_sunset.jpg'
+    imageSrc: '/images/artworks/artwork_chic_portrait.jpg',
+    wall: 'right',
+    position: { x: 5.8, y: 3.5, z: 36 },
+    rotationY: -Math.PI / 2
   },
 
   // ========================================================================
-  // ROOM II: GALERIE ROYALE (Central Grand Hall — 4 New High-Res Portraits)
+  // ROOM II: EAST WING (Sharqiy Qanot / Salon des Roses — x: [6, 16], z: [13, 25])
   // ========================================================================
   {
     id: 3,
-    side: 'left',
-    bayIndex: 3, // z = 6
-    title: 'Moviy Havza & Shamol Tegirmonlari',
-    subtitle: 'ZAL II — XAS PORTRET #05',
-    description: 'Yozning quyoshli kunida musaffo moviy suvlar va yam-yashil tog\'lar uzra esgan iliq shaboda.',
-    date: 'Moviy ufqlar aro',
-    aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_pool_lagoon.jpg'
-  },
-  {
-    id: 9,
-    side: 'right',
-    bayIndex: 3, // z = 6
-    title: 'Oq Libos & Palma Soyalari',
-    subtitle: 'ZAL II — XAS PORTRET #06',
-    description: 'Palma daraxtlari aks etgan ko\'zguda oppoq nafis libosdagi maftunkor va jozibador siymo.',
-    date: 'Quyoshli damlar',
-    aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_white_dress.jpg'
+    roomId: 'room_2',
+    roomName: 'II. Sharqiy Qanot (Atirgullar Zali)',
+    title: 'Jilvali Qalbim Oftobi',
+    subtitle: 'ZAL II — XAS PORTRET #03',
+    description: 'Har bir jilvasi va to\'lqin jingalak sochlari qalbimni shodlikka to\'ldiradigan sevimli va samimiy chehra.',
+    date: 'Har lahza quvonch va mehr',
+    aspect: 1.0,
+    imageSrc: '/images/artworks/artwork_curly_selfie.jpg',
+    wall: 'north',
+    position: { x: 11, y: 3.5, z: 13.2 },
+    rotationY: 0
   },
   {
     id: 4,
-    side: 'left',
-    bayIndex: 2, // z = -6
-    title: 'Yashil Vodiylar & Moviy Ko\'rfaz',
-    subtitle: 'ZAL II — XAS PORTRET #07',
-    description: 'Qarag\'ayzor tog\'lar cho\'qqisidagi ko\'rkam manzaralar, quyosh ko\'zoynagi va betakror erkinlik hissi.',
-    date: 'Tog\'lar bag\'rida',
+    roomId: 'room_2',
+    roomName: 'II. Sharqiy Qanot (Atirgullar Zali)',
+    title: 'Tog\' Cho\'qqisi & Oltin Quyosh',
+    subtitle: 'ZAL II — XAS PORTRET #04',
+    description: 'Yuksak tog\'lar uzra botayotgan moviy dengiz va oltin quyosh jilosi ostida erkinlik nafasi.',
+    date: 'Oltin ufq va erkin parvoz',
     aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_mountain_overlook.jpg'
-  },
-  {
-    id: 10,
-    side: 'right',
-    bayIndex: 2, // z = -6
-    title: 'Sokin Maskanda Beg\'ubor Tabassum',
-    subtitle: 'ZAL II — XAS PORTRET #08',
-    description: 'Sokin va shinam maskanda oq libosdagi zamonaviy, latofatli va beg\'ubor tabassum.',
-    date: 'Yo\'l xotiralari',
-    aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_lounge_portrait.jpg'
+    imageSrc: '/images/artworks/artwork_mountain_sunset.jpg',
+    wall: 'east',
+    position: { x: 15.8, y: 3.5, z: 19 },
+    rotationY: -Math.PI / 2
   },
 
   // ========================================================================
-  // ROOM III: LE TEMPLE ÉTERNEL (Sanctuary Hall — 4 Final Masterpiece Portraits)
+  // ROOM III: CENTRAL ANGEL ROTUNDA (Markaziy Rotunda — x: [-7, 7], z: [-3, 11])
   // ========================================================================
   {
     id: 5,
-    side: 'left',
-    bayIndex: 1, // z = -18
-    title: 'Marmar Darvoza & Bosfor To\'lqinlari',
-    subtitle: 'ZAL III — XAS PORTRET #09',
-    description: 'Qadimiy o\'ymakor marmar saroy darvozasi yonida, dengiz to\'lqinlari va mayin shamol jilvasi.',
-    date: 'Tarixiy dengiz bo\'yi',
-    aspect: 0.91,
-    imageSrc: '/images/artworks/artwork_bosphorus_gate.jpg'
-  },
-  {
-    id: 11,
-    side: 'right',
-    bayIndex: 1, // z = -18
-    title: 'Kema Bandargohi & Mayin Tabassum',
-    subtitle: 'ZAL III — XAS PORTRET #10',
-    description: 'Oq yelkanli kemalar fonida porlagan eng samimiy, jozibador va beg\'ubor tabassum.',
-    date: 'Dengiz sohili',
+    roomId: 'room_3',
+    roomName: 'III. Markaziy Farishta Rotundasi (Rotonde de l\'Ange)',
+    title: 'Moviy Havza & Shamol Tegirmonlari',
+    subtitle: 'ZAL III — XAS PORTRET #05',
+    description: 'Yozning quyoshli kunida musaffo moviy suvlar va yam-yashil tog\'lar uzra esgan iliq shaboda.',
+    date: 'Moviy ufqlar aro',
     aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_seaside_yachts.jpg'
+    imageSrc: '/images/artworks/artwork_pool_lagoon.jpg',
+    wall: 'west',
+    position: { x: -6.8, y: 3.5, z: 8.5 },
+    rotationY: Math.PI / 2
   },
   {
     id: 6,
-    side: 'left',
-    bayIndex: 0, // z = -30
+    roomId: 'room_3',
+    roomName: 'III. Markaziy Farishta Rotundasi (Rotonde de l\'Ange)',
+    title: 'Oq Libos & Palma Soyalari',
+    subtitle: 'ZAL III — XAS PORTRET #06',
+    description: 'Palma daraxtlari aks etgan ko\'zguda oppoq nafis libosdagi maftunkor va jozibador siymo.',
+    date: 'Quyoshli damlar',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/artwork_white_dress.jpg',
+    wall: 'east',
+    position: { x: 6.8, y: 3.5, z: 8.5 },
+    rotationY: -Math.PI / 2
+  },
+
+  // ========================================================================
+  // ROOM IV: WEST WING (G'arbiy Qanot / Tog'lar Manzarasi — x: [-19, -9], z: [-9, 3])
+  // ========================================================================
+  {
+    id: 7,
+    roomId: 'room_4',
+    roomName: 'IV. G\'arbiy Qanot (Tog\'lar Zali)',
+    title: 'Yashil Vodiylar & Moviy Ko\'rfaz',
+    subtitle: 'ZAL IV — XAS PORTRET #07',
+    description: 'Qarag\'ayzor tog\'lar cho\'qqisidagi ko\'rkam manzaralar, quyosh ko\'zoynagi va betakror erkinlik hissi.',
+    date: 'Tog\'lar bag\'rida',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/artwork_mountain_overlook.jpg',
+    wall: 'west',
+    position: { x: -18.8, y: 3.5, z: -3 },
+    rotationY: Math.PI / 2
+  },
+  {
+    id: 8,
+    roomId: 'room_4',
+    roomName: 'IV. G\'arbiy Qanot (Tog\'lar Zali)',
+    title: 'Sokin Maskanda Beg\'ubor Tabassum',
+    subtitle: 'ZAL IV — XAS PORTRET #08',
+    description: 'Sokin va shinam maskanda oq libosdagi zamonaviy, latofatli va beg\'ubor tabassum.',
+    date: 'Yo\'l xotiralari',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/artwork_lounge_portrait.jpg',
+    wall: 'south',
+    position: { x: -14, y: 3.5, z: 2.8 },
+    rotationY: Math.PI
+  },
+
+  // ========================================================================
+  // ROOM V: BOSPHORUS MARBLE PALACE (Bosfor Marmar Qasri — x: [-6, 6], z: [-26, -14])
+  // ========================================================================
+  {
+    id: 9,
+    roomId: 'room_5',
+    roomName: 'V. Bosfor Marmar Qasri (Palais du Bosphore)',
+    title: 'Marmar Darvoza & Bosfor To\'lqinlari',
+    subtitle: 'ZAL V — XAS PORTRET #09',
+    description: 'Qadimiy o\'ymakor marmar saroy darvozasi yonida, dengiz to\'lqinlari va mayin shamol jilvasi.',
+    date: 'Tarixiy dengiz bo\'yi',
+    aspect: 0.91,
+    imageSrc: '/images/artworks/artwork_bosphorus_gate.jpg',
+    wall: 'left',
+    position: { x: -5.8, y: 3.5, z: -20 },
+    rotationY: Math.PI / 2
+  },
+  {
+    id: 10,
+    roomId: 'room_5',
+    roomName: 'V. Bosfor Marmar Qasri (Palais du Bosphore)',
+    title: 'Kema Bandargohi & Mayin Tabassum',
+    subtitle: 'ZAL V — XAS PORTRET #10',
+    description: 'Oq yelkanli kemalar fonida porlagan eng samimiy, jozibador va beg\'ubor tabassum.',
+    date: 'Dengiz sohili',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/artwork_seaside_yachts.jpg',
+    wall: 'right',
+    position: { x: 5.8, y: 3.5, z: -20 },
+    rotationY: -Math.PI / 2
+  },
+
+  // ========================================================================
+  // ROOM VI: GOLDEN SUNSET GALLERY (Oltin Shafaq Qasri — x: [-6, 6], z: [-38, -26])
+  // ========================================================================
+  {
+    id: 11,
+    roomId: 'room_6',
+    roomName: 'VI. Oltin Shafaq Galereyasi (Galerie du Crépuscule)',
     title: 'Oltin Shafaq & Sokin Ko\'rfaz',
-    subtitle: 'ZAL III — XAS PORTRET #11',
+    subtitle: 'ZAL VI — XAS PORTRET #11',
     description: 'Ufqda botayotgan oltin quyosh nurlari, sokin ko\'rfaz va dengizdagi oppoq yaxtalar.',
     date: 'Oltin oqshom siri',
     aspect: 1.33,
-    imageSrc: '/images/artworks/artwork_golden_sunset_bay.jpg'
+    imageSrc: '/images/artworks/artwork_golden_sunset_bay.jpg',
+    wall: 'left',
+    position: { x: -5.8, y: 3.5, z: -32 },
+    rotationY: Math.PI / 2
   },
   {
     id: 12,
-    side: 'right',
-    bayIndex: 0, // z = -30
+    roomId: 'room_6',
+    roomName: 'VI. Oltin Shafaq Galereyasi (Galerie du Crépuscule)',
     title: 'Kuch, Nafislik & Qat\'iyat',
-    subtitle: 'ZAL III — XAS PORTRET #12',
+    subtitle: 'ZAL VI — XAS PORTRET #12',
     description: 'Sportcha shijoat, kuchli iroda va qat\'iyat bilan birga mujassam bo\'lgan tengsiz go\'zallik.',
     date: 'G\'alaba va shijoat ❤️',
     aspect: 0.80,
-    imageSrc: '/images/artworks/artwork_kimono_strength.jpg'
+    imageSrc: '/images/artworks/artwork_kimono_strength.jpg',
+    wall: 'right',
+    position: { x: 5.8, y: 3.5, z: -32 },
+    rotationY: -Math.PI / 2
+  },
+
+  // ========================================================================
+  // ROOM VII: SANCTUARY OF ETERNAL LOVE (Monumental Sanctuary — x: [-8, 8], z: [-52, -38])
+  // ========================================================================
+  {
+    id: 13,
+    roomId: 'room_7',
+    roomName: 'VII. Abadiy Muhabbat Mehrobi (Sanctuaire Éternel)',
+    title: 'Kechki Shafaq & Sokin Xayollar',
+    subtitle: 'ZAL VII — MONUMENTAL SHOH ASAR #01',
+    description: 'Quyosh botishidagi sehrli qizil-oltin ufq, deraza panjarasi ortidagi sokinlik va mayin mushukcha silueti. Qalbga huzur va orom bag\'ishlovchi oqshom siri.',
+    date: 'Oltin shafaq mo\'jizasi',
+    aspect: 0.75,
+    imageSrc: '/images/artworks/monumental_sunset_cat.jpg',
+    isMonumental: true,
+    wall: 'north',
+    position: { x: 0, y: 3.6, z: -51.6 },
+    rotationY: 0
+  },
+  {
+    id: 14,
+    roomId: 'room_7',
+    roomName: 'VII. Abadiy Muhabbat Mehrobi (Sanctuaire Éternel)',
+    title: 'Muhabbat Gullari & Dengizdagi Malika',
+    subtitle: 'ZAL VII — MONUMENTAL SHOH ASAR #02',
+    description: 'Dengiz sohilidagi qizil ufqqa boqayotgan go\'zal qiz surati va uning qarshisidagi muattar, yorqin va nafis bahoriy gullar guldastasi.',
+    date: 'Mangu ifor va cheksiz mehr',
+    aspect: 0.75,
+    imageSrc: '/images/artworks/monumental_flowers_sunset.jpg',
+    isMonumental: true,
+    wall: 'altar',
+    position: { x: 0, y: 3.6, z: -39.2 },
+    rotationY: Math.PI
   }
 ];
 
-// Helper to generate artistic canvas textures as placeholders
+export const MONUMENTAL_PAINTINGS = DEFAULT_PAINTINGS.filter(p => p.isMonumental);
+
+// Helper to generate artistic canvas textures as placeholders or high-res photo frames
 export function createArtworkCanvas(painting, customDataUrl = null) {
   const canvas = document.createElement('canvas');
   // High-resolution 2K/4K canvas for ultra-crisp display
@@ -173,7 +257,8 @@ export function createArtworkCanvas(painting, customDataUrl = null) {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.src = imgSrc;
-    img.onload = () => {
+
+    const draw = () => {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
@@ -210,125 +295,20 @@ export function createArtworkCanvas(painting, customDataUrl = null) {
       }
     };
 
+    img.onload = draw;
+    if (img.complete && img.naturalWidth !== 0) {
+      setTimeout(draw, 15);
+    }
+
     // Draw initial placeholder while image loads
     ctx.fillStyle = '#14080c';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     return canvas;
   }
 
-  // Procedural Masterpiece for non-photo frames (Unique themes, no duplicates!)
-  const w = canvas.width;
-  const h = canvas.height;
-
-  // Background Gradient based on unique theme
-  let grad = ctx.createLinearGradient(0, 0, w, h);
-  if (painting.placeholderTheme === 'night') {
-    grad.addColorStop(0, '#030814');
-    grad.addColorStop(0.5, '#0c1b33');
-    grad.addColorStop(1, '#1e293b');
-  } else if (painting.placeholderTheme === 'sunset') {
-    grad.addColorStop(0, '#2d0f1e');
-    grad.addColorStop(0.5, '#782333');
-    grad.addColorStop(0.8, '#d96c34');
-    grad.addColorStop(1, '#f6ad49');
-  } else if (painting.placeholderTheme === 'flower') {
-    grad.addColorStop(0, '#101a14');
-    grad.addColorStop(0.5, '#22422e');
-    grad.addColorStop(0.8, '#592e3d');
-    grad.addColorStop(1, '#8f3b52');
-  } else if (painting.placeholderTheme === 'autumn') {
-    grad.addColorStop(0, '#1f1008');
-    grad.addColorStop(0.5, '#5c2c12');
-    grad.addColorStop(0.8, '#a6551b');
-    grad.addColorStop(1, '#dca038');
-  } else if (painting.placeholderTheme === 'moonlight') {
-    grad.addColorStop(0, '#050a17');
-    grad.addColorStop(0.5, '#122542');
-    grad.addColorStop(1, '#2c476b');
-  } else if (painting.placeholderTheme === 'lavender') {
-    grad.addColorStop(0, '#180f24');
-    grad.addColorStop(0.5, '#3b2559');
-    grad.addColorStop(0.8, '#69488a');
-    grad.addColorStop(1, '#b08fd6');
-  } else if (painting.placeholderTheme === 'opera') {
-    grad.addColorStop(0, '#1a0808');
-    grad.addColorStop(0.5, '#401518');
-    grad.addColorStop(0.8, '#6d281f');
-    grad.addColorStop(1, '#9b4a2d');
-  } else {
-    // palace
-    grad.addColorStop(0, '#181109');
-    grad.addColorStop(0.5, '#3b2a14');
-    grad.addColorStop(0.8, '#705322');
-    grad.addColorStop(1, '#b08d3b');
-  }
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, w, h);
-
-  // Soft atmospheric moon / sun / glow orb
-  const glow = ctx.createRadialGradient(w * 0.5, h * 0.42, 20, w * 0.5, h * 0.42, w * 0.38);
-  glow.addColorStop(0, 'rgba(255, 240, 200, 0.45)');
-  glow.addColorStop(0.5, 'rgba(255, 180, 120, 0.15)');
-  glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, w, h);
-
-  // Elegant classical decorative borders
-  ctx.strokeStyle = 'rgba(212, 175, 55, 0.65)';
-  ctx.lineWidth = 20;
-  ctx.strokeRect(50, 50, w - 100, h - 100);
-
-  ctx.strokeStyle = 'rgba(250, 225, 125, 0.35)';
-  ctx.lineWidth = 6;
-  ctx.strokeRect(80, 80, w - 160, h - 160);
-
-  // Corner decorative flourishes
-  const corners = [
-    [90, 90], [w - 90, 90],
-    [90, h - 90], [w - 90, h - 90]
-  ];
-  ctx.fillStyle = 'rgba(212, 175, 55, 0.85)';
-  corners.forEach(([cx, cy]) => {
-    ctx.beginPath();
-    ctx.arc(cx, cy, 10, 0, Math.PI * 2);
-    ctx.fill();
-  });
-
-  // Unique theme icon
-  const themeIcons = {
-    night: '✨',
-    sunset: '🌅',
-    flower: '🌹',
-    autumn: '🍁',
-    moonlight: '🌙',
-    lavender: '🪻',
-    opera: '🎻',
-    palace: '👑'
-  };
-  const icon = themeIcons[painting.placeholderTheme] || '🏛️';
-
-  ctx.font = '110px "Cinzel", serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = 'rgba(255, 230, 160, 0.95)';
-  ctx.fillText(icon, w * 0.5, h * 0.4);
-
-  // Title text on canvas
-  ctx.font = 'bold 58px "Cinzel", serif';
-  ctx.fillStyle = '#fae17d';
-  ctx.shadowColor = 'rgba(0,0,0,0.9)';
-  ctx.shadowBlur = 24;
-  ctx.fillText(painting.title.toUpperCase(), w * 0.5, h * 0.57);
-
-  ctx.font = 'italic 38px "Playfair Display", serif';
-  ctx.fillStyle = '#e8d2b0';
-  ctx.shadowBlur = 16;
-  ctx.fillText(`“ ${painting.date} ”`, w * 0.5, h * 0.65);
-
-  ctx.font = '28px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = 'rgba(212, 175, 55, 0.85)';
-  ctx.fillText('📷 O\'z rasmingizni yuklash uchun [E] ni bosing', w * 0.5, h * 0.75);
-
+  // Fallback
+  ctx.fillStyle = '#180a10';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   return canvas;
 }
 
@@ -348,92 +328,78 @@ export const DEFAULT_STATUES = [
   },
   {
     id: 'statue_aphrodite',
-    title: 'Afrodita (Venera) Byusti',
-    subtitle: 'I-ZAL — GO\'ZALLIK MA\'BUDASI',
-    description: 'Nafosat, go\'zallik va abadiy yoshlik timsoli bo\'lgan yunon ma\'budasi Afroditaning marmar siymosi.',
-    date: 'Ellin Davri',
+    title: 'Afrodita (Muhabbat va Husn Ma\'budasi)',
+    subtitle: 'SHARQIY QANOT — ATIRGULLAR ZALI',
+    description: 'Dengiz ko\'pigidan bino bo\'lgan go\'zallik, samimiylik va nazokat timsoli. Boshidagi oltin dafna gulchambari mangu yoshlik va cheksiz ehtirom ramzidir.',
+    date: 'Antik Nafosat',
     aspect: 0.8,
     type: 'statue',
     emoji: '👑'
   },
   {
     id: 'statue_apollo',
-    title: 'Apollon Byusti',
-    subtitle: 'I-ZAL — ILHOM VA NUR HOMIYSI',
-    description: 'She\'riyat, san\'at, quyosh nuri va ilhom ramzi bo\'lgan olijanob Apollon siymosi.',
-    date: 'Klassik Davr',
+    title: 'Apollon (Quyosh va San\'at Himoyachisi)',
+    subtitle: 'G\'ARBIY QANOT — TOG\'LAR ZALI',
+    description: 'Ilhom, yorug\'lik va nafis san\'at homiysi. Qadimiy saroy zallarida mardlik, yorqinlik va qat\'iyat ifodasi sifatida o\'rnatilgan.',
+    date: 'Klassik Haykaltaroshlik',
     aspect: 0.8,
     type: 'statue',
     emoji: '☀️'
   },
   {
-    id: 'statue_psyche',
-    title: 'Psixeya Byusti',
-    subtitle: 'II-ZAL — POKIZA QALB TIMSOLI',
-    description: 'Inson qalbining go\'zalligi, pok niyati va samimiy sevgisining nozik ifodasi.',
-    date: 'Rim San\'ati',
+    id: 'statue_hermes',
+    title: 'Hermes (Yurak Rozlari Kuryeri)',
+    subtitle: 'BOSFOR QASRI — OQSHOM BOG\'I',
+    description: 'Oshiqlar o\'rtasidagi samimiy maktublar va shirin suhbatlar homiysi.',
+    date: 'Oltin Qanotlar',
     aspect: 0.8,
     type: 'statue',
-    emoji: '💖'
-  },
-  {
-    id: 'statue_eros',
-    title: 'Eros (Kupid) Byusti',
-    subtitle: 'II-ZAL — YURAKLARNI BIRLASHTIRUVCHI',
-    description: 'Yuraklarni bir-biriga bog\'lovchi, mehr va muhabbat chaqnatuvchi ilohiy tuyg\'ular posboni.',
-    date: 'Rim San\'ati',
-    aspect: 0.8,
-    type: 'statue',
-    emoji: '🏹'
+    emoji: '📜'
   }
 ];
 
 export function createStatueCanvas(statue) {
   const canvas = document.createElement('canvas');
-  canvas.width = 800;
-  canvas.height = 1000;
+  canvas.width = 1024;
+  canvas.height = 1280;
   const ctx = canvas.getContext('2d');
-  const w = canvas.width;
-  const h = canvas.height;
 
-  // Dark obsidian marble background gradient
-  const grad = ctx.createRadialGradient(w * 0.5, h * 0.45, 50, w * 0.5, h * 0.5, w * 0.65);
-  grad.addColorStop(0, '#2b1c20');
-  grad.addColorStop(0.5, '#15080b');
-  grad.addColorStop(1, '#080204');
+  const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  grad.addColorStop(0, '#0a0507');
+  grad.addColorStop(0.5, '#1e0d14');
+  grad.addColorStop(1, '#080305');
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, w, h);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Gilded decorative baroque border
+  const glow = ctx.createRadialGradient(512, 480, 20, 512, 480, 400);
+  glow.addColorStop(0, 'rgba(212, 175, 55, 0.35)');
+  glow.addColorStop(0.6, 'rgba(212, 175, 55, 0.08)');
+  glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   ctx.strokeStyle = 'rgba(212, 175, 55, 0.7)';
-  ctx.lineWidth = 12;
-  ctx.strokeRect(25, 25, w - 50, h - 50);
+  ctx.lineWidth = 14;
+  ctx.strokeRect(40, 40, 944, 1200);
 
-  ctx.strokeStyle = 'rgba(250, 225, 125, 0.35)';
-  ctx.lineWidth = 3;
-  ctx.strokeRect(38, 38, w - 76, h - 76);
+  ctx.strokeStyle = 'rgba(250, 225, 125, 0.3)';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(65, 65, 894, 1150);
 
-  // Statue Icon / Glow
-  ctx.font = '96px serif';
+  ctx.font = '160px sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(statue.emoji || '🏛️', w * 0.5, h * 0.38);
+  ctx.fillText(statue.emoji || '🏛️', 512, 460);
 
-  // Typography
-  ctx.font = 'bold 32px "Cinzel", serif';
+  ctx.font = 'bold 46px "Cinzel", serif';
   ctx.fillStyle = '#fae17d';
   ctx.shadowColor = 'rgba(0,0,0,0.9)';
-  ctx.shadowBlur = 12;
-  ctx.fillText(statue.title.toUpperCase(), w * 0.5, h * 0.58);
+  ctx.shadowBlur = 20;
+  ctx.fillText(statue.title.toUpperCase(), 512, 720);
 
-  ctx.font = 'italic 22px "Playfair Display", serif';
+  ctx.font = 'italic 30px "Playfair Display", serif';
   ctx.fillStyle = '#e8d2b0';
-  ctx.fillText(`“ ${statue.date} ”`, w * 0.5, h * 0.66);
-
-  ctx.font = '18px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = 'rgba(212, 175, 55, 0.8)';
-  ctx.fillText('🏛️ Oq Karrara marmaridan ishlangan asl san\'at durdonasi', w * 0.5, h * 0.78);
+  ctx.fillText(`“ ${statue.date} ”`, 512, 800);
 
   return canvas;
 }
-
