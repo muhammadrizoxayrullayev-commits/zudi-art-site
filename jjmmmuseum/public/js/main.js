@@ -7,7 +7,7 @@ import { Museum } from './museum.js';
 import { Player } from './player.js';
 import { MultiplayerManager } from './multiplayer.js';
 import { AudioManager } from './audio.js';
-import { createArtworkCanvas, createStatueCanvas } from './paintings.js';
+import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js';
 
 class App {
   constructor() {
@@ -66,7 +66,13 @@ class App {
 
     // Raycaster for paintings
     this.raycaster = new THREE.Raycaster();
-    this.raycaster.far = 5.2;
+    this.raycaster.far = 8.0;
+
+    // Minimap & Room Detection State
+    this.lastRoomTitle = '';
+    this.minimapCanvas = document.getElementById('minimap-canvas');
+    this.minimapCtx = this.minimapCanvas ? this.minimapCanvas.getContext('2d') : null;
+    this.minimapTimer = 0;
 
     this.initURLParams();
     this.initUI();
@@ -260,6 +266,16 @@ class App {
         input.value = '';
       }
     });
+
+    // 12. Minimap Toggle
+    const toggleMinimapBtn = document.getElementById('btn-toggle-minimap');
+    const minimapCard = document.getElementById('minimap-card');
+    if (toggleMinimapBtn && minimapCard) {
+      toggleMinimapBtn.addEventListener('click', () => {
+        minimapCard.classList.toggle('collapsed');
+        toggleMinimapBtn.textContent = minimapCard.classList.contains('collapsed') ? '＋' : '—';
+      });
+    }
   }
 
   isChatActive() {
@@ -340,13 +356,24 @@ class App {
       }
     }
 
-    // Distance fallback check
+    // Closest distance check (only paintings in front of the player)
     if (!foundPainting) {
+      let closestDist = Infinity;
+      const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.player.yaw);
+
       for (const p of this.museum.paintings) {
-        const dist = this.player.position.distanceTo(p.mesh.position);
-        if (dist < 4.0) {
-          foundPainting = p.data;
-          break;
+        const toPainting = p.mesh.position.clone().sub(this.player.position);
+        toPainting.y = 0;
+        const dist = toPainting.length();
+        const maxDist = p.data?.isMonumental ? 7.5 : 4.4;
+
+        if (dist < maxDist) {
+          toPainting.normalize();
+          const dot = forward.dot(toPainting);
+          if (dot > 0.25 && dist < closestDist) {
+            closestDist = dist;
+            foundPainting = p.data;
+          }
         }
       }
     }
@@ -364,6 +391,146 @@ class App {
       promptEl.classList.add('hidden');
       if (mInspectBtn) mInspectBtn.classList.add('hidden');
     }
+  }
+
+  getCurrentRoomTitle(x, z) {
+    if (z >= 26) {
+      return 'I. Kirish Rotundasi';
+    }
+    if (x >= 4 && z >= 11 && z <= 26) {
+      return 'II. Atirgullar Zali';
+    }
+    if (x >= -7 && x <= 7 && z >= -4 && z < 11) {
+      return 'III. Farishta Rotundasi';
+    }
+    if (x <= -7 && z >= -12 && z <= 5) {
+      return 'IV. Tog\'lar Zali';
+    }
+    if (z >= -26 && z < -14 && x >= -7 && x <= 7) {
+      return 'V. Bosfor Marmar Qasri';
+    }
+    if (z >= -38 && z < -26 && x >= -7 && x <= 7) {
+      return 'VI. Oltin Shafaq Qasri';
+    }
+    if (z < -38) {
+      return 'VII. Abadiy Muhabbat Mehrobi';
+    }
+
+    // Corridors & Transition Portals
+    if (z >= 18 && z < 26 && x > 0) {
+      return 'Yo\'lak: Sharqiy Qanot tomon';
+    }
+    if (z >= 4 && z <= 10 && x > 4) {
+      return 'Yo\'lak: Markaziy Rotunda tomon';
+    }
+    if (x < -6 && z >= 1 && z <= 6) {
+      return 'Yo\'lak: Tog\'lar Zali tomon';
+    }
+    if (x < 0 && z >= -20 && z <= -14) {
+      return 'Yo\'lak: Bosfor Qasri tomon';
+    }
+    return 'Saroy Labirinti';
+  }
+
+  renderMinimap() {
+    if (!this.minimapCtx || !this.minimapCanvas) return;
+    const ctx = this.minimapCtx;
+    const cw = this.minimapCanvas.width;
+    const ch = this.minimapCanvas.height;
+
+    // Coordinate conversion from 3D world to 2D canvas
+    // X span [-19, 16] -> width 35m. Center X = 0 -> cw / 2 = 65
+    // Z span [-52, 42] -> depth 94m. Top (Z=-52) -> 12, Bottom (Z=+40) -> 188
+    const scale = 1.84;
+    const toX = (wx) => 65 + wx * scale;
+    const toY = (wz) => 12 + (wz - (-52)) * scale;
+
+    ctx.clearRect(0, 0, cw, ch);
+
+    // 1. Draw interconnected corridors and chambers
+    ctx.lineWidth = 1;
+    const playerX = this.player.position.x;
+    const playerZ = this.player.position.z;
+
+    this.player.walkableAreas.forEach(area => {
+      const left = toX(area.minX);
+      const right = toX(area.maxX);
+      const top = toY(area.minZ);
+      const bottom = toY(area.maxZ);
+      const w = Math.max(right - left, 2);
+      const h = Math.max(bottom - top, 2);
+
+      const isPlayerInside =
+        playerX >= area.minX && playerX <= area.maxX &&
+        playerZ >= area.minZ && playerZ <= area.maxZ;
+
+      if (isPlayerInside) {
+        ctx.fillStyle = 'rgba(120, 28, 42, 0.9)';
+        ctx.fillRect(left, top, w, h);
+        ctx.strokeStyle = '#fae17d';
+        ctx.strokeRect(left, top, w, h);
+      } else {
+        ctx.fillStyle = 'rgba(40, 12, 18, 0.82)';
+        ctx.fillRect(left, top, w, h);
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.35)';
+        ctx.strokeRect(left, top, w, h);
+      }
+    });
+
+    // 2. Draw Painting Markers (Gold dots)
+    DEFAULT_PAINTINGS.forEach(p => {
+      const px = toX(p.position.x);
+      const py = toY(p.position.z);
+      if (p.isMonumental) {
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(px - 3, py - 3, 6, 6);
+      } else {
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(px - 1.5, py - 1.5, 3, 3);
+      }
+    });
+
+    // 3. Draw Remote Players (Partner / Sevgilim) as pulsing pink dots
+    if (this.multiplayer?.remotePlayers) {
+      this.multiplayer.remotePlayers.forEach(p => {
+        if (!p.mesh) return;
+        const rx = toX(p.mesh.position.x);
+        const ry = toY(p.mesh.position.z);
+
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath();
+        ctx.arc(rx, ry, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#ffe4e6';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+    }
+
+    // 4. Draw Local Player (Cyan directional arrow)
+    const mx = toX(playerX);
+    const my = toY(playerZ);
+
+    ctx.save();
+    ctx.translate(mx, my);
+    // In Three.js: -Z is forward. On canvas, -Z is up (negative Y)
+    ctx.rotate(-this.player.yaw);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.moveTo(0, -5);   // Nose
+    ctx.lineTo(3.5, 4);  // Right fin
+    ctx.lineTo(0, 2);    // Center notch
+    ctx.lineTo(-3.5, 4); // Left fin
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.restore();
   }
 
   onWindowResize() {
@@ -388,6 +555,21 @@ class App {
 
       // Raycast interaction
       this.checkRaycastInteractions();
+
+      // Update Room Badge
+      const roomTitle = this.getCurrentRoomTitle(this.player.position.x, this.player.position.z);
+      if (roomTitle !== this.lastRoomTitle) {
+        this.lastRoomTitle = roomTitle;
+        const roomEl = document.getElementById('current-room-text');
+        if (roomEl) roomEl.textContent = roomTitle;
+      }
+
+      // Render Mini-Map Radar (every ~60ms)
+      this.minimapTimer += delta;
+      if (this.minimapTimer > 0.06) {
+        this.minimapTimer = 0;
+        this.renderMinimap();
+      }
     } catch (err) {
       console.warn('Loop update warning:', err);
     }

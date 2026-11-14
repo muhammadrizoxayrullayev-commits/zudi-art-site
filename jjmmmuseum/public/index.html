@@ -41,6 +41,12 @@
         </div>
       </div>
 
+      <!-- Current Room Indicator Badge -->
+      <div id="room-indicator-badge">
+        <span class="room-pin-icon">🏛️</span>
+        <span id="current-room-text">I. Kirish Rotundasi</span>
+      </div>
+
       <div class="top-actions">
         <!-- Room share button -->
         <button id="btn-share" class="glass-btn" title="Sevgilingizga havola yuboring">
@@ -70,6 +76,22 @@
     <!-- Proximity Alert (When both lovers are close together) -->
     <div id="proximity-banner" class="hidden">
       <span class="heart-pulse">❤️</span> Sizlar birgasizlar!
+    </div>
+
+    <!-- Palace Labyrinth Mini-Map Radar -->
+    <div id="minimap-card">
+      <div class="minimap-title-bar" id="minimap-header">
+        <span class="minimap-title">🧭 Saroy Xaritasi</span>
+        <button id="btn-toggle-minimap" class="minimap-toggle" title="Kichraytirish / Ochish">—</button>
+      </div>
+      <div class="minimap-body" id="minimap-body">
+        <canvas id="minimap-canvas" width="130" height="200"></canvas>
+        <div class="minimap-legend">
+          <span class="legend-item"><i class="dot-you"></i> Siz</span>
+          <span class="legend-item"><i class="dot-lover"></i> Sevgilim</span>
+          <span class="legend-item"><i class="dot-art"></i> Rasm</span>
+        </div>
+      </div>
     </div>
 
     <!-- Mobile Virtual Controls (Shown on Touch Devices) -->
