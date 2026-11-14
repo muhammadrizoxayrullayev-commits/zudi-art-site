@@ -394,39 +394,39 @@ class App {
   }
 
   getCurrentRoomTitle(x, z) {
-    if (z >= 26) {
+    if (z >= 29) {
       return 'I. Kirish Rotundasi';
     }
-    if (x >= 4 && z >= 11 && z <= 26) {
+    if (x >= 11 && z >= 14 && z <= 30) {
       return 'II. Atirgullar Zali';
     }
-    if (x >= -7 && x <= 7 && z >= -4 && z < 11) {
+    if (x >= -6.5 && x <= 6.5 && z >= 0 && z <= 16) {
       return 'III. Farishta Rotundasi';
     }
-    if (x <= -7 && z >= -12 && z <= 5) {
+    if (x <= -11 && z >= 0 && z <= 16) {
       return 'IV. Tog\'lar Zali';
     }
-    if (z >= -26 && z < -14 && x >= -7 && x <= 7) {
+    if (x >= -6.5 && x <= 6.5 && z < -5 && z >= -19) {
       return 'V. Bosfor Marmar Qasri';
     }
-    if (z >= -38 && z < -26 && x >= -7 && x <= 7) {
+    if (x >= -6.5 && x <= 6.5 && z < -19 && z >= -37) {
       return 'VI. Oltin Shafaq Qasri';
     }
-    if (z < -38) {
+    if (z < -37) {
       return 'VII. Abadiy Muhabbat Mehrobi';
     }
 
     // Corridors & Transition Portals
-    if (z >= 18 && z < 26 && x > 0) {
+    if (z >= 19 && z < 29 && x > 0) {
       return 'Yo\'lak: Sharqiy Qanot tomon';
     }
-    if (z >= 4 && z <= 10 && x > 4) {
-      return 'Yo\'lak: Markaziy Rotunda tomon';
+    if (z >= 5 && z <= 16 && x > 5) {
+      return 'Yo\'lak: Markaziy Farishta Rotundasi';
     }
-    if (x < -6 && z >= 1 && z <= 6) {
-      return 'Yo\'lak: Tog\'lar Zali tomon';
+    if (x < -6 && z >= 5 && z <= 11) {
+      return 'Yo\'lak: G\'arbiy Qanot tomon';
     }
-    if (x < 0 && z >= -20 && z <= -14) {
+    if (x < -5 && z < 2 && z >= -15) {
       return 'Yo\'lak: Bosfor Qasri tomon';
     }
     return 'Saroy Labirinti';
@@ -439,11 +439,10 @@ class App {
     const ch = this.minimapCanvas.height;
 
     // Coordinate conversion from 3D world to 2D canvas
-    // X span [-19, 16] -> width 35m. Center X = 0 -> cw / 2 = 65
-    // Z span [-52, 42] -> depth 94m. Top (Z=-52) -> 12, Bottom (Z=+40) -> 188
-    const scale = 1.84;
-    const toX = (wx) => 65 + wx * scale;
-    const toY = (wz) => 12 + (wz - (-52)) * scale;
+    // X span [-22.4, 22.4] -> width 45m. Center X = 0 -> cw / 2 = 65
+    // Z span [-57.4, 42.4] -> depth 100m. Top (Z=-57.4) -> 10, Bottom (Z=+42.4) -> 192
+    const toX = (wx) => 65 + wx * 2.45;
+    const toY = (wz) => 10 + (wz - (-57.4)) * 1.82;
 
     ctx.clearRect(0, 0, cw, ch);
 
@@ -477,7 +476,15 @@ class App {
       }
     });
 
-    // 2. Draw Painting Markers (Gold dots)
+    // 2. Draw Central Statue Dais in Room 3
+    const statueMapX = toX(0);
+    const statueMapY = toY(8);
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.7)';
+    ctx.beginPath();
+    ctx.arc(statueMapX, statueMapY, 5, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 3. Draw Painting Markers (Gold dots)
     DEFAULT_PAINTINGS.forEach(p => {
       const px = toX(p.position.x);
       const py = toY(p.position.z);
@@ -490,7 +497,7 @@ class App {
       }
     });
 
-    // 3. Draw Remote Players (Partner / Sevgilim) as pulsing pink dots
+    // 4. Draw Remote Players (Partner / Sevgilim) as pulsing pink dots
     if (this.multiplayer?.remotePlayers) {
       this.multiplayer.remotePlayers.forEach(p => {
         if (!p.mesh) return;
@@ -508,7 +515,7 @@ class App {
       });
     }
 
-    // 4. Draw Local Player (Cyan directional arrow)
+    // 5. Draw Local Player (Cyan directional arrow)
     const mx = toX(playerX);
     const my = toY(playerZ);
 
