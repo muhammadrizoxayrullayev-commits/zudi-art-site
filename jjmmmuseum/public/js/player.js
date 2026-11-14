@@ -39,24 +39,24 @@ export class Player {
     this.isThirdPerson = false;
     this.cameraDistance = 3.2;
 
-    // Palace Labyrinth Walkable Zones
+    // Palace Labyrinth Walkable Zones (Generous 2.5m-3.5m doorway overlaps, zero gaps)
     this.walkableAreas = [
-      { minX: -5.6, maxX: 5.6, minZ: 30.4, maxZ: 41.6 },      // Room 1: Vestibule
-      { minX: -2.3, maxX: 2.3, minZ: 21.8, maxZ: 30.6 },      // Corr 1 North
-      { minX: -2.3, maxX: 12.6, minZ: 19.8, maxZ: 24.2 },     // Corr 1-2 East
-      { minX: 12.4, maxX: 21.6, minZ: 15.4, maxZ: 28.6 },     // Room 2: East Wing
-      { minX: 14.8, maxX: 19.2, minZ: 7.8, maxZ: 15.6 },      // Corr 2-3 North
-      { minX: 5.8, maxX: 19.2, minZ: 5.8, maxZ: 10.2 },       // Corr 2-3 West
-      { minX: -5.6, maxX: 5.6, minZ: 0.4, maxZ: 15.6 },       // Room 3: Central Rotunda
-      { minX: -12.6, maxX: -5.8, minZ: 5.8, maxZ: 10.2 },     // Corr 3-4 West
-      { minX: -21.6, maxX: -12.4, minZ: 1.4, maxZ: 14.6 },    // Room 4: West Wing
-      { minX: -19.2, maxX: -14.8, minZ: -12.2, maxZ: 1.6 },   // Corr 4-5 North
-      { minX: -19.2, maxX: -5.8, minZ: -14.2, maxZ: -9.8 },   // Corr 4-5 East
-      { minX: -5.6, maxX: 5.6, minZ: -17.6, maxZ: -6.4 },     // Room 5: Bosphorus
-      { minX: -2.3, maxX: 2.3, minZ: -20.6, maxZ: -17.4 },    // Portal 5-6
-      { minX: -5.6, maxX: 5.6, minZ: -35.6, maxZ: -20.4 },    // Room 6: Golden Sunset
-      { minX: -2.8, maxX: 2.8, minZ: -39.6, maxZ: -35.4 },    // Portal 6-7 (Triumphal)
-      { minX: -6.6, maxX: 6.6, minZ: -56.6, maxZ: -39.4 }     // Room 7: Sanctuary
+      { minX: -5.5, maxX: 5.5, minZ: 28.5, maxZ: 41.5 },      // Room 1: Vestibule (extends north to z=28.5)
+      { minX: -2.2, maxX: 2.2, minZ: 20.0, maxZ: 31.5 },      // Corr 1 North (overlaps Room 1 & Corr 1-2)
+      { minX: -2.2, maxX: 13.5, minZ: 19.8, maxZ: 24.2 },     // Corr 1-2 East (overlaps Room 2 to x=13.5)
+      { minX: 10.5, maxX: 21.6, minZ: 13.5, maxZ: 28.6 },     // Room 2: East Wing (extends west & north)
+      { minX: 14.8, maxX: 19.2, minZ: 6.0, maxZ: 16.5 },      // Corr 2-3 North (overlaps Room 2 & Corr 2-3 West)
+      { minX: 4.5, maxX: 19.2, minZ: 5.8, maxZ: 10.2 },       // Corr 2-3 West (extends west into Room 3 to x=4.5)
+      { minX: -7.5, maxX: 7.5, minZ: 0.4, maxZ: 15.6 },       // Room 3: Central Rotunda (overlaps Corr 2-3 & Corr 3-4)
+      { minX: -13.5, maxX: -4.5, minZ: 5.8, maxZ: 10.2 },     // Corr 3-4 West (overlaps Room 3 & Room 4)
+      { minX: -21.6, maxX: -10.5, minZ: -0.5, maxZ: 14.6 },   // Room 4: West Wing (extends east & north)
+      { minX: -19.2, maxX: -14.8, minZ: -13.5, maxZ: 2.5 },   // Corr 4-5 North (overlaps Room 4 & Corr 4-5 East)
+      { minX: -19.2, maxX: -4.5, minZ: -14.2, maxZ: -9.8 },   // Corr 4-5 East (extends east into Room 5 to x=-4.5)
+      { minX: -7.5, maxX: 5.6, minZ: -19.5, maxZ: -6.4 },     // Room 5: Bosphorus (overlaps Corr 4-5 & Portal 5-6)
+      { minX: -2.2, maxX: 2.2, minZ: -21.5, maxZ: -16.5 },    // Portal 5-6 (overlaps Room 5 & Room 6)
+      { minX: -5.6, maxX: 5.6, minZ: -37.5, maxZ: -18.5 },    // Room 6: Golden Sunset (overlaps Portals 5-6 & 6-7)
+      { minX: -2.8, maxX: 2.8, minZ: -41.0, maxZ: -34.5 },    // Portal 6-7 (Triumphal)
+      { minX: -6.6, maxX: 6.6, minZ: -56.6, maxZ: -37.5 }     // Room 7: Sanctuary
     ];
 
     // Keyboard & Direction States
@@ -337,10 +337,10 @@ export class Player {
   }
 
   isInsideWalkable(x, z) {
-    // 1. Physical Obstacle: Central Classical Statue in Room 3 (Center 0, 8, radius 2.3m)
+    // 1. Physical Obstacle: Central Classical Statue in Room 3 (Center 0, 8, stanchion radius 2.05m)
     const statueDx = x - 0;
     const statueDz = z - 8;
-    if (statueDx * statueDx + statueDz * statueDz < 2.3 * 2.3) {
+    if (statueDx * statueDx + statueDz * statueDz < 2.05 * 2.05) {
       return false;
     }
 

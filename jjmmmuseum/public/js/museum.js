@@ -51,6 +51,7 @@ export class Museum {
         pCtx.stroke();
       }
     }
+    this.parquetCanvas = pCanvas;
     const parquetTex = new THREE.CanvasTexture(pCanvas);
     parquetTex.wrapS = THREE.RepeatWrapping;
     parquetTex.wrapT = THREE.RepeatWrapping;
@@ -129,51 +130,66 @@ export class Museum {
     this.wallHeight = 7.5;
 
     // List of room & corridor floors: [minX, maxX, minZ, maxZ, roomName]
+    // Boundaries meet edge-to-edge for zero z-fighting and continuous world-space parquet
     const zones = [
       // 1. Room 1: Vestibule / Kirish Rotundasi
-      { minX: -6.4, maxX: 6.4, minZ: 29.8, maxZ: 42.4, name: 'Room 1: Vestibule' },
+      { minX: -6.4, maxX: 6.4, minZ: 30.0, maxZ: 42.4, name: 'Room 1: Vestibule' },
       // 2. Corr 1 North
-      { minX: -2.7, maxX: 2.7, minZ: 21.8, maxZ: 30.5, name: 'Corr 1 North' },
+      { minX: -2.7, maxX: 2.7, minZ: 22.0, maxZ: 30.0, name: 'Corr 1 North' },
       // 3. Corr 1-2 East
-      { minX: -2.7, maxX: 12.5, minZ: 19.3, maxZ: 24.7, name: 'Corr 1-2 East' },
+      { minX: -2.7, maxX: 12.0, minZ: 19.3, maxZ: 22.0, name: 'Corr 1-2 East' },
       // 4. Room 2: East Wing / Atirgullar Zali
-      { minX: 11.8, maxX: 22.4, minZ: 14.8, maxZ: 29.4, name: 'Room 2: East Wing' },
+      { minX: 12.0, maxX: 22.4, minZ: 14.8, maxZ: 29.4, name: 'Room 2: East Wing' },
       // 5. Corr 2-3 North
-      { minX: 14.3, maxX: 19.7, minZ: 7.8, maxZ: 15.5, name: 'Corr 2-3 North' },
+      { minX: 14.3, maxX: 19.7, minZ: 8.0, maxZ: 14.8, name: 'Corr 2-3 North' },
       // 6. Corr 2-3 West
-      { minX: 5.5, maxX: 19.7, minZ: 5.3, maxZ: 10.7, name: 'Corr 2-3 West' },
+      { minX: 6.0, maxX: 14.3, minZ: 5.3, maxZ: 10.7, name: 'Corr 2-3 West' },
       // 7. Room 3: Central Angel Rotunda
-      { minX: -6.4, maxX: 6.4, minZ: -0.2, maxZ: 16.4, name: 'Room 3: Central Rotunda' },
+      { minX: -6.0, maxX: 6.0, minZ: -0.2, maxZ: 16.4, name: 'Room 3: Central Rotunda' },
       // 8. Corr 3-4 West
-      { minX: -12.5, maxX: -5.5, minZ: 5.3, maxZ: 10.7, name: 'Corr 3-4 West' },
+      { minX: -12.0, maxX: -6.0, minZ: 5.3, maxZ: 10.7, name: 'Corr 3-4 West' },
       // 9. Room 4: West Wing / Tog'lar Zali
-      { minX: -22.4, maxX: -11.8, minZ: 0.8, maxZ: 15.4, name: 'Room 4: West Wing' },
+      { minX: -22.4, maxX: -12.0, minZ: 0.8, maxZ: 15.4, name: 'Room 4: West Wing' },
       // 10. Corr 4-5 North
-      { minX: -19.7, maxX: -14.3, minZ: -12.5, maxZ: 1.5, name: 'Corr 4-5 North' },
+      { minX: -19.7, maxX: -14.3, minZ: -12.0, maxZ: 0.8, name: 'Corr 4-5 North' },
       // 11. Corr 4-5 East
-      { minX: -19.7, maxX: -5.5, minZ: -14.7, maxZ: -9.3, name: 'Corr 4-5 East' },
+      { minX: -14.3, maxX: -6.0, minZ: -14.7, maxZ: -9.3, name: 'Corr 4-5 East' },
       // 12. Room 5: Bosphorus Marble Palace
-      { minX: -6.4, maxX: 6.4, minZ: -18.4, maxZ: -5.8, name: 'Room 5: Bosphorus' },
+      { minX: -6.0, maxX: 6.4, minZ: -18.0, maxZ: -5.8, name: 'Room 5: Bosphorus' },
       // 13. Portal 5-6
-      { minX: -2.7, maxX: 2.7, minZ: -20.5, maxZ: -17.5, name: 'Portal 5-6' },
+      { minX: -2.7, maxX: 2.7, minZ: -20.0, maxZ: -18.0, name: 'Portal 5-6' },
       // 14. Room 6: Golden Sunset Hall
-      { minX: -6.4, maxX: 6.4, minZ: -36.4, maxZ: -19.8, name: 'Room 6: Golden Sunset' },
+      { minX: -6.4, maxX: 6.4, minZ: -36.0, maxZ: -20.0, name: 'Room 6: Golden Sunset' },
       // 15. Triumphal Portal 6-7
-      { minX: -3.3, maxX: 3.3, minZ: -39.5, maxZ: -35.5, name: 'Portal 6-7' },
+      { minX: -3.3, maxX: 3.3, minZ: -39.0, maxZ: -36.0, name: 'Portal 6-7' },
       // 16. Room 7: Sanctuary of Eternal Love
-      { minX: -7.4, maxX: 7.4, minZ: -57.4, maxZ: -38.8, name: 'Room 7: Sanctuary' }
+      { minX: -7.4, maxX: 7.4, minZ: -57.4, maxZ: -39.0, name: 'Room 7: Sanctuary' }
     ];
 
-    // Build floors & ceilings for each zone
+    // Build floors & ceilings for each zone with continuous world-space UV parquet
     zones.forEach(z => {
       const w = z.maxX - z.minX;
       const l = z.maxZ - z.minZ;
       const cx = (z.minX + z.maxX) / 2;
       const cz = (z.minZ + z.maxZ) / 2;
 
-      // Floor plane
+      // Floor plane with world-space 0.8m x 0.8m parquet scaling
       const fGeo = new THREE.PlaneGeometry(w, l);
-      const floor = new THREE.Mesh(fGeo, this.floorMaterial);
+      const floorTex = new THREE.CanvasTexture(this.parquetCanvas);
+      floorTex.wrapS = THREE.RepeatWrapping;
+      floorTex.wrapT = THREE.RepeatWrapping;
+      floorTex.colorSpace = THREE.SRGBColorSpace;
+      floorTex.repeat.set(w / 0.8, l / 0.8);
+      const uOffset = (((z.minX % 0.8) + 0.8) % 0.8) / 0.8;
+      const vOffset = (((z.minZ % 0.8) + 0.8) % 0.8) / 0.8;
+      floorTex.offset.set(uOffset, vOffset);
+
+      const floorMat = new THREE.MeshStandardMaterial({
+        map: floorTex,
+        roughness: 0.28,
+        metalness: 0.12
+      });
+      const floor = new THREE.Mesh(fGeo, floorMat);
       floor.rotation.x = -Math.PI / 2;
       floor.position.set(cx, 0.001, cz);
       this.scene.add(floor);
@@ -204,7 +220,7 @@ export class Museum {
   // ==========================================================================
   // WALL BUILDER HELPER
   // ==========================================================================
-  addWall(cx, cz, length, thickness = 0.45, isHorizontal = false) {
+  addWall(cx, cz, length, thickness = 0.48, isHorizontal = false) {
     const group = new THREE.Group();
 
     // 1. Lower Mahogany Wainscoting (0m to 2.3m)
@@ -248,103 +264,103 @@ export class Museum {
     // ------------------------------------------------------------------------
     // ROOM 1: VESTIBULE / KIRISH ROTUNDASI (x: [-6, 6], z: [30, 42])
     // ------------------------------------------------------------------------
-    this.addWall(0, 42, 12.4, 0.45, true);       // South Entrance Wall
-    this.addWall(-6, 36, 12.4, 0.45, false);    // West Wall (Painting #1)
-    this.addWall(6, 36, 12.4, 0.45, false);     // East Wall (Painting #2)
-    this.addWall(-4.25, 30, 3.5, 0.45, true);   // North Wall Left Wing (Doorway at x: [-2.5, 2.5])
-    this.addWall(4.25, 30, 3.5, 0.45, true);    // North Wall Right Wing
+    this.addWall(0, 42, 12.8, 0.48, true);       // South Entrance Wall
+    this.addWall(-6, 36, 12.8, 0.48, false);    // West Wall (Painting #1)
+    this.addWall(6, 36, 12.8, 0.48, false);     // East Wall (Painting #2)
+    this.addWall(-4.25, 30, 4.0, 0.48, true);   // North Wall Left Wing (Doorway at x: [-2.25, 2.25])
+    this.addWall(4.25, 30, 4.0, 0.48, true);    // North Wall Right Wing
 
     // ------------------------------------------------------------------------
     // CORRIDOR 1-2 (x: [-2.5, 12], z: [19.5, 30])
     // ------------------------------------------------------------------------
-    this.addWall(-2.5, 26, 8.0, 0.45, false);   // West Wall (from z=22 to z=30)
-    this.addWall(2.5, 27.25, 5.5, 0.45, false); // East Wall (from z=24.5 to z=30)
-    this.addWall(0, 19.5, 5.0, 0.45, true);     // North Dead-end Wall
-    this.addWall(7.25, 24.5, 9.5, 0.45, true);  // Corr 1-2 South Wall (from x=2.5 to x=12)
-    this.addWall(7.25, 19.5, 9.5, 0.45, true);  // Corr 1-2 North Wall (from x=2.5 to x=12)
+    this.addWall(-2.5, 25.5, 9.5, 0.48, false); // West Wall (from z=20.75 to z=30.25)
+    this.addWall(2.5, 27.25, 6.0, 0.48, false); // East Wall (from z=24.25 to z=30.25)
+    this.addWall(0, 19.5, 5.5, 0.48, true);     // North Dead-end Wall
+    this.addWall(7.25, 24.5, 10.0, 0.48, true); // Corr 1-2 South Wall (from x=2.25 to x=12.25)
+    this.addWall(7.25, 19.5, 10.0, 0.48, true); // Corr 1-2 North Wall (from x=2.25 to x=12.25)
 
     // ------------------------------------------------------------------------
     // ROOM 2: EAST WING / ATIRGULLAR ZALI (x: [12, 22], z: [15, 29])
     // ------------------------------------------------------------------------
-    this.addWall(12, 26.75, 4.5, 0.45, false);  // West Wall South Wing (Doorway at z: [19.5, 24.5])
-    this.addWall(12, 17.25, 4.5, 0.45, false);  // West Wall North Wing
-    this.addWall(22, 22, 14.4, 0.45, false);    // East Wall (Painting #4)
-    this.addWall(17, 29, 10.4, 0.45, true);     // South Wall (Painting #3)
-    this.addWall(13.25, 15, 2.5, 0.45, true);   // North Wall West Wing (Doorway at x: [14.5, 19.5])
-    this.addWall(20.75, 15, 2.5, 0.45, true);   // North Wall East Wing
+    this.addWall(12, 26.75, 5.0, 0.48, false);  // West Wall South Wing (Doorway at z: [19.5, 24.5])
+    this.addWall(12, 17.25, 5.0, 0.48, false);  // West Wall North Wing
+    this.addWall(22, 22, 14.8, 0.48, false);    // East Wall (Painting #4)
+    this.addWall(17, 29, 10.8, 0.48, true);     // South Wall (Painting #3)
+    this.addWall(13.25, 15, 3.0, 0.48, true);   // North Wall West Wing (Doorway at x: [14.5, 19.5])
+    this.addWall(20.75, 15, 3.0, 0.48, true);   // North Wall East Wing
 
     // ------------------------------------------------------------------------
     // CORRIDOR 2-3 (x: [6, 19.5], z: [5.5, 15])
     // ------------------------------------------------------------------------
-    this.addWall(19.5, 11.5, 7.0, 0.45, false); // East Wall (from z=8 to z=15)
-    this.addWall(14.5, 12.75, 4.5, 0.45, false);// West Wall (from z=10.5 to z=15)
-    this.addWall(17, 5.5, 5.0, 0.45, true);     // North Dead-end Wall
-    this.addWall(10.25, 10.5, 8.5, 0.45, true); // Corr 2-3 South Wall (from x=6 to x=14.5)
-    this.addWall(10.25, 5.5, 8.5, 0.45, true);  // Corr 2-3 North Wall (from x=6 to x=14.5)
+    this.addWall(19.5, 11.5, 7.5, 0.48, false); // East Wall (from z=7.75 to z=15.25)
+    this.addWall(14.5, 12.75, 5.0, 0.48, false);// West Wall (from z=10.25 to z=15.25)
+    this.addWall(17, 5.5, 5.5, 0.48, true);     // North Dead-end Wall
+    this.addWall(10.25, 10.5, 9.0, 0.48, true); // Corr 2-3 South Wall (from x=5.75 to x=14.75)
+    this.addWall(10.25, 5.5, 9.0, 0.48, true);  // Corr 2-3 North Wall (from x=5.75 to x=14.75)
 
     // ------------------------------------------------------------------------
     // ROOM 3: CENTRAL ANGEL ROTUNDA (x: [-6, 6], z: [0, 16])
     // ------------------------------------------------------------------------
-    this.addWall(6, 2.75, 5.5, 0.45, false);    // East Wall North Wing (Doorway at z: [5.5, 10.5])
-    this.addWall(6, 13.25, 5.5, 0.45, false);   // East Wall South Wing
-    this.addWall(-6, 2.75, 5.5, 0.45, false);   // West Wall North Wing (Doorway at z: [5.5, 10.5])
-    this.addWall(-6, 13.25, 5.5, 0.45, false);  // West Wall South Wing
-    this.addWall(0, 0, 12.4, 0.45, true);       // North Wall (Painting #5)
-    this.addWall(0, 16, 12.4, 0.45, true);      // South Wall (Painting #6)
+    this.addWall(6, 2.75, 6.0, 0.48, false);    // East Wall North Wing (Doorway at z: [5.5, 10.5])
+    this.addWall(6, 13.25, 6.0, 0.48, false);   // East Wall South Wing
+    this.addWall(-6, 2.75, 6.0, 0.48, false);   // West Wall North Wing (Doorway at z: [5.5, 10.5])
+    this.addWall(-6, 13.25, 6.0, 0.48, false);  // West Wall South Wing
+    this.addWall(0, 0, 12.8, 0.48, true);       // North Wall (Painting #5)
+    this.addWall(0, 16, 12.8, 0.48, true);      // South Wall (Painting #6)
 
     // ------------------------------------------------------------------------
     // CORRIDOR 3-4 (x: [-12, -6], z: [5.5, 10.5])
     // ------------------------------------------------------------------------
-    this.addWall(-9, 5.5, 6.0, 0.45, true);     // North Wall
-    this.addWall(-9, 10.5, 6.0, 0.45, true);    // South Wall
+    this.addWall(-9, 5.5, 6.5, 0.48, true);     // North Wall (from x=-12.25 to x=-5.75)
+    this.addWall(-9, 10.5, 6.5, 0.48, true);    // South Wall (from x=-12.25 to x=-5.75)
 
     // ------------------------------------------------------------------------
     // ROOM 4: WEST WING / TOG'LAR ZALI (x: [-22, -12], z: [1, 15])
     // ------------------------------------------------------------------------
-    this.addWall(-12, 3.25, 4.5, 0.45, false);  // East Wall North Wing (Doorway at z: [5.5, 10.5])
-    this.addWall(-12, 12.75, 4.5, 0.45, false); // East Wall South Wing
-    this.addWall(-22, 8, 14.4, 0.45, false);    // West Wall (Painting #7)
-    this.addWall(-17, 15, 10.4, 0.45, true);    // South Wall (Painting #8)
-    this.addWall(-20.75, 1, 2.5, 0.45, true);   // North Wall West Wing (Doorway at x: [-19.5, -14.5])
-    this.addWall(-13.25, 1, 2.5, 0.45, true);   // North Wall East Wing
+    this.addWall(-12, 3.0, 5.0, 0.48, false);   // East Wall North Wing (Doorway at z: [5.5, 10.5])
+    this.addWall(-12, 13.0, 5.0, 0.48, false);  // East Wall South Wing
+    this.addWall(-22, 8, 14.8, 0.48, false);    // West Wall (Painting #7)
+    this.addWall(-17, 15, 10.8, 0.48, true);    // South Wall (Painting #8)
+    this.addWall(-20.75, 1, 3.0, 0.48, true);   // North Wall West Wing (Doorway at x: [-19.5, -14.5])
+    this.addWall(-13.25, 1, 3.0, 0.48, true);   // North Wall East Wing
 
     // ------------------------------------------------------------------------
     // CORRIDOR 4-5 (x: [-19.5, -6], z: [-14.5, 1])
     // ------------------------------------------------------------------------
-    this.addWall(-19.5, -5.5, 13.0, 0.45, false);// West Wall (from z=-12 to z=1)
-    this.addWall(-14.5, -4.25, 10.5, 0.45, false);// East Wall (from z=-9.5 to z=1)
-    this.addWall(-17, -14.5, 5.0, 0.45, true);  // North Dead-end Wall
-    this.addWall(-10.25, -14.5, 8.5, 0.45, true);// Corr 4-5 North Wall (from x=-14.5 to x=-6)
-    this.addWall(-10.25, -9.5, 8.5, 0.45, true); // Corr 4-5 South Wall (from x=-14.5 to x=-6)
+    this.addWall(-19.5, -5.5, 13.5, 0.48, false);// West Wall (from z=-12.25 to z=1.25)
+    this.addWall(-14.5, -4.25, 11.0, 0.48, false);// East Wall (from z=-9.75 to z=1.25)
+    this.addWall(-17, -14.5, 5.5, 0.48, true);  // North Dead-end Wall
+    this.addWall(-10.25, -14.5, 9.0, 0.48, true);// Corr 4-5 North Wall (from x=-14.75 to x=-5.75)
+    this.addWall(-10.25, -9.5, 9.0, 0.48, true); // Corr 4-5 South Wall (from x=-14.75 to x=-5.75)
 
     // ------------------------------------------------------------------------
     // ROOM 5: BOSPHORUS MARBLE PALACE (x: [-6, 6], z: [-18, -6])
     // ------------------------------------------------------------------------
-    this.addWall(-6, -16.25, 3.5, 0.45, false); // West Wall North Wing (Doorway at z: [-14.5, -9.5])
-    this.addWall(-6, -7.75, 3.5, 0.45, false);  // West Wall South Wing
-    this.addWall(6, -12, 12.4, 0.45, false);    // East Wall (Painting #10)
-    this.addWall(0, -6, 12.4, 0.45, true);      // South Wall (Painting #9)
-    this.addWall(-4.25, -18, 3.5, 0.45, true);  // North Wall West Wing (Portal at x: [-2.5, 2.5])
-    this.addWall(4.25, -18, 3.5, 0.45, true);   // North Wall East Wing
+    this.addWall(-6, -16.25, 4.0, 0.48, false); // West Wall North Wing (Doorway at z: [-14.5, -9.5])
+    this.addWall(-6, -7.75, 4.0, 0.48, false);  // West Wall South Wing
+    this.addWall(6, -12, 12.8, 0.48, false);    // East Wall (Painting #10)
+    this.addWall(0, -6, 12.8, 0.48, true);      // South Wall (Painting #9)
+    this.addWall(-4.25, -18, 4.0, 0.48, true);  // North Wall West Wing (Portal at x: [-2.25, 2.25])
+    this.addWall(4.25, -18, 4.0, 0.48, true);   // North Wall East Wing
 
     // ------------------------------------------------------------------------
     // ROOM 6: GOLDEN SUNSET (x: [-6, 6], z: [-36, -20])
     // ------------------------------------------------------------------------
-    this.addWall(-4.25, -20, 3.5, 0.45, true);  // South Wall West Wing
-    this.addWall(4.25, -20, 3.5, 0.45, true);   // South Wall East Wing
-    this.addWall(-6, -28, 16.4, 0.45, false);   // West Wall (Painting #11)
-    this.addWall(6, -28, 16.4, 0.45, false);    // East Wall (Painting #12)
-    this.addWall(-4.5, -36, 3.0, 0.45, true);   // North Wall West Wing (Triumphal Portal at x: [-3, 3])
-    this.addWall(4.5, -36, 3.0, 0.45, true);    // North Wall East Wing
+    this.addWall(-4.25, -20, 4.0, 0.48, true);  // South Wall West Wing
+    this.addWall(4.25, -20, 4.0, 0.48, true);   // South Wall East Wing
+    this.addWall(-6, -28, 16.8, 0.48, false);   // West Wall (Painting #11)
+    this.addWall(6, -28, 16.8, 0.48, false);    // East Wall (Painting #12)
+    this.addWall(-4.5, -36, 3.5, 0.48, true);   // North Wall West Wing (Triumphal Portal at x: [-2.75, 2.75])
+    this.addWall(4.5, -36, 3.5, 0.48, true);    // North Wall East Wing
 
     // ------------------------------------------------------------------------
     // ROOM 7: MONUMENTAL SANCTUARY (x: [-7, 7], z: [-57, -39])
     // ------------------------------------------------------------------------
-    this.addWall(-5, -39, 4.0, 0.45, true);     // South Altar Wall West Wing
-    this.addWall(5, -39, 4.0, 0.45, true);      // South Altar Wall East Wing
-    this.addWall(-7, -48, 18.4, 0.45, false);   // West Wall
-    this.addWall(7, -48, 18.4, 0.45, false);    // East Wall
-    this.addWall(0, -57, 14.4, 0.45, true);     // North Sanctuary Wall (Painting #13)
+    this.addWall(-5, -39, 4.5, 0.48, true);     // South Altar Wall West Wing
+    this.addWall(5, -39, 4.5, 0.48, true);      // South Altar Wall East Wing
+    this.addWall(-7, -48, 18.8, 0.48, false);   // West Wall
+    this.addWall(7, -48, 18.8, 0.48, false);    // East Wall
+    this.addWall(0, -57, 14.8, 0.48, true);     // North Sanctuary Wall (Painting #13)
   }
 
   // ==========================================================================
@@ -373,13 +389,32 @@ export class Museum {
     const group = new THREE.Group();
     const halfW = width / 2;
 
+    // 1. SOLID DAMASK LINTEL WALL ABOVE ARCHWAY (Seals completely to ceiling at y = 7.5m!)
+    const lintelH = this.wallHeight - 5.0; // 2.5m tall lintel
+    const lintelGeo = new THREE.BoxGeometry(width + 1.2, lintelH, 0.48);
+    const lintel = new THREE.Mesh(lintelGeo, this.upperWallMaterial);
+    lintel.position.set(0, 5.0 + lintelH / 2, 0); // centered at y = 6.25m -> spans y = [5.0m, 7.5m]
+    group.add(lintel);
+
+    // Gold crown cornice along ceiling on lintel
+    const cornGeo = new THREE.BoxGeometry(width + 1.26, 0.28, 0.62);
+    const corn = new THREE.Mesh(cornGeo, this.goldMaterial);
+    corn.position.set(0, this.wallHeight - 0.14, 0);
+    group.add(corn);
+
+    // Gold arch rail at bottom of lintel (y = 5.0m)
+    const railGeo = new THREE.BoxGeometry(width + 1.22, 0.16, 0.58);
+    const rail = new THREE.Mesh(railGeo, this.goldMaterial);
+    rail.position.set(0, 5.0, 0);
+    group.add(rail);
+
     // Flanking Imperial Emerald Marble Columns
     [-halfW, halfW].forEach(px => {
       const col = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.32, 0.36, 6.2, 16),
+        new THREE.CylinderGeometry(0.32, 0.36, 5.0, 16),
         new THREE.MeshStandardMaterial({ map: this.marbleTexture, roughness: 0.3 })
       );
-      col.position.set(px, 3.1, 0);
+      col.position.set(px, 2.5, 0);
       group.add(col);
 
       // Gold plinth & capital
@@ -388,16 +423,16 @@ export class Museum {
       group.add(base);
 
       const cap = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.45, 0.9), this.goldMaterial);
-      cap.position.set(px, 6.2, 0);
+      cap.position.set(px, 5.0, 0);
       group.add(cap);
     });
 
-    // Gilded Arch Header & Cornice
+    // Gilded Arch Header & Cornice at y = 5.25m
     const archTop = new THREE.Mesh(new THREE.BoxGeometry(width + 1.2, 0.65, 0.6), this.goldMaterial);
-    archTop.position.set(0, 6.5, 0);
+    archTop.position.set(0, 5.25, 0);
     group.add(archTop);
 
-    // Gilded Crown Plaque with Room Title
+    // Gilded Crown Plaque with Room Title on BOTH sides of the portal
     const plaqueCanvas = document.createElement('canvas');
     plaqueCanvas.width = 1024;
     plaqueCanvas.height = 140;
@@ -420,9 +455,17 @@ export class Museum {
       roughness: 0.3,
       metalness: 0.6
     });
-    const plaqueMesh = new THREE.Mesh(new THREE.PlaneGeometry(width * 0.75, 0.48), pMat);
-    plaqueMesh.position.set(0, 6.5, 0.32);
-    group.add(plaqueMesh);
+
+    // Front plaque
+    const plaqueFront = new THREE.Mesh(new THREE.PlaneGeometry(width * 0.75, 0.48), pMat);
+    plaqueFront.position.set(0, 5.25, 0.32);
+    group.add(plaqueFront);
+
+    // Back plaque
+    const plaqueBack = new THREE.Mesh(new THREE.PlaneGeometry(width * 0.75, 0.48), pMat);
+    plaqueBack.rotation.y = Math.PI;
+    plaqueBack.position.set(0, 5.25, -0.32);
+    group.add(plaqueBack);
 
     return group;
   }
@@ -788,8 +831,27 @@ export class Museum {
       this.scene.add(light);
     });
 
-    // Subtle global romantic ambient light
-    const amb = new THREE.AmbientLight(0x280e15, 0.85);
+    // Warm gallery corridor and transition portal lights
+    const corridorLights = [
+      { x: 0, z: 25, color: 0xffe8c8, intensity: 2.0, dist: 14 },     // Corr 1 North
+      { x: 5, z: 22, color: 0xffe8c8, intensity: 2.0, dist: 16 },     // Corr 1-2 East
+      { x: 17, z: 11, color: 0xffe8c8, intensity: 2.0, dist: 14 },    // Corr 2-3 North
+      { x: 10, z: 8, color: 0xffe8c8, intensity: 2.0, dist: 15 },     // Corr 2-3 West
+      { x: -9, z: 8, color: 0xffe8c8, intensity: 2.2, dist: 15 },     // Corr 3-4 West
+      { x: -17, z: -5, color: 0xffe8c8, intensity: 2.0, dist: 16 },   // Corr 4-5 North
+      { x: -10, z: -12, color: 0xffe8c8, intensity: 2.0, dist: 15 },  // Corr 4-5 East
+      { x: 0, z: -19, color: 0xffeed0, intensity: 2.2, dist: 14 },    // Portal 5-6
+      { x: 0, z: -37.5, color: 0xfffaea, intensity: 2.5, dist: 15 }   // Portal 6-7
+    ];
+
+    corridorLights.forEach(cl => {
+      const pLight = new THREE.PointLight(cl.color, cl.intensity, cl.dist, 1.2);
+      pLight.position.set(cl.x, this.wallHeight - 1.5, cl.z);
+      this.scene.add(pLight);
+    });
+
+    // Subtle global romantic ambient light (rich warm palace glow)
+    const amb = new THREE.AmbientLight(0x3a1820, 1.2);
     this.scene.add(amb);
   }
 
