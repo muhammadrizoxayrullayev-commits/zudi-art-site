@@ -41,22 +41,22 @@ export class Player {
 
     // Palace Labyrinth Walkable Zones
     this.walkableAreas = [
-      { minX: -5.8, maxX: 5.8, minZ: 30.2, maxZ: 41.8 },    // Room 1: Vestibule
-      { minX: -2.0, maxX: 2.0, minZ: 21.0, maxZ: 30.5 },    // Corr 1: North
-      { minX: 1.8, maxX: 11.2, minZ: 19.2, maxZ: 22.8 },    // Corr 1-2: East
-      { minX: 6.2, maxX: 15.8, minZ: 13.2, maxZ: 24.8 },    // Room 2: East Wing
-      { minX: 9.0, maxX: 12.8, minZ: 7.0, maxZ: 14.0 },     // Corr 2-Exit: South
-      { minX: -1.2, maxX: 11.0, minZ: 4.2, maxZ: 7.8 },     // Corr 2-3: West to Room 3
-      { minX: -6.8, maxX: 6.8, minZ: -2.8, maxZ: 10.8 },    // Room 3: Central Rotunda
-      { minX: -14.0, maxX: -6.8, minZ: 1.8, maxZ: 5.2 },    // Corr 3-4: West to Room 4
-      { minX: -18.8, maxX: -9.2, minZ: -8.8, maxZ: 2.8 },   // Room 4: West Wing
-      { minX: -15.8, maxX: -12.2, minZ: -18.0, maxZ: -8.8 },// Corr 4-5A: North
-      { minX: -14.0, maxX: 0.2, minZ: -19.8, maxZ: -16.2 }, // Corr 4-5B: East to Room 5
-      { minX: -5.8, maxX: 5.8, minZ: -25.8, maxZ: -14.2 },  // Room 5: Bosphorus Hall
-      { minX: -2.5, maxX: 2.5, minZ: -28.0, maxZ: -25.8 },  // Corr 5-6: North
-      { minX: -5.8, maxX: 5.8, minZ: -37.8, maxZ: -26.0 },  // Room 6: Golden Sunset Hall
-      { minX: -3.2, maxX: 3.2, minZ: -40.0, maxZ: -37.8 },  // Corr 6-7: Triumphal Arch
-      { minX: -7.8, maxX: 7.8, minZ: -51.8, maxZ: -38.0 }   // Room 7: Sanctuary
+      { minX: -5.6, maxX: 5.6, minZ: 30.4, maxZ: 41.6 },      // Room 1: Vestibule
+      { minX: -2.3, maxX: 2.3, minZ: 21.8, maxZ: 30.6 },      // Corr 1 North
+      { minX: -2.3, maxX: 12.6, minZ: 19.8, maxZ: 24.2 },     // Corr 1-2 East
+      { minX: 12.4, maxX: 21.6, minZ: 15.4, maxZ: 28.6 },     // Room 2: East Wing
+      { minX: 14.8, maxX: 19.2, minZ: 7.8, maxZ: 15.6 },      // Corr 2-3 North
+      { minX: 5.8, maxX: 19.2, minZ: 5.8, maxZ: 10.2 },       // Corr 2-3 West
+      { minX: -5.6, maxX: 5.6, minZ: 0.4, maxZ: 15.6 },       // Room 3: Central Rotunda
+      { minX: -12.6, maxX: -5.8, minZ: 5.8, maxZ: 10.2 },     // Corr 3-4 West
+      { minX: -21.6, maxX: -12.4, minZ: 1.4, maxZ: 14.6 },    // Room 4: West Wing
+      { minX: -19.2, maxX: -14.8, minZ: -12.2, maxZ: 1.6 },   // Corr 4-5 North
+      { minX: -19.2, maxX: -5.8, minZ: -14.2, maxZ: -9.8 },   // Corr 4-5 East
+      { minX: -5.6, maxX: 5.6, minZ: -17.6, maxZ: -6.4 },     // Room 5: Bosphorus
+      { minX: -2.3, maxX: 2.3, minZ: -20.6, maxZ: -17.4 },    // Portal 5-6
+      { minX: -5.6, maxX: 5.6, minZ: -35.6, maxZ: -20.4 },    // Room 6: Golden Sunset
+      { minX: -2.8, maxX: 2.8, minZ: -39.6, maxZ: -35.4 },    // Portal 6-7 (Triumphal)
+      { minX: -6.6, maxX: 6.6, minZ: -56.6, maxZ: -39.4 }     // Room 7: Sanctuary
     ];
 
     // Keyboard & Direction States
@@ -337,6 +337,14 @@ export class Player {
   }
 
   isInsideWalkable(x, z) {
+    // 1. Physical Obstacle: Central Classical Statue in Room 3 (Center 0, 8, radius 2.3m)
+    const statueDx = x - 0;
+    const statueDz = z - 8;
+    if (statueDx * statueDx + statueDz * statueDz < 2.3 * 2.3) {
+      return false;
+    }
+
+    // 2. Check walkable palace corridors & rooms
     for (let i = 0; i < this.walkableAreas.length; i++) {
       const b = this.walkableAreas[i];
       if (x >= b.minX && x <= b.maxX && z >= b.minZ && z <= b.maxZ) {

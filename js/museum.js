@@ -130,22 +130,38 @@ export class Museum {
 
     // List of room & corridor floors: [minX, maxX, minZ, maxZ, roomName]
     const zones = [
-      { minX: -6.5, maxX: 6.5, minZ: 29.5, maxZ: 42.5, name: 'Room 1: Vestibule' },
-      { minX: -2.5, maxX: 2.5, minZ: 19.5, maxZ: 30.5, name: 'Corr 1: North' },
-      { minX: 1.5, maxX: 11.5, minZ: 18.5, maxZ: 23.5, name: 'Corr 1-2: East' },
-      { minX: 5.5, maxX: 16.5, minZ: 12.5, maxZ: 25.5, name: 'Room 2: East Wing' },
-      { minX: 8.5, maxX: 13.5, minZ: 6.5, maxZ: 14.5, name: 'Corr 2-Exit' },
-      { minX: -1.5, maxX: 11.5, minZ: 3.5, maxZ: 8.5, name: 'Corr 2-3: West' },
-      { minX: -7.5, maxX: 7.5, minZ: -3.5, maxZ: 11.5, name: 'Room 3: Rotunda' },
-      { minX: -14.5, maxX: -6.5, minZ: 1.5, maxZ: 5.5, name: 'Corr 3-4: West' },
-      { minX: -19.5, maxX: -8.5, minZ: -9.5, maxZ: 3.5, name: 'Room 4: West Wing' },
-      { minX: -16.5, maxX: -11.5, minZ: -18.5, maxZ: -8.5, name: 'Corr 4-5A: North' },
-      { minX: -14.5, maxX: 0.5, minZ: -20.5, maxZ: -15.5, name: 'Corr 4-5B: East' },
-      { minX: -6.5, maxX: 6.5, minZ: -26.5, maxZ: -13.5, name: 'Room 5: Bosphorus' },
-      { minX: -2.8, maxX: 2.8, minZ: -28.5, maxZ: -25.5, name: 'Corr 5-6: North' },
-      { minX: -6.5, maxX: 6.5, minZ: -38.5, maxZ: -26.5, name: 'Room 6: Golden Sunset' },
-      { minX: -3.5, maxX: 3.5, minZ: -40.5, maxZ: -37.5, name: 'Corr 6-7: Arch' },
-      { minX: -8.5, maxX: 8.5, minZ: -52.5, maxZ: -38.5, name: 'Room 7: Sanctuary' }
+      // 1. Room 1: Vestibule / Kirish Rotundasi
+      { minX: -6.4, maxX: 6.4, minZ: 29.8, maxZ: 42.4, name: 'Room 1: Vestibule' },
+      // 2. Corr 1 North
+      { minX: -2.7, maxX: 2.7, minZ: 21.8, maxZ: 30.5, name: 'Corr 1 North' },
+      // 3. Corr 1-2 East
+      { minX: -2.7, maxX: 12.5, minZ: 19.3, maxZ: 24.7, name: 'Corr 1-2 East' },
+      // 4. Room 2: East Wing / Atirgullar Zali
+      { minX: 11.8, maxX: 22.4, minZ: 14.8, maxZ: 29.4, name: 'Room 2: East Wing' },
+      // 5. Corr 2-3 North
+      { minX: 14.3, maxX: 19.7, minZ: 7.8, maxZ: 15.5, name: 'Corr 2-3 North' },
+      // 6. Corr 2-3 West
+      { minX: 5.5, maxX: 19.7, minZ: 5.3, maxZ: 10.7, name: 'Corr 2-3 West' },
+      // 7. Room 3: Central Angel Rotunda
+      { minX: -6.4, maxX: 6.4, minZ: -0.2, maxZ: 16.4, name: 'Room 3: Central Rotunda' },
+      // 8. Corr 3-4 West
+      { minX: -12.5, maxX: -5.5, minZ: 5.3, maxZ: 10.7, name: 'Corr 3-4 West' },
+      // 9. Room 4: West Wing / Tog'lar Zali
+      { minX: -22.4, maxX: -11.8, minZ: 0.8, maxZ: 15.4, name: 'Room 4: West Wing' },
+      // 10. Corr 4-5 North
+      { minX: -19.7, maxX: -14.3, minZ: -12.5, maxZ: 1.5, name: 'Corr 4-5 North' },
+      // 11. Corr 4-5 East
+      { minX: -19.7, maxX: -5.5, minZ: -14.7, maxZ: -9.3, name: 'Corr 4-5 East' },
+      // 12. Room 5: Bosphorus Marble Palace
+      { minX: -6.4, maxX: 6.4, minZ: -18.4, maxZ: -5.8, name: 'Room 5: Bosphorus' },
+      // 13. Portal 5-6
+      { minX: -2.7, maxX: 2.7, minZ: -20.5, maxZ: -17.5, name: 'Portal 5-6' },
+      // 14. Room 6: Golden Sunset Hall
+      { minX: -6.4, maxX: 6.4, minZ: -36.4, maxZ: -19.8, name: 'Room 6: Golden Sunset' },
+      // 15. Triumphal Portal 6-7
+      { minX: -3.3, maxX: 3.3, minZ: -39.5, maxZ: -35.5, name: 'Portal 6-7' },
+      // 16. Room 7: Sanctuary of Eternal Love
+      { minX: -7.4, maxX: 7.4, minZ: -57.4, maxZ: -38.8, name: 'Room 7: Sanctuary' }
     ];
 
     // Build floors & ceilings for each zone
@@ -230,117 +246,105 @@ export class Museum {
 
   buildLabyrinthWalls() {
     // ------------------------------------------------------------------------
-    // ROOM 1: VESTIBULE (x: [-6, 6], z: [30, 42])
+    // ROOM 1: VESTIBULE / KIRISH ROTUNDASI (x: [-6, 6], z: [30, 42])
     // ------------------------------------------------------------------------
-    // South Wall (Back of entrance)
-    this.addWall(0, 42.2, 12.4, 0.45, true);
-    // Left & Right Walls
-    this.addWall(-6.2, 36, 12.4, 0.45, false);
-    this.addWall(6.2, 36, 12.4, 0.45, false);
-    // North Wall wings flanking Doorway 1
-    this.addWall(-4.2, 29.8, 3.8, 0.45, true);
-    this.addWall(4.2, 29.8, 3.8, 0.45, true);
+    this.addWall(0, 42, 12.4, 0.45, true);       // South Entrance Wall
+    this.addWall(-6, 36, 12.4, 0.45, false);    // West Wall (Painting #1)
+    this.addWall(6, 36, 12.4, 0.45, false);     // East Wall (Painting #2)
+    this.addWall(-4.25, 30, 3.5, 0.45, true);   // North Wall Left Wing (Doorway at x: [-2.5, 2.5])
+    this.addWall(4.25, 30, 3.5, 0.45, true);    // North Wall Right Wing
 
     // ------------------------------------------------------------------------
-    // CORRIDOR 1 & CORRIDOR 1-2 (x: [-2.2, 2.2], z: [21, 30] -> x: [2.2, 11])
+    // CORRIDOR 1-2 (x: [-2.5, 12], z: [19.5, 30])
     // ------------------------------------------------------------------------
-    this.addWall(-2.4, 25.5, 9.0, 0.45, false);
-    this.addWall(2.4, 26.5, 7.0, 0.45, false);
-    // North dead-end of Corr 1
-    this.addWall(0, 20.8, 4.8, 0.45, true);
-    // Corr 1-2 horizontal walls
-    this.addWall(6.6, 23.2, 8.8, 0.45, true);
-    this.addWall(6.6, 18.8, 8.8, 0.45, true);
+    this.addWall(-2.5, 26, 8.0, 0.45, false);   // West Wall (from z=22 to z=30)
+    this.addWall(2.5, 27.25, 5.5, 0.45, false); // East Wall (from z=24.5 to z=30)
+    this.addWall(0, 19.5, 5.0, 0.45, true);     // North Dead-end Wall
+    this.addWall(7.25, 24.5, 9.5, 0.45, true);  // Corr 1-2 South Wall (from x=2.5 to x=12)
+    this.addWall(7.25, 19.5, 9.5, 0.45, true);  // Corr 1-2 North Wall (from x=2.5 to x=12)
 
     // ------------------------------------------------------------------------
-    // ROOM 2: EAST WING / ATIRGULLAR ZALI (x: [6, 16], z: [13, 25])
+    // ROOM 2: EAST WING / ATIRGULLAR ZALI (x: [12, 22], z: [15, 29])
     // ------------------------------------------------------------------------
-    this.addWall(16.2, 19, 12.4, 0.45, false); // East Wall
-    this.addWall(11, 25.2, 10.4, 0.45, true);  // South Wall
-    // North Wall with doorway
-    this.addWall(7.5, 12.8, 3.0, 0.45, true);
-    this.addWall(14.5, 12.8, 3.0, 0.45, true);
-    // West Wall wings
-    this.addWall(5.8, 24, 2.4, 0.45, false);
-    this.addWall(5.8, 16, 6.0, 0.45, false);
+    this.addWall(12, 26.75, 4.5, 0.45, false);  // West Wall South Wing (Doorway at z: [19.5, 24.5])
+    this.addWall(12, 17.25, 4.5, 0.45, false);  // West Wall North Wing
+    this.addWall(22, 22, 14.4, 0.45, false);    // East Wall (Painting #4)
+    this.addWall(17, 29, 10.4, 0.45, true);     // South Wall (Painting #3)
+    this.addWall(13.25, 15, 2.5, 0.45, true);   // North Wall West Wing (Doorway at x: [14.5, 19.5])
+    this.addWall(20.75, 15, 2.5, 0.45, true);   // North Wall East Wing
 
     // ------------------------------------------------------------------------
-    // CORRIDOR 2-EXIT & CORRIDOR 2-3 (x: [9, 13], z: [7, 13] -> x: [-1, 11])
+    // CORRIDOR 2-3 (x: [6, 19.5], z: [5.5, 15])
     // ------------------------------------------------------------------------
-    this.addWall(13.2, 10, 6.0, 0.45, false); // East side
-    this.addWall(8.8, 10.5, 5.0, 0.45, false); // West side
-    // Corr 2-3 horizontal walls
-    this.addWall(5.0, 8.2, 8.0, 0.45, true);
-    this.addWall(5.0, 3.8, 8.0, 0.45, true);
+    this.addWall(19.5, 11.5, 7.0, 0.45, false); // East Wall (from z=8 to z=15)
+    this.addWall(14.5, 12.75, 4.5, 0.45, false);// West Wall (from z=10.5 to z=15)
+    this.addWall(17, 5.5, 5.0, 0.45, true);     // North Dead-end Wall
+    this.addWall(10.25, 10.5, 8.5, 0.45, true); // Corr 2-3 South Wall (from x=6 to x=14.5)
+    this.addWall(10.25, 5.5, 8.5, 0.45, true);  // Corr 2-3 North Wall (from x=6 to x=14.5)
 
     // ------------------------------------------------------------------------
-    // ROOM 3: CENTRAL ANGEL ROTUNDA (x: [-7, 7], z: [-3, 11])
+    // ROOM 3: CENTRAL ANGEL ROTUNDA (x: [-6, 6], z: [0, 16])
     // ------------------------------------------------------------------------
-    this.addWall(0, 11.2, 14.4, 0.45, true); // South Wall
-    // East Wall wings flanking Corr 2-3 entry
-    this.addWall(7.2, 9.5, 3.4, 0.45, false);
-    this.addWall(7.2, 0.5, 7.0, 0.45, false);
-    // West Wall wings flanking Corr 3-4 exit
-    this.addWall(-7.2, 8.5, 5.4, 0.45, false);
-    this.addWall(-7.2, -0.5, 5.0, 0.45, false);
-    // North Wall
-    this.addWall(0, -3.2, 14.4, 0.45, true);
+    this.addWall(6, 2.75, 5.5, 0.45, false);    // East Wall North Wing (Doorway at z: [5.5, 10.5])
+    this.addWall(6, 13.25, 5.5, 0.45, false);   // East Wall South Wing
+    this.addWall(-6, 2.75, 5.5, 0.45, false);   // West Wall North Wing (Doorway at z: [5.5, 10.5])
+    this.addWall(-6, 13.25, 5.5, 0.45, false);  // West Wall South Wing
+    this.addWall(0, 0, 12.4, 0.45, true);       // North Wall (Painting #5)
+    this.addWall(0, 16, 12.4, 0.45, true);      // South Wall (Painting #6)
 
     // ------------------------------------------------------------------------
-    // CORRIDOR 3-4 (x: [-14, -7], z: [1.5, 5.5])
+    // CORRIDOR 3-4 (x: [-12, -6], z: [5.5, 10.5])
     // ------------------------------------------------------------------------
-    this.addWall(-10.5, 5.8, 7.0, 0.45, true);
-    this.addWall(-10.5, 1.2, 7.0, 0.45, true);
+    this.addWall(-9, 5.5, 6.0, 0.45, true);     // North Wall
+    this.addWall(-9, 10.5, 6.0, 0.45, true);    // South Wall
 
     // ------------------------------------------------------------------------
-    // ROOM 4: WEST WING / TOG'LAR ZALI (x: [-19, -9], z: [-9, 3])
+    // ROOM 4: WEST WING / TOG'LAR ZALI (x: [-22, -12], z: [1, 15])
     // ------------------------------------------------------------------------
-    this.addWall(-19.2, -3, 12.4, 0.45, false); // West Wall
-    this.addWall(-14, 3.2, 10.4, 0.45, true);   // South Wall
-    // East Wall wings
-    this.addWall(-8.8, 0, 4.0, 0.45, false);
-    this.addWall(-8.8, -6, 6.0, 0.45, false);
-    // North Wall with doorway
-    this.addWall(-10.5, -9.2, 3.0, 0.45, true);
-    this.addWall(-17.5, -9.2, 3.0, 0.45, true);
+    this.addWall(-12, 3.25, 4.5, 0.45, false);  // East Wall North Wing (Doorway at z: [5.5, 10.5])
+    this.addWall(-12, 12.75, 4.5, 0.45, false); // East Wall South Wing
+    this.addWall(-22, 8, 14.4, 0.45, false);    // West Wall (Painting #7)
+    this.addWall(-17, 15, 10.4, 0.45, true);    // South Wall (Painting #8)
+    this.addWall(-20.75, 1, 2.5, 0.45, true);   // North Wall West Wing (Doorway at x: [-19.5, -14.5])
+    this.addWall(-13.25, 1, 2.5, 0.45, true);   // North Wall East Wing
 
     // ------------------------------------------------------------------------
-    // CORRIDOR 4-5A & 4-5B (North -> East into Room 5)
+    // CORRIDOR 4-5 (x: [-19.5, -6], z: [-14.5, 1])
     // ------------------------------------------------------------------------
-    this.addWall(-16.2, -13.5, 9.0, 0.45, false);
-    this.addWall(-11.8, -13.0, 8.0, 0.45, false);
-    // Corr 4-5B horizontal walls
-    this.addWall(-7.0, -15.8, 14.0, 0.45, true);
-    this.addWall(-7.0, -20.2, 14.0, 0.45, true);
+    this.addWall(-19.5, -5.5, 13.0, 0.45, false);// West Wall (from z=-12 to z=1)
+    this.addWall(-14.5, -4.25, 10.5, 0.45, false);// East Wall (from z=-9.5 to z=1)
+    this.addWall(-17, -14.5, 5.0, 0.45, true);  // North Dead-end Wall
+    this.addWall(-10.25, -14.5, 8.5, 0.45, true);// Corr 4-5 North Wall (from x=-14.5 to x=-6)
+    this.addWall(-10.25, -9.5, 8.5, 0.45, true); // Corr 4-5 South Wall (from x=-14.5 to x=-6)
 
     // ------------------------------------------------------------------------
-    // ROOM 5: BOSPHORUS MARBLE PALACE (x: [-6, 6], z: [-26, -14])
+    // ROOM 5: BOSPHORUS MARBLE PALACE (x: [-6, 6], z: [-18, -6])
     // ------------------------------------------------------------------------
-    this.addWall(0, -13.8, 12.4, 0.45, true); // South Wall
-    // West Wall with doorway from Corr 4-5B
-    this.addWall(-6.2, -15, 2.4, 0.45, false);
-    this.addWall(-6.2, -23, 6.0, 0.45, false);
-    // East Wall
-    this.addWall(6.2, -20, 12.4, 0.45, false);
-    // North Wall with doorway
-    this.addWall(-4.2, -26.2, 4.0, 0.45, true);
-    this.addWall(4.2, -26.2, 4.0, 0.45, true);
+    this.addWall(-6, -16.25, 3.5, 0.45, false); // West Wall North Wing (Doorway at z: [-14.5, -9.5])
+    this.addWall(-6, -7.75, 3.5, 0.45, false);  // West Wall South Wing
+    this.addWall(6, -12, 12.4, 0.45, false);    // East Wall (Painting #10)
+    this.addWall(0, -6, 12.4, 0.45, true);      // South Wall (Painting #9)
+    this.addWall(-4.25, -18, 3.5, 0.45, true);  // North Wall West Wing (Portal at x: [-2.5, 2.5])
+    this.addWall(4.25, -18, 3.5, 0.45, true);   // North Wall East Wing
 
     // ------------------------------------------------------------------------
-    // CORRIDOR 5-6 & ROOM 6: GOLDEN SUNSET (x: [-6, 6], z: [-38, -26])
+    // ROOM 6: GOLDEN SUNSET (x: [-6, 6], z: [-36, -20])
     // ------------------------------------------------------------------------
-    this.addWall(-6.2, -32, 12.4, 0.45, false);
-    this.addWall(6.2, -32, 12.4, 0.45, false);
-    // North Wall of Room 6 flanking Triumphal Arch
-    this.addWall(-4.8, -38.2, 3.4, 0.45, true);
-    this.addWall(4.8, -38.2, 3.4, 0.45, true);
+    this.addWall(-4.25, -20, 3.5, 0.45, true);  // South Wall West Wing
+    this.addWall(4.25, -20, 3.5, 0.45, true);   // South Wall East Wing
+    this.addWall(-6, -28, 16.4, 0.45, false);   // West Wall (Painting #11)
+    this.addWall(6, -28, 16.4, 0.45, false);    // East Wall (Painting #12)
+    this.addWall(-4.5, -36, 3.0, 0.45, true);   // North Wall West Wing (Triumphal Portal at x: [-3, 3])
+    this.addWall(4.5, -36, 3.0, 0.45, true);    // North Wall East Wing
 
     // ------------------------------------------------------------------------
-    // ROOM 7: MONUMENTAL SANCTUARY (x: [-8, 8], z: [-52, -38])
+    // ROOM 7: MONUMENTAL SANCTUARY (x: [-7, 7], z: [-57, -39])
     // ------------------------------------------------------------------------
-    this.addWall(-8.2, -45, 14.4, 0.45, false); // West Wall
-    this.addWall(8.2, -45, 14.4, 0.45, false);  // East Wall
-    this.addWall(0, -52.2, 16.4, 0.45, true);   // Far End North Wall
+    this.addWall(-5, -39, 4.0, 0.45, true);     // South Altar Wall West Wing
+    this.addWall(5, -39, 4.0, 0.45, true);      // South Altar Wall East Wing
+    this.addWall(-7, -48, 18.4, 0.45, false);   // West Wall
+    this.addWall(7, -48, 18.4, 0.45, false);    // East Wall
+    this.addWall(0, -57, 14.4, 0.45, true);     // North Sanctuary Wall (Painting #13)
   }
 
   // ==========================================================================
@@ -348,13 +352,13 @@ export class Museum {
   // ==========================================================================
   buildLabyrinthPortals() {
     const archways = [
-      { x: 0, z: 29.8, rotY: 0, width: 4.4, title: '✨ II. SHARQIY QANOTGA YO\'L ✨' },
-      { x: 5.8, z: 21, rotY: Math.PI / 2, width: 4.0, title: '🌹 II. ATIRGULLAR ZALI 🌹' },
-      { x: 7.2, z: 6, rotY: Math.PI / 2, width: 4.0, title: '🕊️ III. FARISHTA ROTUNDASI 🕊️' },
-      { x: -7.2, z: 3.5, rotY: Math.PI / 2, width: 4.0, title: '🏔️ IV. TOG\'LAR ZALI 🏔️' },
-      { x: -6.2, z: -18, rotY: Math.PI / 2, width: 4.0, title: '🌊 V. BOSFOR MARMAR QASRI 🌊' },
-      { x: 0, z: -26.2, rotY: 0, width: 4.8, title: '🌅 VI. OLTIN SHAFAQ QASRI 🌅' },
-      { x: 0, z: -38.2, rotY: 0, width: 6.4, title: '👑 VII. ABADIY MUHABBAT MEHROBI 👑' }
+      { x: 0, z: 30, rotY: 0, width: 4.8, title: '✨ I. SHARQIY QANOTGA YO\'L ✨' },
+      { x: 12, z: 22, rotY: Math.PI / 2, width: 4.8, title: '🌹 II. ATIRGULLAR ZALI 🌹' },
+      { x: 6, z: 8, rotY: Math.PI / 2, width: 4.8, title: '🕊️ III. FARISHTA ROTUNDASI 🕊️' },
+      { x: -6, z: 8, rotY: Math.PI / 2, width: 4.8, title: '🏔️ IV. TOG\'LAR ZALI 🏔️' },
+      { x: -6, z: -12, rotY: Math.PI / 2, width: 4.8, title: '🌊 V. BOSFOR MARMAR QASRI 🌊' },
+      { x: 0, z: -19, rotY: 0, width: 4.8, title: '🌅 VI. OLTIN SHAFAQ QASRI 🌅' },
+      { x: 0, z: -37.5, rotY: 0, width: 5.8, title: '👑 VII. ABADIY MUHABBAT MEHROBI 👑' }
     ];
 
     archways.forEach(a => {
@@ -542,18 +546,18 @@ export class Museum {
   // CLASSICAL MARBLE SCULPTURES & BUSTS
   // ==========================================================================
   buildStatues() {
-    // 1. Centerpiece: Winged Cupid & Psyche Statue in Room 3 (Rotunda)
+    // 1. Centerpiece: Classical Marble Statue on Circular Dais in Room 3 (Rotunda center: 0, 8)
     const angelStatue = this.createAngelStatue();
-    angelStatue.position.set(0, 0, 4);
+    angelStatue.position.set(0, 0, 8);
     angelStatue.userData = { type: 'statue', data: DEFAULT_STATUES[0] };
     this.scene.add(angelStatue);
     this.interactiveObjects.push(angelStatue);
 
     // 2. Classical Marble Busts on Green Marble Pedestals in key rooms
     const bustPlacements = [
-      { x: 11, z: 24.2, rotY: Math.PI, data: DEFAULT_STATUES[1] }, // Room 2: Aphrodite
-      { x: -14, z: -8.2, rotY: 0, data: DEFAULT_STATUES[2] },       // Room 4: Apollo
-      { x: 0, z: -14.8, rotY: 0, data: DEFAULT_STATUES[3] }        // Room 5: Hermes
+      { x: 17, z: 16.5, rotY: 0, data: DEFAULT_STATUES[1] },        // Room 2: Aphrodite
+      { x: -17, z: 2.5, rotY: 0, data: DEFAULT_STATUES[2] },        // Room 4: Apollo
+      { x: 0, z: -16.5, rotY: 0, data: DEFAULT_STATUES[3] }         // Room 5: Hermes
     ];
 
     bustPlacements.forEach(b => {
@@ -601,11 +605,12 @@ export class Museum {
 
     // 3. Red Velvet Stately Benches in each chamber
     const benchPlacements = [
-      { x: 0, z: 39 },    // Room 1
-      { x: 11, z: 22 },   // Room 2
-      { x: -14, z: -6 },  // Room 4
-      { x: 0, z: -23 },   // Room 5
-      { x: 0, z: -35 }    // Room 6
+      { x: 0, z: 39 },     // Room 1
+      { x: 17, z: 22 },    // Room 2
+      { x: -17, z: 8 },    // Room 4
+      { x: 0, z: -12 },    // Room 5
+      { x: 0, z: -28 },    // Room 6
+      { x: 0, z: -48 }     // Room 7
     ];
 
     benchPlacements.forEach(bp => {
@@ -618,71 +623,118 @@ export class Museum {
   createAngelStatue() {
     const group = new THREE.Group();
 
-    // 1. Stepped Circular Marble Dais
+    // 1. Triple-tier Polished Italian Carrara Marble Dais
     const daisMat = new THREE.MeshStandardMaterial({
       map: this.marbleTexture,
       roughness: 0.25
     });
-    const step1 = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.4, 0.25, 32), daisMat);
-    step1.position.y = 0.125;
+
+    const step1 = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.3, 0.22, 32), daisMat);
+    step1.position.y = 0.11;
     group.add(step1);
 
-    const step2 = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.5, 0.25, 32), daisMat);
-    step2.position.y = 0.375;
+    const goldRing1 = new THREE.Mesh(new THREE.TorusGeometry(2.22, 0.03, 8, 32), this.goldMaterial);
+    goldRing1.rotation.x = Math.PI / 2;
+    goldRing1.position.y = 0.22;
+    group.add(goldRing1);
+
+    const step2 = new THREE.Mesh(new THREE.CylinderGeometry(1.65, 1.75, 0.22, 32), daisMat);
+    step2.position.y = 0.33;
     group.add(step2);
 
-    // Gilded plinth
-    const plinth = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.3, 0.45, 24), this.goldMaterial);
-    plinth.position.y = 0.72;
-    group.add(plinth);
+    // 2. Classical Octagonal Carved Marble Pedestal
+    const pedBase = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.25, 1.2), this.goldMaterial);
+    pedBase.position.y = 0.56;
+    group.add(pedBase);
 
-    // Pure Carrara White Marble for the Angel Figures
+    const pedShaft = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.48, 0.52, 1.3, 16),
+      daisMat
+    );
+    pedShaft.position.y = 1.33;
+    group.add(pedShaft);
+
+    const pedCap = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 1.2), this.goldMaterial);
+    pedCap.position.y = 2.08;
+    group.add(pedCap);
+
+    // 3. Classical Greco-Roman Sculpted Marble Urn with Garland
     const marbleMat = new THREE.MeshStandardMaterial({
       color: 0xfffaf2,
       roughness: 0.22,
       metalness: 0.05
     });
 
-    // Winged Angel Body
-    const angelTorso = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.32, 1.1, 14), marbleMat);
-    angelTorso.position.y = 1.45;
-    group.add(angelTorso);
+    const urnBase = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.42, 0.3, 24), marbleMat);
+    urnBase.position.y = 2.33;
+    group.add(urnBase);
 
-    const angelHead = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16), marbleMat);
-    angelHead.position.y = 2.15;
-    group.add(angelHead);
+    // Sculpted marble amphora belly
+    const urnBelly = new THREE.Mesh(new THREE.SphereGeometry(0.48, 24, 20), marbleMat);
+    urnBelly.scale.set(1, 1.35, 1);
+    urnBelly.position.y = 2.85;
+    group.add(urnBelly);
 
-    // Spreading Angel Wings
-    [-1, 1].forEach(side => {
-      const wingGroup = new THREE.Group();
-      wingGroup.position.set(side * 0.2, 1.7, -0.15);
+    // Urn neck & classical rim
+    const urnNeck = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.36, 0.45, 24), marbleMat);
+    urnNeck.position.y = 3.55;
+    group.add(urnNeck);
 
-      const wingArch = new THREE.Mesh(
-        new THREE.BoxGeometry(0.12, 1.4, 0.45),
-        marbleMat
+    const urnRim = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.05, 12, 24), this.goldMaterial);
+    urnRim.rotation.x = Math.PI / 2;
+    urnRim.position.y = 3.8;
+    group.add(urnRim);
+
+    // Gilded Laurel Garland draped on urn
+    const garland = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.04, 8, 24), this.goldMaterial);
+    garland.rotation.x = Math.PI / 2 + 0.2;
+    garland.position.y = 2.9;
+    group.add(garland);
+
+    // 4. Museum Velvet Stanchion Ropes (4 Brass Posts surrounding dais)
+    const stanchionRadius = 1.95;
+    const angles = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
+    angles.forEach((ang, i) => {
+      const px = Math.cos(ang) * stanchionRadius;
+      const pz = Math.sin(ang) * stanchionRadius;
+
+      // Brass post
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.95, 12), this.goldMaterial);
+      post.position.set(px, 0.475, pz);
+      group.add(post);
+
+      const baseRing = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.06, 16), this.goldMaterial);
+      baseRing.position.set(px, 0.03, pz);
+      group.add(baseRing);
+
+      const crownBall = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), this.goldMaterial);
+      crownBall.position.set(px, 0.98, pz);
+      group.add(crownBall);
+
+      // Velvet rope segment connecting to next post
+      const nextAng = angles[(i + 1) % angles.length];
+      const npx = Math.cos(nextAng) * stanchionRadius;
+      const npz = Math.sin(nextAng) * stanchionRadius;
+
+      const midX = (px + npx) / 2;
+      const midZ = (pz + npz) / 2;
+      const ropeLen = Math.hypot(npx - px, npz - pz);
+
+      const ropeGeo = new THREE.CylinderGeometry(0.03, 0.03, ropeLen, 8);
+      const ropeMat = new THREE.MeshStandardMaterial({ color: 0x881326, roughness: 0.6 });
+      const rope = new THREE.Mesh(ropeGeo, ropeMat);
+      rope.position.set(midX, 0.72, midZ);
+      rope.quaternion.setFromUnitVectors(
+        new THREE.Vector3(0, 1, 0),
+        new THREE.Vector3(npx - px, 0, npz - pz).normalize()
       );
-      wingArch.rotation.z = side * 0.4;
-      wingArch.rotation.y = -side * 0.35;
-      wingArch.position.set(side * 0.45, 0.45, 0);
-      wingGroup.add(wingArch);
-
-      group.add(wingGroup);
+      group.add(rope);
     });
 
-    // Psyche (Lover embracing the Angel)
-    const loverTorso = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.28, 0.95, 14), marbleMat);
-    loverTorso.position.set(0.25, 1.35, 0.15);
-    loverTorso.rotation.z = -0.25;
-    group.add(loverTorso);
-
-    const loverHead = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), marbleMat);
-    loverHead.position.set(0.15, 1.95, 0.2);
-    group.add(loverHead);
-
-    // Gold Plaque on Dais
-    const plaqueGeo = new THREE.BoxGeometry(1.8, 0.35, 0.06);
+    // 5. Museum Brass Plaque
+    const plaqueGeo = new THREE.BoxGeometry(0.8, 0.35, 0.05);
     const plaque = new THREE.Mesh(plaqueGeo, this.goldMaterial);
-    plaque.position.set(0, 0.72, 1.25);
+    plaque.position.set(0, 0.56, 1.25);
     group.add(plaque);
 
     return group;
@@ -717,13 +769,13 @@ export class Museum {
   buildLighting() {
     // Chandelier locations at the heart of each room
     const chandeliers = [
-      { x: 0, z: 36, color: 0xffeed0, intensity: 2.5, dist: 22 },   // Room 1
-      { x: 11, z: 19, color: 0xffdfd0, intensity: 2.4, dist: 20 },  // Room 2
-      { x: 0, z: 4, color: 0xfffaea, intensity: 3.5, dist: 26 },    // Room 3 (Angel)
-      { x: -14, z: -3, color: 0xffe8c8, intensity: 2.4, dist: 20 }, // Room 4
-      { x: 0, z: -20, color: 0xffeed0, intensity: 2.5, dist: 22 },  // Room 5
-      { x: 0, z: -32, color: 0xffdfb8, intensity: 2.5, dist: 22 },  // Room 6
-      { x: 0, z: -45, color: 0xfffaea, intensity: 3.8, dist: 28 }   // Room 7 (Sanctuary)
+      { x: 0, z: 36, color: 0xffeed0, intensity: 2.5, dist: 22 },    // Room 1: Vestibule
+      { x: 17, z: 22, color: 0xffdfd0, intensity: 2.6, dist: 22 },   // Room 2: East Wing
+      { x: 0, z: 8, color: 0xfffaea, intensity: 3.5, dist: 26 },     // Room 3: Angel Rotunda
+      { x: -17, z: 8, color: 0xffe8c8, intensity: 2.6, dist: 22 },   // Room 4: West Wing
+      { x: 0, z: -12, color: 0xffeed0, intensity: 2.5, dist: 22 },   // Room 5: Bosphorus
+      { x: 0, z: -28, color: 0xffdfb8, intensity: 2.5, dist: 22 },   // Room 6: Golden Sunset
+      { x: 0, z: -48, color: 0xfffaea, intensity: 3.8, dist: 28 }    // Room 7: Sanctuary
     ];
 
     chandeliers.forEach(c => {

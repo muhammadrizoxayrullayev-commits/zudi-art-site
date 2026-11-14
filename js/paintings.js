@@ -17,8 +17,8 @@ export const DEFAULT_PAINTINGS = [
     date: 'Dengiz bo\'yidagi oqshom',
     aspect: 1.0,
     imageSrc: '/images/artworks/artwork_sunset_balcony.jpg',
-    wall: 'left',
-    position: { x: -5.8, y: 3.5, z: 36 },
+    wall: 'west',
+    position: { x: -5.75, y: 3.5, z: 36.0 },
     rotationY: Math.PI / 2
   },
   {
@@ -31,13 +31,13 @@ export const DEFAULT_PAINTINGS = [
     date: 'Kuzgudagi betakror aks',
     aspect: 1.0,
     imageSrc: '/images/artworks/artwork_chic_portrait.jpg',
-    wall: 'right',
-    position: { x: 5.8, y: 3.5, z: 36 },
+    wall: 'east',
+    position: { x: 5.75, y: 3.5, z: 36.0 },
     rotationY: -Math.PI / 2
   },
 
   // ========================================================================
-  // ROOM II: EAST WING (Sharqiy Qanot / Salon des Roses — x: [6, 16], z: [13, 25])
+  // ROOM II: EAST WING (Sharqiy Qanot / Atirgullar Zali — x: [12, 22], z: [15, 29])
   // ========================================================================
   {
     id: 3,
@@ -49,9 +49,9 @@ export const DEFAULT_PAINTINGS = [
     date: 'Har lahza quvonch va mehr',
     aspect: 1.0,
     imageSrc: '/images/artworks/artwork_curly_selfie.jpg',
-    wall: 'north',
-    position: { x: 11, y: 3.5, z: 13.2 },
-    rotationY: 0
+    wall: 'south',
+    position: { x: 17.0, y: 3.5, z: 28.75 },
+    rotationY: Math.PI
   },
   {
     id: 4,
@@ -64,12 +64,12 @@ export const DEFAULT_PAINTINGS = [
     aspect: 0.56,
     imageSrc: '/images/artworks/artwork_mountain_sunset.jpg',
     wall: 'east',
-    position: { x: 15.8, y: 3.5, z: 19 },
+    position: { x: 21.75, y: 3.5, z: 22.0 },
     rotationY: -Math.PI / 2
   },
 
   // ========================================================================
-  // ROOM III: CENTRAL ANGEL ROTUNDA (Markaziy Rotunda — x: [-7, 7], z: [-3, 11])
+  // ROOM III: CENTRAL ANGEL ROTUNDA (Markaziy Rotunda — x: [-6, 6], z: [0, 16])
   // ========================================================================
   {
     id: 5,
@@ -81,9 +81,9 @@ export const DEFAULT_PAINTINGS = [
     date: 'Moviy ufqlar aro',
     aspect: 0.56,
     imageSrc: '/images/artworks/artwork_pool_lagoon.jpg',
-    wall: 'west',
-    position: { x: -6.8, y: 3.5, z: 8.5 },
-    rotationY: Math.PI / 2
+    wall: 'north',
+    position: { x: 0.0, y: 3.5, z: 0.25 },
+    rotationY: 0
   },
   {
     id: 6,
@@ -95,13 +95,13 @@ export const DEFAULT_PAINTINGS = [
     date: 'Quyoshli damlar',
     aspect: 0.56,
     imageSrc: '/images/artworks/artwork_white_dress.jpg',
-    wall: 'east',
-    position: { x: 6.8, y: 3.5, z: 8.5 },
-    rotationY: -Math.PI / 2
+    wall: 'south',
+    position: { x: 0.0, y: 3.5, z: 15.75 },
+    rotationY: Math.PI
   },
 
   // ========================================================================
-  // ROOM IV: WEST WING (G'arbiy Qanot / Tog'lar Manzarasi — x: [-19, -9], z: [-9, 3])
+  // ROOM IV: WEST WING (G'arbiy Qanot / Tog'lar Manzarasi — x: [-22, -12], z: [1, 15])
   // ========================================================================
   {
     id: 7,
@@ -114,7 +114,7 @@ export const DEFAULT_PAINTINGS = [
     aspect: 0.56,
     imageSrc: '/images/artworks/artwork_mountain_overlook.jpg',
     wall: 'west',
-    position: { x: -18.8, y: 3.5, z: -3 },
+    position: { x: -21.75, y: 3.5, z: 8.0 },
     rotationY: Math.PI / 2
   },
   {
@@ -128,12 +128,12 @@ export const DEFAULT_PAINTINGS = [
     aspect: 0.56,
     imageSrc: '/images/artworks/artwork_lounge_portrait.jpg',
     wall: 'south',
-    position: { x: -14, y: 3.5, z: 2.8 },
+    position: { x: -17.0, y: 3.5, z: 14.75 },
     rotationY: Math.PI
   },
 
   // ========================================================================
-  // ROOM V: BOSPHORUS MARBLE PALACE (Bosfor Marmar Qasri — x: [-6, 6], z: [-26, -14])
+  // ROOM V: BOSPHORUS MARBLE PALACE (Bosfor Marmar Qasri — x: [-6, 6], z: [-18, -6])
   // ========================================================================
   {
     id: 9,
@@ -145,9 +145,9 @@ export const DEFAULT_PAINTINGS = [
     date: 'Tarixiy dengiz bo\'yi',
     aspect: 0.91,
     imageSrc: '/images/artworks/artwork_bosphorus_gate.jpg',
-    wall: 'left',
-    position: { x: -5.8, y: 3.5, z: -20 },
-    rotationY: Math.PI / 2
+    wall: 'south',
+    position: { x: 0.0, y: 3.5, z: -6.25 },
+    rotationY: Math.PI
   },
   {
     id: 10,
@@ -159,13 +159,13 @@ export const DEFAULT_PAINTINGS = [
     date: 'Dengiz sohili',
     aspect: 0.56,
     imageSrc: '/images/artworks/artwork_seaside_yachts.jpg',
-    wall: 'right',
-    position: { x: 5.8, y: 3.5, z: -20 },
+    wall: 'east',
+    position: { x: 5.75, y: 3.5, z: -12.0 },
     rotationY: -Math.PI / 2
   },
 
   // ========================================================================
-  // ROOM VI: GOLDEN SUNSET GALLERY (Oltin Shafaq Qasri — x: [-6, 6], z: [-38, -26])
+  // ROOM VI: GOLDEN SUNSET GALLERY (Oltin Shafaq Qasri — x: [-6, 6], z: [-36, -20])
   // ========================================================================
   {
     id: 11,
@@ -177,8 +177,8 @@ export const DEFAULT_PAINTINGS = [
     date: 'Oltin oqshom siri',
     aspect: 1.33,
     imageSrc: '/images/artworks/artwork_golden_sunset_bay.jpg',
-    wall: 'left',
-    position: { x: -5.8, y: 3.5, z: -32 },
+    wall: 'west',
+    position: { x: -5.75, y: 3.5, z: -28.0 },
     rotationY: Math.PI / 2
   },
   {
@@ -191,13 +191,13 @@ export const DEFAULT_PAINTINGS = [
     date: 'G\'alaba va shijoat ❤️',
     aspect: 0.80,
     imageSrc: '/images/artworks/artwork_kimono_strength.jpg',
-    wall: 'right',
-    position: { x: 5.8, y: 3.5, z: -32 },
+    wall: 'east',
+    position: { x: 5.75, y: 3.5, z: -28.0 },
     rotationY: -Math.PI / 2
   },
 
   // ========================================================================
-  // ROOM VII: SANCTUARY OF ETERNAL LOVE (Monumental Sanctuary — x: [-8, 8], z: [-52, -38])
+  // ROOM VII: SANCTUARY OF ETERNAL LOVE (Monumental Sanctuary — x: [-7, 7], z: [-57, -39])
   // ========================================================================
   {
     id: 13,
@@ -211,7 +211,7 @@ export const DEFAULT_PAINTINGS = [
     imageSrc: '/images/artworks/monumental_sunset_cat.jpg',
     isMonumental: true,
     wall: 'north',
-    position: { x: 0, y: 3.6, z: -51.6 },
+    position: { x: 0.0, y: 3.6, z: -56.7 },
     rotationY: 0
   },
   {
@@ -226,7 +226,7 @@ export const DEFAULT_PAINTINGS = [
     imageSrc: '/images/artworks/monumental_flowers_sunset.jpg',
     isMonumental: true,
     wall: 'altar',
-    position: { x: 0, y: 3.6, z: -39.2 },
+    position: { x: 0.0, y: 3.6, z: -39.3 },
     rotationY: Math.PI
   }
 ];
