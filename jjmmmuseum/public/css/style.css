@@ -870,9 +870,12 @@ html, body {
 
 .artwork-viewport img {
   max-width: 100%;
-  max-height: 52vh;
+  max-height: 54vh;
   object-fit: contain;
   display: block;
+  image-rendering: -webkit-optimize-contrast;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
 }
 
 .museum-plaque {
