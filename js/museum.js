@@ -130,19 +130,19 @@ export class Museum {
     this.wallHeight = 7.5;
 
     // List of room & corridor floors: [minX, maxX, minZ, maxZ, roomName]
-    // Boundaries meet edge-to-edge for zero z-fighting and continuous world-space parquet
+    // Boundaries meet edge-to-edge for zero z-fighting, complete enclosure and continuous parquet
     const zones = [
       // 1. Room 1: Vestibule / Kirish Rotundasi
       { minX: -6.4, maxX: 6.4, minZ: 30.0, maxZ: 42.4, name: 'Room 1: Vestibule' },
-      // 2. Corr 1 North
-      { minX: -2.7, maxX: 2.7, minZ: 22.0, maxZ: 30.0, name: 'Corr 1 North' },
-      // 3. Corr 1-2 East
-      { minX: -2.7, maxX: 12.0, minZ: 19.3, maxZ: 22.0, name: 'Corr 1-2 East' },
+      // 2. Corr 1 North (full vertical leg from z=19.3 to z=30.0)
+      { minX: -2.7, maxX: 2.7, minZ: 19.3, maxZ: 30.0, name: 'Corr 1 North' },
+      // 3. Corr 1-2 East (full horizontal leg from x=2.7 to x=12.0, z from 19.3 to 24.7)
+      { minX: 2.7, maxX: 12.0, minZ: 19.3, maxZ: 24.7, name: 'Corr 1-2 East' },
       // 4. Room 2: East Wing / Atirgullar Zali
       { minX: 12.0, maxX: 22.4, minZ: 14.8, maxZ: 29.4, name: 'Room 2: East Wing' },
-      // 5. Corr 2-3 North
-      { minX: 14.3, maxX: 19.7, minZ: 8.0, maxZ: 14.8, name: 'Corr 2-3 North' },
-      // 6. Corr 2-3 West
+      // 5. Corr 2-3 North (full vertical leg from z=5.3 to z=15.0)
+      { minX: 14.3, maxX: 19.7, minZ: 5.3, maxZ: 15.0, name: 'Corr 2-3 North' },
+      // 6. Corr 2-3 West (full horizontal leg from x=6.0 to x=14.3, z from 5.3 to 10.7)
       { minX: 6.0, maxX: 14.3, minZ: 5.3, maxZ: 10.7, name: 'Corr 2-3 West' },
       // 7. Room 3: Central Angel Rotunda
       { minX: -6.0, maxX: 6.0, minZ: -0.2, maxZ: 16.4, name: 'Room 3: Central Rotunda' },
@@ -150,9 +150,9 @@ export class Museum {
       { minX: -12.0, maxX: -6.0, minZ: 5.3, maxZ: 10.7, name: 'Corr 3-4 West' },
       // 9. Room 4: West Wing / Tog'lar Zali
       { minX: -22.4, maxX: -12.0, minZ: 0.8, maxZ: 15.4, name: 'Room 4: West Wing' },
-      // 10. Corr 4-5 North
-      { minX: -19.7, maxX: -14.3, minZ: -12.0, maxZ: 0.8, name: 'Corr 4-5 North' },
-      // 11. Corr 4-5 East
+      // 10. Corr 4-5 North (full vertical leg from z=-14.7 to z=1.0)
+      { minX: -19.7, maxX: -14.3, minZ: -14.7, maxZ: 1.0, name: 'Corr 4-5 North' },
+      // 11. Corr 4-5 East (full horizontal leg from x=-14.3 to x=-6.0, z from -14.7 to -9.3)
       { minX: -14.3, maxX: -6.0, minZ: -14.7, maxZ: -9.3, name: 'Corr 4-5 East' },
       // 12. Room 5: Bosphorus Marble Palace
       { minX: -6.0, maxX: 6.4, minZ: -18.0, maxZ: -5.8, name: 'Room 5: Bosphorus' },
@@ -484,6 +484,7 @@ export class Museum {
       texture.generateMipmaps = true;
       texture.minFilter = THREE.LinearMipmapLinearFilter;
       texture.magFilter = THREE.LinearFilter;
+      texture.anisotropy = 16;
       p.texture = texture;
       p.canvas = canvas;
 
