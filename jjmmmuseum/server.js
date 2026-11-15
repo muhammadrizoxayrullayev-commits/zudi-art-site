@@ -21,8 +21,16 @@ const io = new Server(server, {
 
 const PORT = process.env.PORT || 3000;
 
-// Static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Static files with zero-cache headers for dynamic dev and instant updates
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.js') || filePath.endsWith('.html') || filePath.endsWith('.css')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 app.use(express.json({ limit: '10mb' }));
 
 // Health check endpoint for Render.com 24/7 uptime monitoring

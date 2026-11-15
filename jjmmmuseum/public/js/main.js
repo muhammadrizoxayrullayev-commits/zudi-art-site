@@ -3,11 +3,11 @@
 // Initializes Three.js engine, Museum, Physical Player, Multiplayer, UI & Events
 // ==========================================================================
 
-import { Museum } from './museum.js';
-import { Player } from './player.js';
-import { MultiplayerManager } from './multiplayer.js';
-import { AudioManager } from './audio.js';
-import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js';
+import { Museum } from './museum.js?v=empire_canova_v2';
+import { Player } from './player.js?v=empire_canova_v2';
+import { MultiplayerManager } from './multiplayer.js?v=empire_canova_v2';
+import { AudioManager } from './audio.js?v=empire_canova_v2';
+import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js?v=empire_canova_v2';
 
 class App {
   constructor() {
