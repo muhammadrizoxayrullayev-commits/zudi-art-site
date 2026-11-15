@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=mobile_zoom_v4">
+  <link rel="stylesheet" href="css/style.css?v=clean_fullscreen_v5">
 
   <!-- Three.js (r128) & Orbit/PointerLock via CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -112,9 +112,9 @@
 
       <!-- Mobile Action Buttons on Right -->
       <div id="mobile-action-buttons">
-        <button id="m-btn-zoom" class="m-action-btn zoom-btn" title="Kattalashtirish (Zoom)">
-          <span id="m-zoom-icon">🔍</span>
-          <small id="m-zoom-text">Zoom</small>
+        <button id="m-btn-fullscreen" class="m-action-btn fullscreen-btn" title="To'liq ekran (Barcha tugmalarni yashirish / toza ko'rinish)">
+          <span id="m-fs-icon">⛶</span>
+          <small id="m-fs-text">To'liq</small>
         </button>
         <button id="m-btn-inspect" class="m-action-btn hidden" title="Rasmni ko'rish">
           <span>🖼️</span>
@@ -134,6 +134,11 @@
         </button>
       </div>
     </div>
+
+    <!-- Floating Zen / Fullscreen Exit Pill -->
+    <button id="btn-exit-zen" class="zen-exit-pill hidden" title="To'liq ekrandan chiqish">
+      <span>⛶ Oddiy ko'rinish</span>
+    </button>
 
     <!-- Live In-Game Chat Box -->
     <div id="chat-widget" class="collapsed">
@@ -273,7 +278,7 @@
   </audio>
 
   <!-- Application Scripts (Cache-busted for instant live updates) -->
-  <script type="module" src="js/main.js?v=mobile_zoom_v4"></script>
+  <script type="module" src="js/main.js?v=clean_fullscreen_v5"></script>
 </body>
 </html>
 

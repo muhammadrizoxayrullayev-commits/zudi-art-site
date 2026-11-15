@@ -4,7 +4,7 @@
 // Exactly 2-3 intimate masterworks per room with crystal chandeliers & archways
 // ==========================================================================
 
-import { DEFAULT_PAINTINGS, DEFAULT_STATUES, createArtworkCanvas } from './paintings.js?v=mobile_zoom_v4';
+import { DEFAULT_PAINTINGS, DEFAULT_STATUES, createArtworkCanvas } from './paintings.js?v=clean_fullscreen_v5';
 
 export class Museum {
   constructor(scene) {

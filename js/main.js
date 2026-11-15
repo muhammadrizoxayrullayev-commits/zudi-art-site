@@ -3,11 +3,11 @@
 // Initializes Three.js engine, Museum, Physical Player, Multiplayer, UI & Events
 // ==========================================================================
 
-import { Museum } from './museum.js?v=mobile_zoom_v4';
-import { Player } from './player.js?v=mobile_zoom_v4';
-import { MultiplayerManager } from './multiplayer.js?v=mobile_zoom_v4';
-import { AudioManager } from './audio.js?v=mobile_zoom_v4';
-import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js?v=mobile_zoom_v4';
+import { Museum } from './museum.js?v=clean_fullscreen_v5';
+import { Player } from './player.js?v=clean_fullscreen_v5';
+import { MultiplayerManager } from './multiplayer.js?v=clean_fullscreen_v5';
+import { AudioManager } from './audio.js?v=clean_fullscreen_v5';
+import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js?v=clean_fullscreen_v5';
 
 class App {
   constructor() {
@@ -190,15 +190,15 @@ class App {
       mCameraBtn.addEventListener('click', () => cameraBtn.click());
     }
 
-    // 6. Fullscreen Toggle
+    // 6. Fullscreen & Zen Mode Toggle (100% Toza Ko'rinish)
     const fsBtn = document.getElementById('btn-fullscreen');
-    fsBtn.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen?.();
-      } else {
-        document.exitFullscreen?.();
-      }
-    });
+    if (fsBtn) fsBtn.addEventListener('click', () => this.toggleFullscreenMode());
+
+    const mFsBtn = document.getElementById('m-btn-fullscreen');
+    if (mFsBtn) mFsBtn.addEventListener('click', () => this.toggleFullscreenMode());
+
+    const exitZenBtn = document.getElementById('btn-exit-zen');
+    if (exitZenBtn) exitZenBtn.addEventListener('click', () => this.toggleFullscreenMode());
 
     // 7. Heart Action Buttons (Desktop Key 'H' + Mobile Button)
     window.addEventListener('keydown', (e) => {
@@ -211,8 +211,8 @@ class App {
       if (e.code === 'KeyV' && !this.isChatActive()) {
         cameraBtn.click();
       }
-      if (e.code === 'KeyZ' && !this.isChatActive()) {
-        toggleZoomAction();
+      if (e.code === 'KeyF' && !this.isChatActive()) {
+        this.toggleFullscreenMode();
       }
     });
 
@@ -328,6 +328,36 @@ class App {
     if (banner) {
       if (isClose) banner.classList.remove('hidden');
       else banner.classList.add('hidden');
+    }
+  }
+
+  toggleFullscreenMode() {
+    const isZen = document.body.classList.toggle('zen-mode');
+    const fsIcon = document.getElementById('m-fs-icon');
+    const fsText = document.getElementById('m-fs-text');
+    const exitPill = document.getElementById('btn-exit-zen');
+
+    // Trigger standard Fullscreen API if supported (Android, Mac, iPad)
+    if (isZen) {
+      if (!document.fullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen().catch(() => {});
+        }
+      }
+      if (fsIcon) fsIcon.textContent = '✕';
+      if (fsText) fsText.textContent = 'Chiqish';
+      if (exitPill) exitPill.classList.remove('hidden');
+      this.multiplayer.showToast('⛶ To\'liq ekran (toza ko\'rinish) faollashtirildi');
+    } else {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+      if (fsIcon) fsIcon.textContent = '⛶';
+      if (fsText) fsText.textContent = 'To\'liq';
+      if (exitPill) exitPill.classList.add('hidden');
+      this.multiplayer.showToast('Oddiy ko\'rinishga qaytildi');
     }
   }
 
