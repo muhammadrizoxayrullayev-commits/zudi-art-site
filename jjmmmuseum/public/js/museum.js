@@ -4,7 +4,7 @@
 // Exactly 2-3 intimate masterworks per room with crystal chandeliers & archways
 // ==========================================================================
 
-import { DEFAULT_PAINTINGS, DEFAULT_STATUES, createArtworkCanvas } from './paintings.js?v=clean_fullscreen_v5';
+import { DEFAULT_PAINTINGS, DEFAULT_STATUES, createArtworkCanvas } from './paintings.js?v=v7_masterpiece_247';
 
 export class Museum {
   constructor(scene) {
@@ -208,6 +208,29 @@ export class Museum {
       { minX: -7.4, maxX: 7.4, minZ: -57.4, maxZ: -39.0, name: 'Room 7: Sanctuary' }
     ];
 
+    // Master Seamless Foundation Floor & Ceiling (Guarantees 100% zero holes/voids anywhere in the palace)
+    const masterFloorTex = new THREE.CanvasTexture(this.parquetCanvas);
+    masterFloorTex.wrapS = THREE.RepeatWrapping;
+    masterFloorTex.wrapT = THREE.RepeatWrapping;
+    masterFloorTex.colorSpace = THREE.SRGBColorSpace;
+    masterFloorTex.repeat.set(90 / 0.8, 160 / 0.8);
+
+    const masterFloorMat = new THREE.MeshStandardMaterial({
+      map: masterFloorTex,
+      roughness: 0.55,
+      metalness: 0.0
+    });
+    const masterFloor = new THREE.Mesh(new THREE.PlaneGeometry(90, 160), masterFloorMat);
+    masterFloor.rotation.x = -Math.PI / 2;
+    masterFloor.position.set(0, 0.0, -10);
+    this.scene.add(masterFloor);
+
+    const masterCeilMat = new THREE.MeshStandardMaterial({ color: 0x18080a, roughness: 0.8 });
+    const masterCeil = new THREE.Mesh(new THREE.PlaneGeometry(90, 160), masterCeilMat);
+    masterCeil.rotation.x = Math.PI / 2;
+    masterCeil.position.set(0, this.wallHeight + 0.02, -10);
+    this.scene.add(masterCeil);
+
     // Build floors & ceilings for each zone with continuous world-space UV parquet
     zones.forEach(z => {
       const w = z.maxX - z.minX;
@@ -228,12 +251,12 @@ export class Museum {
 
       const floorMat = new THREE.MeshStandardMaterial({
         map: floorTex,
-        roughness: 0.28,
-        metalness: 0.12
+        roughness: 0.55,
+        metalness: 0.0
       });
       const floor = new THREE.Mesh(fGeo, floorMat);
       floor.rotation.x = -Math.PI / 2;
-      floor.position.set(cx, 0.001, cz);
+      floor.position.set(cx, 0.002, cz);
       this.scene.add(floor);
 
       // Ceiling plane with dark beams
@@ -1415,9 +1438,12 @@ export class Museum {
       this.scene.add(pLight);
     });
 
-    // Subtle global romantic ambient light (rich warm palace glow)
-    const amb = new THREE.AmbientLight(0x3a1820, 1.2);
+    // Balanced global romantic ambient & fill light (warm palace illumination, no pitch black voids)
+    const amb = new THREE.AmbientLight(0x4a2228, 1.4);
     this.scene.add(amb);
+
+    const hemi = new THREE.HemisphereLight(0xffeedb, 0x241014, 0.6);
+    this.scene.add(hemi);
   }
 
   createChandelierMesh() {

@@ -167,11 +167,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Self-ping routine every 10 minutes to prevent Render free instance from sleeping
-if (process.env.RENDER_EXTERNAL_URL) {
+// Self-ping routine every 10 minutes to prevent free cloud instances from sleeping (24/7 uptime)
+const targetPing = process.env.RENDER_EXTERNAL_URL || process.env.PUBLIC_URL || process.env.APP_URL;
+if (targetPing) {
   setInterval(async () => {
     try {
-      const res = await fetch(`${process.env.RENDER_EXTERNAL_URL}/ping`);
+      const res = await fetch(`${targetPing}/ping`);
       console.log(`[Keep-Alive Ping] ${new Date().toLocaleTimeString()} -> ${res.status}`);
     } catch (e) {
       console.log('[Keep-Alive Ping Error]', e.message);

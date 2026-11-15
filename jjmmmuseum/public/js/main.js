@@ -3,11 +3,11 @@
 // Initializes Three.js engine, Museum, Physical Player, Multiplayer, UI & Events
 // ==========================================================================
 
-import { Museum } from './museum.js?v=clean_fullscreen_v5';
-import { Player } from './player.js?v=clean_fullscreen_v5';
-import { MultiplayerManager } from './multiplayer.js?v=clean_fullscreen_v5';
-import { AudioManager } from './audio.js?v=clean_fullscreen_v5';
-import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js?v=clean_fullscreen_v5';
+import { Museum } from './museum.js?v=v7_masterpiece_247';
+import { Player } from './player.js?v=v7_masterpiece_247';
+import { MultiplayerManager } from './multiplayer.js?v=v7_masterpiece_247';
+import { AudioManager } from './audio.js?v=v7_masterpiece_247';
+import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js?v=v7_masterpiece_247';
 
 class App {
   constructor() {
