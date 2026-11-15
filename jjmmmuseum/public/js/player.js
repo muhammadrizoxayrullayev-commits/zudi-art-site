@@ -39,6 +39,15 @@ export class Player {
     this.isThirdPerson = false;
     this.cameraDistance = 3.2;
 
+    // Optical Camera Zoom / Telescope (Kattalashtirish)
+    this.baseFov = 65;
+    this.targetFov = 65;
+    this.minFov = 20; // 3.25x optical zoom
+    this.maxFov = 75;
+    this.isZoomed = false;
+    this.pinchStartDist = null;
+    this.pinchStartFov = 65;
+
     // Palace Labyrinth Walkable Zones (Generous 2.5m-3.5m doorway overlaps, zero gaps)
     this.walkableAreas = [
       { minX: -5.5, maxX: 5.5, minZ: 28.5, maxZ: 41.5 },      // Room 1: Vestibule (extends north to z=28.5)
@@ -230,15 +239,37 @@ export class Player {
     });
   }
 
+  toggleZoom() {
+    this.isZoomed = !this.isZoomed;
+    this.targetFov = this.isZoomed ? 26 : this.baseFov;
+    return this.isZoomed;
+  }
+
+  setZoom(fov) {
+    this.targetFov = Math.max(this.minFov, Math.min(this.maxFov, fov));
+    this.isZoomed = this.targetFov < 50;
+    return this.isZoomed;
+  }
+
   initMobileControls() {
-    // 1. Mobile Touch Look Swipe (Silky smooth 360° swipe rotation)
+    // 1. Mobile Touch Look Swipe & Two-Finger Pinch-to-Zoom
     window.addEventListener('touchstart', (e) => {
       const modal = document.getElementById('entry-modal');
-      if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') return;
+      const zoomLb = document.getElementById('image-zoom-lightbox');
+      if ((modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') ||
+          (zoomLb && !zoomLb.classList.contains('hidden'))) return;
 
       const target = e.target;
       // If tapping directly on interactive UI element, don't hijack as look touch
       if (target.tagName === 'BUTTON' || target.closest('button') || target.tagName === 'INPUT' || target.closest('#chat-widget')) {
+        return;
+      }
+
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        this.pinchStartDist = Math.hypot(dx, dy);
+        this.pinchStartFov = this.targetFov;
         return;
       }
 
@@ -255,7 +286,22 @@ export class Player {
 
     window.addEventListener('touchmove', (e) => {
       const modal = document.getElementById('entry-modal');
-      if (modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') return;
+      const zoomLb = document.getElementById('image-zoom-lightbox');
+      if ((modal && !modal.classList.contains('hidden') && modal.style.display !== 'none') ||
+          (zoomLb && !zoomLb.classList.contains('hidden'))) return;
+
+      // Two-Finger Pinch-to-Zoom in 3D Museum
+      if (e.touches.length === 2 && this.pinchStartDist !== null) {
+        if (e.cancelable) e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 10) {
+          const ratio = this.pinchStartDist / dist;
+          this.setZoom(this.pinchStartFov * ratio);
+        }
+        return;
+      }
 
       for (let i = 0; i < e.changedTouches.length; i++) {
         const t = e.changedTouches[i];
@@ -266,8 +312,10 @@ export class Player {
           const dy = t.clientY - this.lookTouch.lastY;
 
           if (Math.abs(dx) < 150 && Math.abs(dy) < 150) {
-            this.yaw -= dx * 0.0055;
-            this.pitch -= dy * 0.0055;
+            // Fine-grained look speed when zoomed in
+            const zoomSensFactor = Math.min(1.0, this.camera.fov / 65);
+            this.yaw -= dx * 0.0055 * zoomSensFactor;
+            this.pitch -= dy * 0.0055 * zoomSensFactor;
             this.pitch = Math.max(-Math.PI / 2.3, Math.min(Math.PI / 2.3, this.pitch));
 
             if (!Number.isFinite(this.yaw)) this.yaw = 0;
@@ -281,6 +329,9 @@ export class Player {
     }, { passive: false });
 
     const endTouch = (e) => {
+      if (e.touches.length < 2) {
+        this.pinchStartDist = null;
+      }
       for (let i = 0; i < e.changedTouches.length; i++) {
         const t = e.changedTouches[i];
         if (t.identifier === this.lookTouch.touchId) {
@@ -394,6 +445,12 @@ export class Player {
   }
 
   update(delta) {
+    // 0. Smooth Camera Optical Zoom Transition (Kattalashtirish)
+    if (Math.abs(this.camera.fov - this.targetFov) > 0.05) {
+      this.camera.fov = THREE.MathUtils.lerp(this.camera.fov, this.targetFov, delta * 12);
+      this.camera.updateProjectionMatrix();
+    }
+
     // 1. Process Turning (Keyboard + Screen Edge Scroll + Touch Turn Buttons)
     let turnDelta = 0;
     if (this.keys.turnLeft) turnDelta += this.turnSpeed;
