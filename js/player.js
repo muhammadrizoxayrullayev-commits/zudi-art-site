@@ -53,9 +53,9 @@ export class Player {
       { minX: -19.2, maxX: -14.8, minZ: -14.5, maxZ: 2.5 },   // Corr 4-5 North (full vertical leg to z=-14.5)
       { minX: -19.2, maxX: -4.5, minZ: -14.2, maxZ: -9.8 },   // Corr 4-5 East (extends east into Room 5 to x=-4.5)
       { minX: -7.5, maxX: 5.6, minZ: -19.5, maxZ: -6.4 },     // Room 5: Bosphorus (overlaps Corr 4-5 & Portal 5-6)
-      { minX: -2.2, maxX: 2.2, minZ: -21.5, maxZ: -16.5 },    // Portal 5-6 (overlaps Room 5 & Room 6)
+      { minX: -2.0, maxX: 2.0, minZ: -21.5, maxZ: -16.5 },    // Portal 5-6 (overlaps Room 5 & Room 6)
       { minX: -5.6, maxX: 5.6, minZ: -37.5, maxZ: -18.5 },    // Room 6: Golden Sunset (overlaps Portals 5-6 & 6-7)
-      { minX: -2.8, maxX: 2.8, minZ: -41.0, maxZ: -34.5 },    // Portal 6-7 (Triumphal)
+      { minX: -2.5, maxX: 2.5, minZ: -41.0, maxZ: -34.5 },    // Portal 6-7 (Triumphal)
       { minX: -6.6, maxX: 6.6, minZ: -56.6, maxZ: -37.5 }     // Room 7: Sanctuary
     ];
 
@@ -344,7 +344,38 @@ export class Player {
       return false;
     }
 
-    // 2. Check walkable palace corridors & rooms
+    // 2. Physical Obstacle: Statue Pedestals (0.55m collision radius)
+    const pedestals = [
+      { x: 17, z: 16.5 },   // Room 2: Afrodita
+      { x: -17, z: 2.5 },   // Room 4: Apollo
+      { x: 0, z: -14.5 }    // Room 5: Hermes
+    ];
+    for (let i = 0; i < pedestals.length; i++) {
+      const p = pedestals[i];
+      const pdx = x - p.x;
+      const pdz = z - p.z;
+      if (pdx * pdx + pdz * pdz < 0.55 * 0.55) {
+        return false;
+      }
+    }
+
+    // 3. Physical Obstacle: Russian Empire Divans (Realistic Solid Furniture)
+    const divans = [
+      { minX: -1.3, maxX: 1.3, minZ: 38.5, maxZ: 39.5 },       // Room 1
+      { minX: 16.5, maxX: 17.5, minZ: 22.7, maxZ: 25.3 },      // Room 2
+      { minX: -17.5, maxX: -16.5, minZ: 8.7, maxZ: 11.3 },     // Room 4
+      { minX: -1.3, maxX: 1.3, minZ: -10.0, maxZ: -9.0 },      // Room 5
+      { minX: -1.3, maxX: 1.3, minZ: -27.5, maxZ: -26.5 },     // Room 6
+      { minX: -1.3, maxX: 1.3, minZ: -46.5, maxZ: -45.5 }      // Room 7
+    ];
+    for (let i = 0; i < divans.length; i++) {
+      const d = divans[i];
+      if (x >= d.minX && x <= d.maxX && z >= d.minZ && z <= d.maxZ) {
+        return false;
+      }
+    }
+
+    // 4. Check walkable palace corridors & rooms
     for (let i = 0; i < this.walkableAreas.length; i++) {
       const b = this.walkableAreas[i];
       if (x >= b.minX && x <= b.maxX && z >= b.minZ && z <= b.maxZ) {
