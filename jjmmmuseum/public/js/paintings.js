@@ -16,7 +16,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Quyosh botishidagi sokin dengiz sohili, to\'lqinlar shovqini va sochlardagi oq lenta — unutilmas sehrli va romantik nigoh.',
     date: 'Dengiz bo\'yidagi oqshom',
     aspect: 1.0,
-    imageSrc: '/images/artworks/artwork_sunset_balcony.jpg',
+    imageSrc: 'images/artworks/artwork_sunset_balcony.jpg',
     wall: 'west',
     position: { x: -5.75, y: 3.5, z: 36.0 },
     rotationY: Math.PI / 2
@@ -30,7 +30,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Qora-oq chiziqli nafis libos va beg\'ubor husn. Dunyodagi eng nafis va jozibador tabassum.',
     date: 'Kuzgudagi betakror aks',
     aspect: 1.0,
-    imageSrc: '/images/artworks/artwork_chic_portrait.jpg',
+    imageSrc: 'images/artworks/artwork_chic_portrait.jpg',
     wall: 'east',
     position: { x: 5.75, y: 3.5, z: 36.0 },
     rotationY: -Math.PI / 2
@@ -48,7 +48,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Har bir jilvasi va to\'lqin jingalak sochlari qalbimni shodlikka to\'ldiradigan sevimli va samimiy chehra.',
     date: 'Har lahza quvonch va mehr',
     aspect: 1.0,
-    imageSrc: '/images/artworks/artwork_curly_selfie.jpg',
+    imageSrc: 'images/artworks/artwork_curly_selfie.jpg',
     wall: 'south',
     position: { x: 17.0, y: 3.5, z: 28.75 },
     rotationY: Math.PI
@@ -62,7 +62,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Yuksak tog\'lar uzra botayotgan moviy dengiz va oltin quyosh jilosi ostida erkinlik nafasi.',
     date: 'Oltin ufq va erkin parvoz',
     aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_mountain_sunset.jpg',
+    imageSrc: 'images/artworks/artwork_mountain_sunset.jpg',
     wall: 'east',
     position: { x: 21.75, y: 3.5, z: 22.0 },
     rotationY: -Math.PI / 2
@@ -80,7 +80,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Yozning quyoshli kunida musaffo moviy suvlar va yam-yashil tog\'lar uzra esgan iliq shaboda.',
     date: 'Moviy ufqlar aro',
     aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_pool_lagoon.jpg',
+    imageSrc: 'images/artworks/artwork_pool_lagoon.jpg',
     wall: 'north',
     position: { x: 0.0, y: 3.5, z: 0.25 },
     rotationY: 0
@@ -94,7 +94,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Palma daraxtlari aks etgan ko\'zguda oppoq nafis libosdagi maftunkor va jozibador siymo.',
     date: 'Quyoshli damlar',
     aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_white_dress.jpg',
+    imageSrc: 'images/artworks/artwork_white_dress.jpg',
     wall: 'south',
     position: { x: 0.0, y: 3.5, z: 15.75 },
     rotationY: Math.PI
@@ -112,7 +112,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Qarag\'ayzor tog\'lar cho\'qqisidagi ko\'rkam manzaralar, quyosh ko\'zoynagi va betakror erkinlik hissi.',
     date: 'Tog\'lar bag\'rida',
     aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_mountain_overlook.jpg',
+    imageSrc: 'images/artworks/artwork_mountain_overlook.jpg',
     wall: 'west',
     position: { x: -21.75, y: 3.5, z: 8.0 },
     rotationY: Math.PI / 2
@@ -126,7 +126,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Sokin va shinam maskanda oq libosdagi zamonaviy, latofatli va beg\'ubor tabassum.',
     date: 'Yo\'l xotiralari',
     aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_lounge_portrait.jpg',
+    imageSrc: 'images/artworks/artwork_lounge_portrait.jpg',
     wall: 'south',
     position: { x: -17.0, y: 3.5, z: 14.75 },
     rotationY: Math.PI
@@ -144,7 +144,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Qadimiy o\'ymakor marmar saroy darvozasi yonida, dengiz to\'lqinlari va mayin shamol jilvasi.',
     date: 'Tarixiy dengiz bo\'yi',
     aspect: 0.91,
-    imageSrc: '/images/artworks/artwork_bosphorus_gate.jpg',
+    imageSrc: 'images/artworks/artwork_bosphorus_gate.jpg',
     wall: 'south',
     position: { x: 0.0, y: 3.5, z: -6.25 },
     rotationY: Math.PI
@@ -158,7 +158,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Oq yelkanli kemalar fonida porlagan eng samimiy, jozibador va beg\'ubor tabassum.',
     date: 'Dengiz sohili',
     aspect: 0.56,
-    imageSrc: '/images/artworks/artwork_seaside_yachts.jpg',
+    imageSrc: 'images/artworks/artwork_seaside_yachts.jpg',
     wall: 'east',
     position: { x: 5.75, y: 3.5, z: -12.0 },
     rotationY: -Math.PI / 2
@@ -176,7 +176,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Ufqda botayotgan oltin quyosh nurlari, sokin ko\'rfaz va dengizdagi oppoq yaxtalar.',
     date: 'Oltin oqshom siri',
     aspect: 1.33,
-    imageSrc: '/images/artworks/artwork_golden_sunset_bay.jpg',
+    imageSrc: 'images/artworks/artwork_golden_sunset_bay.jpg',
     wall: 'west',
     position: { x: -5.75, y: 3.5, z: -28.0 },
     rotationY: Math.PI / 2
@@ -190,7 +190,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Sportcha shijoat, kuchli iroda va qat\'iyat bilan birga mujassam bo\'lgan tengsiz go\'zallik.',
     date: 'G\'alaba va shijoat ❤️',
     aspect: 0.80,
-    imageSrc: '/images/artworks/artwork_kimono_strength.jpg',
+    imageSrc: 'images/artworks/artwork_kimono_strength.jpg',
     wall: 'east',
     position: { x: 5.75, y: 3.5, z: -28.0 },
     rotationY: -Math.PI / 2
@@ -208,7 +208,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Quyosh botishidagi sehrli qizil-oltin ufq, deraza panjarasi ortidagi sokinlik va mayin mushukcha silueti. Qalbga huzur va orom bag\'ishlovchi oqshom siri.',
     date: 'Oltin shafaq mo\'jizasi',
     aspect: 0.75,
-    imageSrc: '/images/artworks/monumental_sunset_cat.jpg',
+    imageSrc: 'images/artworks/monumental_sunset_cat.jpg',
     isMonumental: true,
     wall: 'north',
     position: { x: 0.0, y: 3.6, z: -56.7 },
@@ -223,7 +223,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Dengiz sohilidagi qizil ufqqa boqayotgan go\'zal qiz surati va uning qarshisidagi muattar, yorqin va nafis bahoriy gullar guldastasi.',
     date: 'Mangu ifor va cheksiz mehr',
     aspect: 0.75,
-    imageSrc: '/images/artworks/monumental_flowers_sunset.jpg',
+    imageSrc: 'images/artworks/monumental_flowers_sunset.jpg',
     isMonumental: true,
     wall: 'altar',
     position: { x: 0.0, y: 3.6, z: -39.3 },
@@ -238,7 +238,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Sokin dengiz to\'lqinlari, ufqdagi muhtasham oq kema va kemaning yog\'och rulida orzular sari yo\'l olgan go\'zal qiz. Birgalikdagi unutilmas sayohatlar va shirin orzular timsoli.',
     date: 'Mangu sayohat va baxtli orzular',
     aspect: 0.56,
-    imageSrc: '/images/artworks/monumental_ship_wheel.jpg',
+    imageSrc: 'images/artworks/monumental_ship_wheel.jpg',
     isMonumental: true,
     wall: 'west',
     position: { x: -6.74, y: 3.6, z: -48.0 },
@@ -253,7 +253,7 @@ export const DEFAULT_PAINTINGS = [
     description: 'Har bir nigohida samimiylik, tabiiy latofat va erkinlik taralib turuvchi sevikli qizning nafis portreti. Muhabbatning eng samimiy va betakror qiyofasi.',
     date: 'Betakror va samimiy go\'zallik',
     aspect: 0.56,
-    imageSrc: '/images/artworks/monumental_mirror_portrait.jpg',
+    imageSrc: 'images/artworks/monumental_mirror_portrait.jpg',
     isMonumental: true,
     wall: 'east',
     position: { x: 6.74, y: 3.6, z: -48.0 },
