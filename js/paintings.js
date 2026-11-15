@@ -228,6 +228,36 @@ export const DEFAULT_PAINTINGS = [
     wall: 'altar',
     position: { x: 0.0, y: 3.6, z: -39.3 },
     rotationY: Math.PI
+  },
+  {
+    id: 15,
+    roomId: 'room_7',
+    roomName: 'VII. Abadiy Muhabbat Mehrobi (Sanctuaire Éternel)',
+    title: 'Dengizdagi Oq Kema & Baxtli Sayohat',
+    subtitle: 'ZAL VII — MONUMENTAL SHOH ASAR #03',
+    description: 'Sokin dengiz to\'lqinlari, ufqdagi muhtasham oq kema va kemaning yog\'och rulida orzular sari yo\'l olgan go\'zal qiz. Birgalikdagi unutilmas sayohatlar va shirin orzular timsoli.',
+    date: 'Mangu sayohat va baxtli orzular',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/monumental_ship_wheel.jpg',
+    isMonumental: true,
+    wall: 'west',
+    position: { x: -6.74, y: 3.6, z: -48.0 },
+    rotationY: Math.PI / 2
+  },
+  {
+    id: 16,
+    roomId: 'room_7',
+    roomName: 'VII. Abadiy Muhabbat Mehrobi (Sanctuaire Éternel)',
+    title: 'Nafislik, Erkinlik & Tabiiy Go\'zallik',
+    subtitle: 'ZAL VII — MONUMENTAL SHOH ASAR #04',
+    description: 'Har bir nigohida samimiylik, tabiiy latofat va erkinlik taralib turuvchi sevikli qizning nafis portreti. Muhabbatning eng samimiy va betakror qiyofasi.',
+    date: 'Betakror va samimiy go\'zallik',
+    aspect: 0.56,
+    imageSrc: '/images/artworks/monumental_mirror_portrait.jpg',
+    isMonumental: true,
+    wall: 'east',
+    position: { x: 6.74, y: 3.6, z: -48.0 },
+    rotationY: -Math.PI / 2
   }
 ];
 

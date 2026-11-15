@@ -3,16 +3,23 @@
 // Initializes Three.js engine, Museum, Physical Player, Multiplayer, UI & Events
 // ==========================================================================
 
-import { Museum } from './museum.js?v=empire_canova_v2';
-import { Player } from './player.js?v=empire_canova_v2';
-import { MultiplayerManager } from './multiplayer.js?v=empire_canova_v2';
-import { AudioManager } from './audio.js?v=empire_canova_v2';
-import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js?v=empire_canova_v2';
+import { Museum } from './museum.js?v=iphone_monumental_v3';
+import { Player } from './player.js?v=iphone_monumental_v3';
+import { MultiplayerManager } from './multiplayer.js?v=iphone_monumental_v3';
+import { AudioManager } from './audio.js?v=iphone_monumental_v3';
+import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js?v=iphone_monumental_v3';
 
 class App {
   constructor() {
     this.container = document.getElementById('canvas-container');
     this.clock = new THREE.Clock();
+
+    // Automatic iPhone & Mobile Device Detection
+    const ua = navigator.userAgent || '';
+    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isMobile = isIOS || /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (isMobile) document.body.classList.add('is-mobile-device');
+    if (isIOS) document.body.classList.add('is-ios');
 
     // Scene & Renderer — Romantic Chiaroscuro Darkness & Beauty
     this.scene = new THREE.Scene();
