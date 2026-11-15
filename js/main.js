@@ -3,11 +3,11 @@
 // Initializes Three.js engine, Museum, Physical Player, Multiplayer, UI & Events
 // ==========================================================================
 
-import { Museum } from './museum.js?v=iphone_monumental_v3';
-import { Player } from './player.js?v=iphone_monumental_v3';
-import { MultiplayerManager } from './multiplayer.js?v=iphone_monumental_v3';
-import { AudioManager } from './audio.js?v=iphone_monumental_v3';
-import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js?v=iphone_monumental_v3';
+import { Museum } from './museum.js?v=mobile_zoom_v4';
+import { Player } from './player.js?v=mobile_zoom_v4';
+import { MultiplayerManager } from './multiplayer.js?v=mobile_zoom_v4';
+import { AudioManager } from './audio.js?v=mobile_zoom_v4';
+import { createArtworkCanvas, createStatueCanvas, DEFAULT_PAINTINGS } from './paintings.js?v=mobile_zoom_v4';
 
 class App {
   constructor() {
@@ -211,10 +211,36 @@ class App {
       if (e.code === 'KeyV' && !this.isChatActive()) {
         cameraBtn.click();
       }
+      if (e.code === 'KeyZ' && !this.isChatActive()) {
+        toggleZoomAction();
+      }
     });
 
     const mHeartBtn = document.getElementById('m-btn-heart');
     if (mHeartBtn) mHeartBtn.addEventListener('click', () => this.triggerHeart());
+
+    // 7b. Camera Optical Zoom (Key 'Z' & Mobile Zoom Button)
+    const toggleZoomAction = () => {
+      const isZoomed = this.player.toggleZoom();
+      const zoomBtn = document.getElementById('m-btn-zoom');
+      const zoomIcon = document.getElementById('m-zoom-icon');
+      const zoomText = document.getElementById('m-zoom-text');
+      if (zoomBtn) {
+        if (isZoomed) {
+          zoomBtn.classList.add('is-active');
+          if (zoomIcon) zoomIcon.textContent = '🔎';
+          if (zoomText) zoomText.textContent = '2.5x';
+        } else {
+          zoomBtn.classList.remove('is-active');
+          if (zoomIcon) zoomIcon.textContent = '🔍';
+          if (zoomText) zoomText.textContent = 'Zoom';
+        }
+      }
+      this.multiplayer.showToast(isZoomed ? '🔍 Kamera 2.5x kattalashtirildi' : '🔍 Kamera asliga qaytarildi (1x)');
+    };
+
+    const mZoomBtn = document.getElementById('m-btn-zoom');
+    if (mZoomBtn) mZoomBtn.addEventListener('click', toggleZoomAction);
 
     // 8. Inspect Prompt & Button
     const inspectPrompt = document.getElementById('inspect-prompt');
@@ -233,6 +259,9 @@ class App {
     document.getElementById('btn-close-artwork').addEventListener('click', () => {
       document.getElementById('artwork-modal').classList.add('hidden');
     });
+
+    // 9b. Dedicated Fullscreen 4K Image Zoom Lightbox
+    this.initImageZoomLightbox();
 
     // 10. Photo Upload for Painting
     const photoFileInput = document.getElementById('photo-file-input');
@@ -300,6 +329,138 @@ class App {
       if (isClose) banner.classList.remove('hidden');
       else banner.classList.add('hidden');
     }
+  }
+
+  initImageZoomLightbox() {
+    const lightbox = document.getElementById('image-zoom-lightbox');
+    const zoomImg = document.getElementById('zoom-img');
+    const zoomLayer = document.getElementById('zoom-transform-layer');
+    const viewport = document.getElementById('zoom-viewport');
+    const badge = document.getElementById('zoom-level-badge');
+    const titleEl = document.getElementById('zoom-title');
+    const btnClose = document.getElementById('btn-close-zoom');
+    const btnIn = document.getElementById('btn-zoom-in');
+    const btnOut = document.getElementById('btn-zoom-out');
+    const btnReset = document.getElementById('btn-zoom-reset');
+    const artworkImg = document.getElementById('artwork-img');
+    const btnFullscreenZoom = document.getElementById('btn-zoom-fullscreen');
+
+    if (!lightbox || !zoomImg || !zoomLayer || !viewport) return;
+
+    let scale = 1.0;
+    let translateX = 0;
+    let translateY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let initialPinchDist = null;
+    let initialScale = 1.0;
+    let lastTapTime = 0;
+
+    const updateTransform = () => {
+      scale = Math.max(0.8, Math.min(5.0, scale));
+      if (scale <= 1.05) {
+        translateX = 0;
+        translateY = 0;
+      }
+      zoomLayer.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      if (badge) badge.textContent = `${Math.round(scale * 100)}%`;
+    };
+
+    const resetZoom = () => {
+      scale = 1.0;
+      translateX = 0;
+      translateY = 0;
+      updateTransform();
+    };
+
+    const openZoom = () => {
+      if (!artworkImg.src) return;
+      zoomImg.src = artworkImg.src;
+      if (titleEl && this.activePainting) {
+        titleEl.textContent = this.activePainting.title;
+      }
+      resetZoom();
+      lightbox.classList.remove('hidden');
+    };
+
+    if (btnFullscreenZoom) btnFullscreenZoom.addEventListener('click', openZoom);
+    artworkImg.addEventListener('click', openZoom);
+    artworkImg.style.cursor = 'zoom-in';
+
+    btnClose.addEventListener('click', () => {
+      lightbox.classList.add('hidden');
+      resetZoom();
+    });
+
+    btnIn.addEventListener('click', () => {
+      scale = Math.min(5.0, scale + 0.35);
+      updateTransform();
+    });
+
+    btnOut.addEventListener('click', () => {
+      scale = Math.max(0.8, scale - 0.35);
+      updateTransform();
+    });
+
+    btnReset.addEventListener('click', resetZoom);
+
+    // Multi-touch gestures (Pinch-to-zoom & Pan & Double-tap) for mobile
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialPinchDist = Math.hypot(dx, dy);
+        initialScale = scale;
+      } else if (e.touches.length === 1) {
+        const now = Date.now();
+        if (now - lastTapTime < 320) {
+          // Double-tap zoom toggle
+          if (scale > 1.2) {
+            resetZoom();
+          } else {
+            scale = 2.5;
+            updateTransform();
+          }
+          lastTapTime = 0;
+          return;
+        }
+        lastTapTime = now;
+
+        isDragging = true;
+        startX = e.touches[0].clientX - translateX;
+        startY = e.touches[0].clientY - translateY;
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchmove', (e) => {
+      if (e.cancelable) e.preventDefault();
+      if (e.touches.length === 2 && initialPinchDist) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        scale = initialScale * (dist / initialPinchDist);
+        updateTransform();
+      } else if (e.touches.length === 1 && isDragging && scale > 1.05) {
+        translateX = e.touches[0].clientX - startX;
+        translateY = e.touches[0].clientY - startY;
+        updateTransform();
+      }
+    }, { passive: false });
+
+    const endTouch = (e) => {
+      if (e.touches.length < 2) initialPinchDist = null;
+      if (e.touches.length === 0) isDragging = false;
+    };
+    viewport.addEventListener('touchend', endTouch, { passive: true });
+    viewport.addEventListener('touchcancel', endTouch, { passive: true });
+
+    // Desktop mouse wheel zoom & drag pan
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      scale += e.deltaY < 0 ? 0.2 : -0.2;
+      updateTransform();
+    }, { passive: false });
   }
 
   openArtworkModal(paintingData) {

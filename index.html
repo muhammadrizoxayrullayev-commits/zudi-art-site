@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=iphone_monumental_v3">
+  <link rel="stylesheet" href="css/style.css?v=mobile_zoom_v4">
 
   <!-- Three.js (r128) & Orbit/PointerLock via CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -112,6 +112,14 @@
 
       <!-- Mobile Action Buttons on Right -->
       <div id="mobile-action-buttons">
+        <button id="m-btn-zoom" class="m-action-btn zoom-btn" title="Kattalashtirish (Zoom)">
+          <span id="m-zoom-icon">🔍</span>
+          <small id="m-zoom-text">Zoom</small>
+        </button>
+        <button id="m-btn-inspect" class="m-action-btn hidden" title="Rasmni ko'rish">
+          <span>🖼️</span>
+          <small>Ko'rish</small>
+        </button>
         <button id="m-btn-heart" class="m-action-btn heart-btn" title="Yurak yuborish">
           <span>❤️</span>
           <small>Yurak</small>
@@ -119,10 +127,6 @@
         <button id="m-btn-camera" class="m-action-btn" title="Kamera almashtirish">
           <span id="m-cam-icon">👤</span>
           <small id="m-cam-text">3-shaxs</small>
-        </button>
-        <button id="m-btn-inspect" class="m-action-btn hidden" title="Rasmni ko'rish">
-          <span>🔍</span>
-          <small>Ko'rish</small>
         </button>
         <button id="m-btn-chat" class="m-action-btn" title="Xabar yozish">
           <span>💬</span>
@@ -213,9 +217,12 @@
     <div class="artwork-card gold-border">
       <button id="btn-close-artwork" class="close-art-btn">✕</button>
       
-      <div class="artwork-viewport">
+      <div class="artwork-viewport" id="artwork-viewport">
         <img id="artwork-img" src="" alt="San'at asari">
         <div class="frame-glare"></div>
+        <button id="btn-zoom-fullscreen" class="btn-zoom-overlay" title="Rasmni to'liq ekranda kattalashtirish">
+          <span>🔍 Kattalashtirib ko'rish</span>
+        </button>
       </div>
 
       <div class="artwork-details">
@@ -237,6 +244,26 @@
     </div>
   </div>
 
+  <!-- Dedicated Fullscreen 4K Image Zoom Lightbox (Pinch-to-zoom & Pan for Mobile) -->
+  <div id="image-zoom-lightbox" class="hidden">
+    <div class="zoom-header">
+      <div class="zoom-level-badge" id="zoom-level-badge">100%</div>
+      <div class="zoom-title" id="zoom-title">San'at asari</div>
+      <button id="btn-close-zoom" class="zoom-close-btn" title="Yopish">✕</button>
+    </div>
+    <div id="zoom-viewport" class="zoom-viewport">
+      <div id="zoom-transform-layer" class="zoom-transform-layer">
+        <img id="zoom-img" class="zoom-img" src="" alt="Kattalashtirilgan rasm">
+      </div>
+    </div>
+    <div class="zoom-controls-bar">
+      <button id="btn-zoom-out" class="zoom-ctrl-btn" title="Kichiklashtirish">−</button>
+      <button id="btn-zoom-reset" class="zoom-ctrl-btn reset" title="Asliga qaytarish">100%</button>
+      <button id="btn-zoom-in" class="zoom-ctrl-btn" title="Kattalashtirish">＋</button>
+    </div>
+    <div class="zoom-hint-pill">💡 Barmoq bilan kattalashtiring yoki 2 marta bosing</div>
+  </div>
+
   <!-- Share Room Toast -->
   <div id="toast" class="toast hidden">Havola nusxalandi! Sevgilingizga yuboring ❤️</div>
 
@@ -246,7 +273,7 @@
   </audio>
 
   <!-- Application Scripts (Cache-busted for instant live updates) -->
-  <script type="module" src="js/main.js?v=iphone_monumental_v3"></script>
+  <script type="module" src="js/main.js?v=mobile_zoom_v4"></script>
 </body>
 </html>
 
